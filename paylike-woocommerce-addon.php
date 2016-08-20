@@ -305,7 +305,7 @@ function paylike_init()
 			echo '<p>' . __( 'Thank you for your order, please click below to pay and complete your order.', 'woocommerce' ) . '</p>';
 
 			?>
-			<button onclick="pay();">Pay Now</button>
+			<button onclick="pay();"><?php _e( 'Pay Now', 'woocommerce' ); ?></button>
 			<script src="https://sdk.paylike.io/3.js"></script>
 			<script>
 			var paylike = Paylike('<?php echo $this->publickey ;?>');
