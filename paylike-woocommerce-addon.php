@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Paylike Payment for WooCommerce
- * Plugin URI: https://wordpress.org/plugins/paylike-woocommerce-addon/
+ * Plugin URI: https://wordpress.org/plugins/paylike-payments
  * Description: This plugin adds a payment option in WooCommerce for customers to pay with their Credit Cards Via paylike.
  * Version: 1.0
  * Author: Syed Nazrul Hassan
@@ -45,9 +45,9 @@ function paylike_init()
 			$this->paylike_description       = $this->get_option( 'paylike_description');
 
 			$this->paylike_testpublickey     = $this->get_option( 'paylike_testpublickey' );
-			$this->paylike_livepublickey     = $this->get_option( 'paylike_livepublickey' );
-
 			$this->paylike_testappkey     = $this->get_option( 'paylike_testappkey' );
+
+			$this->paylike_livepublickey     = $this->get_option( 'paylike_livepublickey' );
 			$this->paylike_liveappkey     = $this->get_option( 'paylike_liveappkey' );
 			
 			$this->paylike_sandbox           = $this->get_option( 'paylike_sandbox' );
@@ -429,7 +429,7 @@ try
 				$order->payment_complete($transactionid);
 
 			 	$order->add_order_note(__( 'Trx ID = '.$verifyres['transaction']['id'].' Authorized Amount : '.$verifyres['transaction']['amount'].', Captured Amount '.$verifyres['transaction']['capturedAmount'].', Charge authorized at : '.$verifyres['transaction']['created'] ,'woocommerce'));
-
+			 	add_post_meta( $order->id, '_paylike_charge_status', 'charge_auth_captured');
 				WC()->cart->empty_cart();
 			}
 			else
