@@ -526,9 +526,7 @@ try
 			}
 			catch(Exception $e)
 			{
-
-	        	update_post_meta( $order_id, '_stripe_charge_status', 'charge_auth_expired');
-	      	$wc_order->add_order_note(__( $captureresponse->status.' '.$e->getMessage(),'woocommerce'));
+	      		$wc_order->add_order_note(__( $e->getMessage(),'woocommerce'));
 	        }
 
     	}
