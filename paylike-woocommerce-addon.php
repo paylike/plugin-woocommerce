@@ -318,7 +318,7 @@ function paylike_init()
 
 			?>
 			<button onclick="pay();">Pay Now</button>
-			<script src="https://sdk.paylike.io/2.js"></script>
+			<script src="https://sdk.paylike.io/3.js"></script>
 			<script>
 			var paylike = Paylike('<?php echo $this->publickey ;?>');
 
