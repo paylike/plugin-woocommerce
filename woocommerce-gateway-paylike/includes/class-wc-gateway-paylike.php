@@ -58,7 +58,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
     public function __construct() {
         $this->id                 = 'paylike';
         $this->method_title       = __( 'Paylike', 'woocommerce-gateway-paylike' );
-        $this->method_description = __( 'Paylike works by collecting credit card fields in a popup on the receipt page and then sending the details to Paylike for verification.', 'woocommerce-gateway-paylike' );
+        $this->method_description = __( 'Paylike enables you to accept credit and debit cards on your WooCommerce platform. If you don\'t already have an account with Paylike, you can create it <a href="https://paylike.io/">here</a>. Need help with the setup? Read our documentation <a href="https://paylike.io/payment-modules/woocommerce-plugin">here</a>.', 'woocommerce-gateway-paylike' );
         $this->has_fields         = true;
         $this->supports           = array(
             'products',
