@@ -224,8 +224,12 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
          * @return string Setting link
          */
         public function get_setting_link() {
-            $use_id_as_section = version_compare( WC()->version, '2.6', '>=' );
-            $section_slug      = $use_id_as_section ? 'paylike' : strtolower( 'WC_Gateway_Paylike' );
+            if ( function_exists( 'WC' ) ) {
+                $use_id_as_section = version_compare( WC()->version, '2.6', '>=' );
+            } else {
+                $use_id_as_section = false;
+            }
+            $section_slug = $use_id_as_section ? 'paylike' : strtolower( 'WC_Gateway_Paylike' );
 
             return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
         }
@@ -360,7 +364,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                         'amount' => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
                     );
                     if ( 'yes' == $captured ) {
-
                         $result = Paylike\Transaction::refund( $transaction_id, $data );
                     } else {
                         $result = Paylike\Transaction::void( $transaction_id, $data );
