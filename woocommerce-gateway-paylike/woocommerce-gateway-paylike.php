@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.0.0
+ * Version: 1.1.0
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '3.0.5' );
+define( 'WC_PAYLIKE_VERSION', '1.0.0' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -224,12 +224,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
          * @return string Setting link
          */
         public function get_setting_link() {
-            if ( function_exists( 'WC' ) ) {
-                $use_id_as_section = version_compare( WC()->version, '2.6', '>=' );
-            } else {
-                $use_id_as_section = false;
-            }
-            $section_slug = $use_id_as_section ? 'paylike' : strtolower( 'WC_Gateway_Paylike' );
+            $use_id_as_section = version_compare( WC()->version, '2.6', '>=' );
+            $section_slug      = $use_id_as_section ? 'paylike' : strtolower( 'WC_Gateway_Paylike' );
 
             return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
         }
@@ -364,6 +360,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                         'amount' => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
                     );
                     if ( 'yes' == $captured ) {
+
                         $result = Paylike\Transaction::refund( $transaction_id, $data );
                     } else {
                         $result = Paylike\Transaction::void( $transaction_id, $data );

@@ -18,6 +18,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
     public $capture;
 
     /**
+     * Show payment popup on the checkout action.
+     *
+     * @var bool
+     */
+    public $direct_checkout;
+
+    /**
      * API access secret key
      *
      * @var string
@@ -59,8 +66,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         $this->id                 = 'paylike';
         $this->method_title       = __( 'Paylike', 'woocommerce-gateway-paylike' );
         $this->method_description = __( 'Paylike enables you to accept credit and debit cards on your WooCommerce platform. If you don\'t already have an account with Paylike, you can create it <a href="https://paylike.io/">here</a>. Need help with the setup? Read our documentation <a href="https://paylike.io/payment-modules/woocommerce-plugin">here</a>.', 'woocommerce-gateway-paylike' );
-        $this->has_fields         = true;
-        $this->supports           = array(
+        if ( $this->direct_checkout ) {
+            $this->has_fields = true;
+        }
+        $this->supports = array(
             'products',
             'refunds',
         );
@@ -69,15 +78,17 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         // Load the settings.
         $this->init_settings();
         // Get setting values.
-        $this->title       = $this->get_option( 'title' );
-        $this->description = $this->get_option( 'description' );
-        $this->enabled     = $this->get_option( 'enabled' );
-        $this->testmode    = 'yes' === $this->get_option( 'testmode' );
-        $this->capture     = 'yes' === $this->get_option( 'capture', 'yes' );
-        $this->secret_key  = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
-        $this->public_key  = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
-        $this->logging     = 'yes' === $this->get_option( 'logging' );
-        $this->card_types  = $this->get_option( 'card_types' );
+        $this->title             = $this->get_option( 'title' );
+        $this->description       = $this->get_option( 'description' );
+        $this->enabled           = $this->get_option( 'enabled' );
+        $this->testmode          = 'yes' === $this->get_option( 'testmode' );
+        $this->capture           = 'yes' === $this->get_option( 'capture', 'yes' );
+        $this->direct_checkout   = 'yes' === $this->get_option( 'direct_checkout', 'yes' );
+        $this->secret_key        = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
+        $this->public_key        = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
+        $this->logging           = 'yes' === $this->get_option( 'logging' );
+        $this->card_types        = $this->get_option( 'card_types' );
+        $this->order_button_text = __( 'Continue to payment', 'woocommerce-gateway-paylike' );
         if ( $this->testmode ) {
             $this->description .= PHP_EOL . sprintf( __( 'TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 0000 with any CVC and a valid expiration date. "<a href="%s">See Documentation</a>".', 'woocommerce-gateway-paylike' ), 'https://github.com/paylike/sdk' );
             $this->description = trim( $this->description );
@@ -86,6 +97,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
             Paylike\Client::setKey( $this->secret_key );
         }
         // Hooks.
+        if ( $this->direct_checkout ) {
+            add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
+        }
         add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
         add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'return_handler' ) );
         add_action( 'admin_notices', array( $this, 'admin_notices' ) );
@@ -246,13 +260,42 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
      */
     public function process_payment( $order_id ) {
         $order = wc_get_order( $order_id );
-        WC()->cart->empty_cart();
+        if ( ! $this->direct_checkout ) {
+            WC()->cart->empty_cart();
 
-        // Return thank you page redirect.
-        return array(
-            'result'   => 'success',
-            'redirect' => $order->get_checkout_payment_url( true )
-        );
+            // Return thank you page redirect.
+            return array(
+                'result'   => 'success',
+                'redirect' => $order->get_checkout_payment_url( true )
+            );
+        } else {
+            if ( $order->get_total() > 0 ) {
+                $transaction_id = $_POST['paylike_token'];
+                WC_Paylike::log( "Info: Begin processing payment for order $order_id for the amount of {$order->get_total()}" );
+                if ( false == $this->capture ) {
+                    $result = Paylike\Transaction::fetch( $transaction_id );
+                    $this->handle_authorize_result( $order, $result );
+                } else {
+                    $data   = array(
+                        'amount'   => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
+                        'currency' => $order->get_order_currency()
+                    );
+                    $result = Paylike\Transaction::capture( $transaction_id, $data );
+                    $this->handle_capture_result( $order, $result );
+                }
+            } else {
+                $order->payment_complete();
+            }
+            // Remove cart.
+            WC()->cart->empty_cart();
+
+            // Return thank you page redirect.
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url( $order )
+            );
+
+        }
     }
 
     /**
@@ -274,7 +317,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         if ( ! is_null( $amount ) ) {
             $data['amount'] = $this->get_paylike_amount( $amount );
         }
-
         WC_Paylike::log( "Info: Beginning refund for order $order_id for the amount of {$amount}" );
         $captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
         if ( 'yes' == $captured ) {
@@ -288,6 +330,21 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
         return $this->handle_refund_result( $order, $result, $captured );
 
+    }
+
+
+    /**
+     *
+     *
+     */
+    public function payment_scripts() {
+        wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
+        wp_enqueue_script( 'woocommerce_paylike', plugins_url( 'assets/js/paylike_checkout.js', WC_PAYLIKE_MAIN_FILE ), array( 'paylike' ), WC_PAYLIKE_VERSION, true );
+        $paylike_params = array(
+            'key'        => $this->public_key,
+            'customerIP' => $this->get_client_ip()
+        );
+        wp_localize_script( 'woocommerce_paylike', 'wc_paylike_params', apply_filters( 'wc_paylike_params', $paylike_params ) );
     }
 
     /**
@@ -390,7 +447,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         } elseif (
             1 == $result['transaction']['successful'] &&
             $result['transaction']['currency'] == $order->get_order_currency() &&
-            $result['transaction']['custom']['orderNo'] == $order->get_order_number() &&
             $result['transaction']['amount'] == $this->get_paylike_amount( $order->order_total, $order->get_order_currency() )
         ) {
             $order->add_order_note(
@@ -418,6 +474,36 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
     }
 
     /**
+     * Payment form on checkout page
+     */
+    public function payment_fields() {
+        if ( $this->direct_checkout ) {
+            $user = wp_get_current_user();
+            if ( $user->ID ) {
+                $user_email = get_user_meta( $user->ID, 'billing_email', true );
+                $user_email = $user_email ? $user_email : $user->user_email;
+            } else {
+                $user_email = '';
+            }
+            echo '<div
+			id="paylike-payment-data"
+			data-email="' . esc_attr( $user_email ) . '"
+			data-locale="' . get_locale() . '"
+			data-amount="' . esc_attr( $this->get_paylike_amount( WC()->cart->total ) ) . '"
+			data-totalTax="' . esc_attr( $this->get_paylike_amount( WC()->cart->tax_total ) ) . '"
+			data-totalShipping="' . esc_attr( $this->get_paylike_amount( WC()->cart->shipping_total ) ) . '"
+			data-customerIP="' . $this->get_client_ip() . '"
+			data-title="' . get_bloginfo( 'name' ) . '"
+			data-currency="' . esc_attr( get_woocommerce_currency() ) . '"
+			">';
+            echo '</div>';
+        }
+        if ( $this->description ) {
+            echo apply_filters( 'wc_paylike_description', wpautop( wp_kses_post( $this->description ) ) );
+        }
+    }
+
+    /**
      * @param $order
      * @param $result // array result returned by the api wrapper
      */
@@ -430,7 +516,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         } else {
             if ( 1 == $result['transaction']['successful'] &&
                  $result['transaction']['currency'] == $order->get_order_currency() &&
-                 $result['transaction']['custom']['orderNo'] == $order->get_order_number() &&
                  $result['transaction']['amount'] == $this->get_paylike_amount( $order->order_total, $order->get_order_currency() )
             ) {
                 $order->add_order_note(
@@ -478,7 +563,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                 }
                 $refund_message = __( 'Paylike transaction refunded.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
                                   __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['id'] . PHP_EOL .
-                                  __( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $refunded_amount.PHP_EOL.
+                                  __( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $refunded_amount . PHP_EOL .
                                   __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['created'];
                 $order->add_order_note( $refund_message );
                 WC_Paylike::log( 'Success!' . PHP_EOL . $refund_message );
