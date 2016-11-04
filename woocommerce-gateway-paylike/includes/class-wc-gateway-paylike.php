@@ -60,6 +60,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
     public $card_types;
 
     /**
+     * Compatibility mode, capture only from on hold to processing or completed, and not also from processing to completed if this is checked.
+     *
+     * @var bool
+     */
+    public $compatibility_mode;
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -78,17 +85,18 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         // Load the settings.
         $this->init_settings();
         // Get setting values.
-        $this->title             = $this->get_option( 'title' );
-        $this->description       = $this->get_option( 'description' );
-        $this->enabled           = $this->get_option( 'enabled' );
-        $this->testmode          = 'yes' === $this->get_option( 'testmode' );
-        $this->capture           = 'yes' === $this->get_option( 'capture', 'yes' );
-        $this->direct_checkout   = 'yes' === $this->get_option( 'direct_checkout', 'yes' );
-        $this->secret_key        = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
-        $this->public_key        = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
-        $this->logging           = 'yes' === $this->get_option( 'logging' );
-        $this->card_types        = $this->get_option( 'card_types' );
-        $this->order_button_text = __( 'Continue to payment', 'woocommerce-gateway-paylike' );
+        $this->title              = $this->get_option( 'title' );
+        $this->description        = $this->get_option( 'description' );
+        $this->enabled            = $this->get_option( 'enabled' );
+        $this->testmode           = 'yes' === $this->get_option( 'testmode' );
+        $this->capture            = 'yes' === $this->get_option( 'capture', 'yes' );
+        $this->direct_checkout    = 'yes' === $this->get_option( 'direct_checkout', 'yes' );
+        $this->compatibility_mode = 'yes' === $this->get_option( 'compatibility_mode', 'yes' );
+        $this->secret_key         = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
+        $this->public_key         = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
+        $this->logging            = 'yes' === $this->get_option( 'logging' );
+        $this->card_types         = $this->get_option( 'card_types' );
+        $this->order_button_text  = __( 'Continue to payment', 'woocommerce-gateway-paylike' );
         if ( $this->testmode ) {
             $this->description .= PHP_EOL . sprintf( __( 'TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 0000 with any CVC and a valid expiration date. "<a href="%s">See Documentation</a>".', 'woocommerce-gateway-paylike' ), 'https://github.com/paylike/sdk' );
             $this->description = trim( $this->description );

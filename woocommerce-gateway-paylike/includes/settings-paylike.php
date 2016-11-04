@@ -4,28 +4,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 return apply_filters( 'wc_paylike_settings',
     array(
-        'enabled'         => array(
+        'enabled'            => array(
             'title'       => __( 'Enable/Disable', 'woocommerce-gateway-paylike' ),
             'label'       => __( 'Enable Paylike', 'woocommerce-gateway-paylike' ),
             'type'        => 'checkbox',
             'description' => '',
             'default'     => 'no'
         ),
-        'title'           => array(
+        'title'              => array(
             'title'       => __( 'Title', 'woocommerce-gateway-paylike' ),
             'type'        => 'text',
             'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce-gateway-paylike' ),
             'default'     => __( 'Credit card (Paylike)', 'woocommerce-gateway-paylike' ),
             'desc_tip'    => true,
         ),
-        'description'     => array(
+        'description'        => array(
             'title'       => __( 'Description', 'woocommerce-gateway-paylike' ),
             'type'        => 'textarea',
             'description' => __( 'This controls the description which the user sees during checkout.', 'woocommerce-gateway-paylike' ),
             'default'     => __( 'Secure payment with credit card via &copy; <a href="https://paylike.io" target="_blank">Paylike</a>', 'woocommerce-gateway-paylike' ),
             'desc_tip'    => true,
         ),
-        'testmode'        => array(
+        'testmode'           => array(
             'title'       => __( 'Test mode', 'woocommerce-gateway-paylike' ),
             'label'       => __( 'Enable Test Mode', 'woocommerce-gateway-paylike' ),
             'type'        => 'checkbox',
@@ -33,35 +33,43 @@ return apply_filters( 'wc_paylike_settings',
             'default'     => 'yes',
             'desc_tip'    => true,
         ),
-        'secret_key'      => array(
+        'secret_key'         => array(
             'title'       => __( 'Live App Key', 'woocommerce-gateway-paylike' ),
             'type'        => 'text',
             'description' => __( 'This is the App Key found in App Settings.', 'woocommerce-gateway-paylike' ),
             'default'     => '',
             'desc_tip'    => true,
         ),
-        'public_key'      => array(
+        'public_key'         => array(
             'title'       => __( 'Live Public Key', 'woocommerce-gateway-paylike' ),
             'type'        => 'text',
             'description' => __( 'This is the API Key found in Account Dashboard.', 'woocommerce-gateway-paylike' ),
             'default'     => '',
             'desc_tip'    => true,
         ),
-        'test_secret_key' => array(
+        'test_secret_key'    => array(
             'title'       => __( 'Test App Key', 'woocommerce-gateway-paylike' ),
             'type'        => 'text',
             'description' => __( 'This is the App Key found in App Settings.', 'woocommerce-gateway-paylike' ),
             'default'     => '',
             'desc_tip'    => true,
         ),
-        'test_public_key' => array(
+        'test_public_key'    => array(
             'title'       => __( 'Test Public key', 'woocommerce-gateway-paylike' ),
             'type'        => 'text',
             'description' => __( 'This is the API Key found in Account Dashboard.', 'woocommerce-gateway-paylike' ),
             'default'     => '',
             'desc_tip'    => true,
         ),
-        'direct_checkout'         => array(
+        'compatibility_mode' => array(
+            'title'       => __( 'Compatibility Mode', 'woocommerce-gateway-paylike' ),
+            'label'       => __( 'Don\'t capture from processing to completed', 'woocommerce-gateway-paylike' ),
+            'type'        => 'checkbox',
+            'description' => __( 'When this is checked you can capture payment by moving an order to On Hold and then to complete or processing status, when its not checked you can also complete them from processing to complete as well as the other 2 options', 'woocommerce-gateway-paylike' ),
+            'default'     => 'yes',
+            'desc_tip'    => true,
+        ),
+        'direct_checkout'    => array(
             'title'       => __( 'Direct Checkout', 'woocommerce-gateway-paylike' ),
             'label'       => __( 'Pay on checkout', 'woocommerce-gateway-paylike' ),
             'type'        => 'checkbox',
@@ -69,7 +77,7 @@ return apply_filters( 'wc_paylike_settings',
             'default'     => 'yes',
             'desc_tip'    => true,
         ),
-        'capture'         => array(
+        'capture'            => array(
             'title'       => __( 'Capture', 'woocommerce-gateway-paylike' ),
             'label'       => __( 'Capture charge immediately', 'woocommerce-gateway-paylike' ),
             'type'        => 'checkbox',
@@ -77,7 +85,7 @@ return apply_filters( 'wc_paylike_settings',
             'default'     => 'yes',
             'desc_tip'    => true,
         ),
-        'card_types'      => array(
+        'card_types'         => array(
             'title'    => __( 'Accepted Cards', 'woocommerce' ),
             'type'     => 'multiselect',
             'class'    => 'chosen_select',
@@ -89,7 +97,7 @@ return apply_filters( 'wc_paylike_settings',
             ),
             'default'  => array( 'mastercard', 'maestro', 'visa', 'visaelectron' ),
         ),
-        'logging'         => array(
+        'logging'            => array(
             'title'       => __( 'Logging', 'woocommerce-gateway-paylike' ),
             'label'       => __( 'Log debug messages', 'woocommerce-gateway-paylike' ),
             'type'        => 'checkbox',
