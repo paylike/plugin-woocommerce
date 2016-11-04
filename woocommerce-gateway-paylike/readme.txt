@@ -90,6 +90,9 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 == Changelog ==
 
+= 1.1.1 =
+* Added compatibility mode,moving an order from processing to complete can capture the payment
+
 = 1.1 =
 * Added support for direct checkout
 

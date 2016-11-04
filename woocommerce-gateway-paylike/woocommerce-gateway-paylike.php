@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.1.0
+ * Version: 1.1.1
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.0.0' );
+define( 'WC_PAYLIKE_VERSION', '1.1.1' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -86,6 +86,12 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
         private $secret_key = '';
 
         /**
+         * Compatibility mode, capture only from on hold to processing or completed, and not also from processing to completed if this is checked.
+         * @var string
+         */
+        private $compatibility_mode = 'yes';
+
+        /**
          * Notices (array)
          * @var array
          */
@@ -115,6 +121,9 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
             add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
             add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
             add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
+            if ( ! $this->get_compatibility_mode() ) {
+                add_action( 'woocommerce_order_status_processing_to_completed', array( $this, 'capture_payment' ) );
+            }
             add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
             add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
         }
@@ -175,6 +184,21 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
             }
 
             return $this->secret_key;
+        }
+
+        /**
+         * @return string
+         * Get the stored secret key depending on the type of payment sent.
+         */
+        public function get_compatibility_mode() {
+            if ( ! $this->compatibility_mode ) {
+                $options = get_option( 'woocommerce_paylike_settings' );
+                if ( isset( $options['compatibility_mode'] ) ) {
+                    $this->compatibility_mode = ( 'yes' === $options['compatibility_mode'] ? $options['compatibility_mode'] : 0 );
+                }
+            }
+
+            return $this->compatibility_mode;
         }
 
         /**
