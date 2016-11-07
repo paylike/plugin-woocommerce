@@ -191,11 +191,11 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
          * Get the stored secret key depending on the type of payment sent.
          */
         public function get_compatibility_mode() {
-            if ( ! $this->compatibility_mode ) {
-                $options = get_option( 'woocommerce_paylike_settings' );
-                if ( isset( $options['compatibility_mode'] ) ) {
-                    $this->compatibility_mode = ( 'yes' === $options['compatibility_mode'] ? $options['compatibility_mode'] : 0 );
-                }
+            $options = get_option( 'woocommerce_paylike_settings' );
+            if ( isset( $options['compatibility_mode'] ) ) {
+                $this->compatibility_mode = ( 'yes' === $options['compatibility_mode'] ? $options['compatibility_mode'] : 0 );
+            } else {
+                $this->compatibility_mode = 0;
             }
 
             return $this->compatibility_mode;
