@@ -80,6 +80,13 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
         }
 
         /**
+         * Flag to indicate whether or not we need to load code for / support subscriptions.
+         *
+         * @var bool
+         */
+        private $subscription_support_enabled = false;
+
+        /**
          * Secret API Key.
          * @var string
          */
@@ -275,12 +282,18 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
          * @since 1.0.0
          */
         public function init_gateways() {
+            if ( class_exists( 'WC_Subscriptions_Order' ) && function_exists( 'wcs_create_renewal_order' ) ) {
+                $this->subscription_support_enabled = true;
+            }
             if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
                 return;
             }
             include_once( plugin_basename( 'includes/class-wc-gateway-paylike.php' ) );
             load_plugin_textdomain( 'woocommerce-gateway-paylike', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
             add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
+            if ( $this->subscription_support_enabled ) {
+                require_once( plugin_basename( 'includes/class-wc-gateway-paylike-addons.php' ) );
+            }
         }
 
         /**
@@ -289,7 +302,11 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
          * @since 1.0.0
          */
         public function add_gateways( $methods ) {
-            $methods[] = 'WC_Gateway_Paylike';
+            if ( $this->subscription_support_enabled ) {
+                $methods[] = 'WC_Gateway_Paylike_Addons';
+            } else {
+                $methods[] = 'WC_Gateway_Paylike';
+            }
 
             return $methods;
         }
