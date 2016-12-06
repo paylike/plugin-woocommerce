@@ -110,15 +110,32 @@ jQuery(function ($) {
                             customerIP: wc_paylike_params.customerIP
                         }
                     };
+
+                    // used for cases like trial,
+                    // change payment method
+                    // see @https://github.com/paylike/sdk#popup-to-save-tokenize-a-card-for-later-use
+                    if (args.amount === 0) {
+                        delete args.amount;
+                        delete args.currency;
+                    }
+
                     paylike.popup(args,
                         function (err, res) {
                             if (err)
                                 return console.warn(err);
 
-                            var trxid = res.transaction.id;
-                            $form.find('input.paylike_token').remove();
-                            $form.append('<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>');
-                            wc_paylike_form.stripe_submit = true;
+                            console.log(res);
+                            if (res.transaction) {
+                                var trxid = res.transaction.id;
+                                $form.find('input.paylike_token').remove();
+                                $form.append('<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>');
+                            } else {
+                                var cardid = res.card.id;
+                                $form.find('input.paylike_card_id').remove();
+                                $form.append('<input type="hidden" class="paylike_card_id" name="paylike_card_id" value="' + cardid + '"/>');
+                            }
+
+                            wc_paylike_form.paylike_submit = true;
                             $form.submit();
                         }
                     );
