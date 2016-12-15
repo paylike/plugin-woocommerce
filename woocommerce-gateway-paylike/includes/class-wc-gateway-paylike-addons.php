@@ -258,7 +258,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
         } else {
             $data['transactionId'] = $entity_id;
         }
-        $new_transaction = $this->api_create_transaction( $merchant_id, $data );
+        $new_transaction = Paylike\Transaction::create( $merchant_id, $data );
         // check for errors
         if ( ! $new_transaction ) {
             return new WP_Error( 'paylike_error', __( 'cURL request failed.', 'woocommerce-gateway-paylike' ) );
@@ -280,7 +280,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
     private function get_merchant_id( $entity_id, $type = 'transaction' ) {
         if ( $type == 'card' ) {
             // try to get the card
-            $entity = $this->api_fetch_card( $entity_id );
+            $entity = Paylike\Card::fetch( $entity_id );
             $entity = $this->parse_api_card_response( $entity );
             if ( is_wp_error( $entity ) ) {
                 return $entity;
@@ -300,42 +300,5 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
         }
 
         return $entity['merchantId'];
-    }
-
-
-    /**
-     * Create a new transaction
-     * @todo - should be moved into the api
-     *
-     * @param $merchantId
-     * @param $data
-     *
-     * @return bool|mixed
-     */
-    private function api_create_transaction( $merchantId, $data ) {
-        $adapter = Paylike\Client::getAdapter();
-        if ( ! $adapter ) {
-            trigger_error( 'Adapter not set!', E_USER_ERROR );
-        }
-
-        return $adapter->request( 'merchants/' . $merchantId . '/transactions', $data );
-    }
-
-
-    /**
-     * Fetch a card
-     * @todo - should be moved into the api
-     *
-     * @param $cardId
-     *
-     * @return bool|mixed
-     */
-    private function api_fetch_card( $cardId ) {
-        $adapter = Paylike\Client::getAdapter();
-        if ( ! $adapter ) {
-            trigger_error( 'Adapter not set!', E_USER_ERROR );
-        }
-
-        return $adapter->request( 'cards/' . $cardId );
     }
 }
