@@ -249,9 +249,9 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
         $data = array(
             'amount'   => $this->get_paylike_amount( $amount, $renewal_order->get_order_currency() ),
             'currency' => $renewal_order->get_order_currency(),
-            //			'custom'        => (object)array(
-            //				'email' => $renewal_order->billing_email
-            //			)
+            'custom'   => array(
+                'email' => $renewal_order->billing_email
+            )
         );
         if ( $type == 'card' ) {
             $data['cardId'] = $entity_id;
