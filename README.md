@@ -6,7 +6,7 @@ available by a user.
 Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 
-### Supported Woocommerce versions
+### Supported WooCommerce versions
 
 - \>= 2.5.0
 
@@ -24,13 +24,10 @@ Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 ### Updating settings
 
-Under the woocommerce paylike settings, you can:
+Under the WooCommerce Paylike settings, you can:
  * Update the payment method text in the payment gateways list
  * Update the payment method description in the payment gateways list
  * Update the title that shows up in the payment popup 
  * Add test/live keys
  * Set payment mode (test/live)
  * Change the capture type (Instant/Manual by changing the order status)
- 
-  
-
