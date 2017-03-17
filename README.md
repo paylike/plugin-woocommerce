@@ -6,11 +6,11 @@ available by a user.
 Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 
-### Supported WooCommerce versions
+## Supported WooCommerce versions
 
 - \>= 2.5.0
 
-### Installation
+## Installation
 
 1.Once you have installed WooCommerce on your Wordpress setup, follow these simple steps:
   Signup at (paylike.io) [https://paylike.io] (it’s free)
@@ -22,7 +22,7 @@ Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
   1. Insert the app key and your public key in the Checkout settings for the Paylike payment plugin
   
 
-### Updating settings
+## Updating settings
 
 Under the WooCommerce Paylike settings, you can:
  * Update the payment method text in the payment gateways list
