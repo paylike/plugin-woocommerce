@@ -94,6 +94,9 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 == Changelog ==
 
+= 1.2.6 =
+* Added danish translation for frontend text
+
 = 1.2.5 =
 * Updated POT file
 

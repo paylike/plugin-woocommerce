@@ -1,0 +1,342 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2017-03-17 12:27+0000\n"
+"Language: da-DK\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"PO-Revision-Date: 2017-03-30 09:30+0000\n"
+"X-Generator: Loco - https://localise.biz/\n"
+"Project-Id-Version: WooCommerce Paylike Gateway\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: woocommerce <ionut@derikon.com>\n"
+"Language-Team: Danish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: woocommerce-gateway-paylike.php:177
+#, php-format
+msgid ""
+"Paylike will not work until you <a href=\"%s\">configure your Paylike api "
+"keys</a>."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:217
+#, php-format
+msgid ""
+"WooCommerce Paylike - The minimum PHP version required for this plugin is "
+"%1$s. You are running %2$s."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:222
+msgid "WooCommerce Paylike requires WooCommerce to be activated to work."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:225
+#, php-format
+msgid ""
+"WooCommerce Paylike - The minimum WooCommerce version required for this "
+"plugin is %1$s. You are running %2$s."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:230
+msgid "WooCommerce Paylike - cURL is not installed."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:244
+msgid "Settings"
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:342 woocommerce-gateway-paylike.php:363
+#: includes/class-wc-gateway-paylike.php:509
+msgid "Unable to capture transaction!"
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:343 woocommerce-gateway-paylike.php:425
+#: includes/class-wc-gateway-paylike-addons.php:264
+#: includes/class-wc-gateway-paylike.php:700
+#: includes/class-wc-gateway-paylike.php:719
+msgid "cURL request failed."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:348
+msgid "Paylike capture complete."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:349 woocommerce-gateway-paylike.php:431
+#: includes/class-wc-gateway-paylike.php:542
+#: includes/class-wc-gateway-paylike.php:734
+#: includes/class-wc-gateway-paylike.php:748
+msgid "Transaction ID: "
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:350
+#: includes/class-wc-gateway-paylike.php:749
+msgid "Payment Amount: "
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:351 woocommerce-gateway-paylike.php:433
+#: includes/class-wc-gateway-paylike.php:544
+#: includes/class-wc-gateway-paylike.php:750
+msgid "Transaction authorized at: "
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:364 woocommerce-gateway-paylike.php:444
+msgid "Error :"
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:424 woocommerce-gateway-paylike.php:443
+#: includes/class-wc-gateway-paylike.php:552
+msgid "Unable to refund transaction!"
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:430
+msgid "Paylike refund complete."
+msgstr ""
+
+#: woocommerce-gateway-paylike.php:432
+#: includes/class-wc-gateway-paylike.php:543
+msgid "Refund amount: "
+msgstr ""
+
+#: includes/settings-paylike.php:8
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/settings-paylike.php:9
+msgid "Enable Paylike"
+msgstr ""
+
+#: includes/settings-paylike.php:15
+msgid "Title"
+msgstr ""
+
+#: includes/settings-paylike.php:17
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: includes/settings-paylike.php:18
+msgid "Credit card (Paylike)"
+msgstr "Kreditkort"
+
+#: includes/settings-paylike.php:22
+msgid "Description"
+msgstr ""
+
+#: includes/settings-paylike.php:24
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: includes/settings-paylike.php:25
+msgid ""
+"Secure payment with credit card via &copy; <a href=\"https://paylike.io\" "
+"target=\"_blank\">Paylike</a>"
+msgstr ""
+"Sikker betaling med kreditkort via &copy; <a href=\"https://paylike.dk\" "
+"target=\"_blank\">Paylike</a>"
+
+#: includes/settings-paylike.php:29
+msgid "Test mode"
+msgstr ""
+
+#: includes/settings-paylike.php:30
+msgid "Enable Test Mode"
+msgstr ""
+
+#: includes/settings-paylike.php:32
+msgid "Place the payment gateway in test mode using test API keys."
+msgstr ""
+
+#: includes/settings-paylike.php:37
+msgid "Live App Key"
+msgstr ""
+
+#: includes/settings-paylike.php:39 includes/settings-paylike.php:53
+msgid "This is the App Key found in App Settings."
+msgstr ""
+
+#: includes/settings-paylike.php:44
+msgid "Live Public Key"
+msgstr ""
+
+#: includes/settings-paylike.php:46 includes/settings-paylike.php:60
+msgid "This is the API Key found in Account Dashboard."
+msgstr ""
+
+#: includes/settings-paylike.php:51
+msgid "Test App Key"
+msgstr ""
+
+#: includes/settings-paylike.php:58
+msgid "Test Public key"
+msgstr ""
+
+#: includes/settings-paylike.php:65
+msgid "Compatibility Mode"
+msgstr ""
+
+#: includes/settings-paylike.php:66
+msgid "Don't capture from processing to completed"
+msgstr ""
+
+#: includes/settings-paylike.php:68
+msgid ""
+"When this is checked you can capture payment by moving an order to On Hold "
+"and then to complete or processing status, when its not checked you can also "
+"complete them from processing to complete as well as the other 2 options"
+msgstr ""
+
+#: includes/settings-paylike.php:73
+msgid "Direct Checkout"
+msgstr ""
+
+#: includes/settings-paylike.php:74
+msgid "Pay on checkout"
+msgstr ""
+
+#: includes/settings-paylike.php:76
+msgid ""
+"Whether or not to show the payment popup on the checkout page or show it on "
+"the receipt page. Uncheck this if you have issues on the checkout page with "
+"the payment."
+msgstr ""
+
+#: includes/settings-paylike.php:81
+msgid "Capture"
+msgstr ""
+
+#: includes/settings-paylike.php:82
+msgid "Capture charge immediately"
+msgstr ""
+
+#: includes/settings-paylike.php:84
+msgid ""
+"Whether or not to immediately capture the transaction. When unchecked, the "
+"transaction only gets authorized."
+msgstr ""
+
+#: includes/settings-paylike.php:101
+msgid "Logging"
+msgstr ""
+
+#: includes/settings-paylike.php:102
+msgid "Log debug messages"
+msgstr ""
+
+#: includes/settings-paylike.php:104
+msgid "Save debug messages to the WooCommerce System Status log."
+msgstr ""
+
+#: includes/class-wc-gateway-paylike-addons.php:49
+#, php-format
+msgid "Paylike Transaction Failed (%s)"
+msgstr ""
+
+#: includes/class-wc-gateway-paylike-addons.php:77
+msgid "Neither Transaction ID nor Card ID was found"
+msgstr ""
+
+#: includes/class-wc-gateway-paylike-addons.php:143
+#, php-format
+msgid "Via %s card ending in %s (%s)"
+msgstr ""
+
+#: includes/class-wc-gateway-paylike-addons.php:266
+#: includes/class-wc-gateway-paylike.php:553
+#: includes/class-wc-gateway-paylike.php:704
+#: includes/class-wc-gateway-paylike.php:721
+msgid "Error: "
+msgstr ""
+
+#: includes/class-wc-gateway-paylike-addons.php:299
+msgid "Merchant ID not found"
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:74
+msgid "Paylike"
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:75
+msgid ""
+"Paylike enables you to accept credit and debit cards on your WooCommerce "
+"platform. If you don't already have an account with Paylike, you can create "
+"it <a href=\"https://paylike.io/\">here</a>. Need help with the setup? Read "
+"our documentation <a href=\"https://paylike.io/payment-modules/woocommerce-"
+"plugin\">here</a>."
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:107
+msgid "Continue to payment"
+msgstr "Gå til betaling"
+
+#: includes/class-wc-gateway-paylike.php:109
+#, php-format
+msgid ""
+"TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 "
+"0000 with any CVC and a valid expiration date. \"<a href=\"%s\">See "
+"Documentation</a>\"."
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:189
+#, php-format
+msgid ""
+"Paylike: <a href=\"%s\">Force SSL</a> is disabled; your checkout page may "
+"not be secure! Unless you have a valid SSL certificate and force the "
+"checkout pages to be secure, only test mode will be allowed."
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:369
+msgid ""
+"Thank you for your order, please click below to pay and complete your order."
+msgstr ""
+"Tak for din bestilling. Klik venligst på \"Gå til betaling\" herunder for at "
+"afslutte din bestilling."
+
+#: includes/class-wc-gateway-paylike.php:371
+msgid "Pay Now"
+msgstr "Betal nu"
+
+#: includes/class-wc-gateway-paylike.php:487
+msgid "Unable to verify transaction!"
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:541
+msgid "Paylike transaction refunded."
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:735
+msgid "Authorized amount: "
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:736
+msgid "Captured amount: "
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:737
+msgid "Charge authorized at: "
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:747
+msgid "Paylike authorization complete."
+msgstr ""
+
+#. Name of the plugin
+msgid "WooCommerce Paylike Gateway"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Allow customers to pay with credit cards via the Paylike gateway in your "
+"WooCommerce store."
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
+msgstr ""
+
+#. Author of the plugin
+msgid "Derikon Development"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://derikon.com/"
+msgstr ""
