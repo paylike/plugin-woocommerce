@@ -381,10 +381,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         $products = array();
         $items    = WC()->cart->get_cart();
         foreach ( $items as $item => $values ) {
-            $_product   = $values['data']->post;
+            $_product   = $values['data'];
             $product    = array(
                 'ID'       => $values['product_id'],
-                'name'     => $_product->post_title,
+                'name'     => $_product->get_title(),
                 'quantity' => $values['quantity']
             );
             $products[] = $product;
@@ -470,8 +470,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                         $this->handle_authorize_result( $result, $order );
                     } else {
                         $data   = array(
-                            'amount'   => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
-                            'currency' => $order->get_order_currency()
+                            'amount'   => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                            'currency' => dk_get_order_currency( $order )
                         );
                         $result = Paylike\Transaction::capture( $transaction_id, $data );
                         $this->handle_capture_result( $result, $order );
@@ -507,7 +507,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
             );
             $order->payment_complete();
             $this->save_transaction_id( $result, $order );
-            update_post_meta( $order->get_id(), '_paylike_transaction_captured', 'no' );
+            update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'no' );
         }
     }
 
@@ -529,12 +529,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
             );
             $order->payment_complete();
             $this->save_transaction_id( $result, $order );
-            update_post_meta( $order->get_id(), '_paylike_transaction_captured', 'yes' );
+            update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'yes' );
         }
     }
 
     /**
-     * @param $order
+     * @param WC_Order $order
      * @param $result // array result returned by the api wrapper
      * @param $captured
      *
@@ -638,14 +638,15 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
      * @return bool|int|mixed
      */
     protected function handle_payment( $transaction_id, $order, $amount = false ) {
-        WC_Paylike::log( "Info: Begin processing payment for order $order->get_id() for the amount of {$order->get_total()}" );
+        $order_id = get_woo_id( $order );
+        WC_Paylike::log( "Info: Begin processing payment for order $order_id for the amount of {$order->get_total()}" );
         if ( false == $this->capture ) {
             $result = Paylike\Transaction::fetch( $transaction_id );
             $this->handle_authorize_result( $result, $order, $amount );
         } else {
             $data   = array(
-                'amount'   => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
-                'currency' => $order->get_order_currency()
+                'amount'   => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                'currency' => dk_get_order_currency( $order )
             );
             $result = Paylike\Transaction::capture( $transaction_id, $data );
             $this->handle_capture_result( $result, $order, $amount );
@@ -677,8 +678,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         }
 
         return 1 == $result['transaction']['successful'] &&
-               $result['transaction']['currency'] == $order->get_order_currency() &&
-               $result['transaction']['amount'] == $this->get_paylike_amount( $amount, $order->get_order_currency() );
+               $result['transaction']['currency'] == dk_get_order_currency( $order ) &&
+               $result['transaction']['amount'] == $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) );
     }
 
 

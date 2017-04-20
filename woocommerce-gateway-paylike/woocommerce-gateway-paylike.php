@@ -288,6 +288,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
             if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
                 return;
             }
+            include_once( plugin_basename( 'includes/legacy.php' ) );
             include_once( plugin_basename( 'includes/class-wc-gateway-paylike.php' ) );
             load_plugin_textdomain( 'woocommerce-gateway-paylike', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
             add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
@@ -323,8 +324,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                 $captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
                 if ( $transaction_id && 'no' === $captured ) {
                     $data   = array(
-                        'amount'   => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
-                        'currency' => $order->get_order_currency()
+                        'amount'   => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                        'currency' => dk_get_order_currency( $order )
                     );
                     $result = Paylike\Transaction::capture( $transaction_id, $data );
                     $this->handle_capture_result( $order, $result );
@@ -333,7 +334,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
         }
 
         /**
-         * @param $order
+         * @param WC_Order $order
          * @param $result // array result returned by the api wrapper
          */
         function handle_capture_result( $order, $result ) {
@@ -350,8 +351,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                         __( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['amount'] . PHP_EOL .
                         __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['created']
                     );
-                    update_post_meta( $order->id, '_paylike_transaction_id', $result['transaction']['id'] );
-                    update_post_meta( $order->id, '_paylike_transaction_captured', 'yes' );
+                    update_post_meta( get_woo_id( $order ), '_paylike_transaction_id', $result['transaction']['id'] );
+                    update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'yes' );
 
                 } else {
                     $error = array();
@@ -402,7 +403,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                 $captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
                 if ( $transaction_id ) {
                     $data = array(
-                        'amount' => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
+                        'amount' => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
                     );
                     if ( 'yes' == $captured ) {
                         $result = Paylike\Transaction::refund( $transaction_id, $data );
@@ -415,7 +416,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
         }
 
         /**
-         * @param $order
+         * @param WC_Order $order
          * @param $result // array result returned by the api wrapper
          */
         function handle_refund_result( $order, $result ) {
@@ -432,7 +433,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                         __( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['amount'] . PHP_EOL .
                         __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['created']
                     );
-                    delete_post_meta( $order->id, '_paylike_transaction_captured' );
+                    delete_post_meta( get_woo_id( $order ), '_paylike_transaction_captured' );
                 } else {
                     $error = array();
                     foreach ( $result as $field_error ) {

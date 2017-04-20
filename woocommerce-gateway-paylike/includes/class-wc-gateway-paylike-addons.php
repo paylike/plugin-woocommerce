@@ -77,7 +77,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
                 return new WP_Error( 'paylike_error', __( 'Neither Transaction ID nor Card ID was found', 'woocommerce-gateway-paylike' ) );
             }
         }
-        WC_Paylike::log( "Info: Begin processing subscription payment for order {$order->id} for the amount of {$amount}" );
+        $order_id = get_woo_id( $order );
+        WC_Paylike::log( "Info: Begin processing subscription payment for order {$order_id} for the amount of {$amount}" );
         // create a new transaction from a previous one, or a card
         if ( $last_card_id ) { // card can be added after a subscription, should get checked first
             $new_transaction = $this->create_new_transaction( $last_card_id, $order, $amount, $type = 'card' );
@@ -103,8 +104,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
      * @return void
      */
     public function update_failing_payment_method( $subscription, $renewal_order ) {
-        update_post_meta( $subscription->id, '_paylike_transaction_id', $renewal_order->paylike_transaction_id );
-        update_post_meta( $subscription->id, '_paylike_card_id', $renewal_order->paylike_card_id );
+        update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', $renewal_order->paylike_transaction_id );
+        update_post_meta( get_woo_id( $subscription ), '_paylike_card_id', $renewal_order->paylike_card_id );
     }
 
 
@@ -114,8 +115,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
      * @param WC_Order $resubscribe_order The order created for the customer to resubscribe to the old expired/cancelled subscription
      */
     public function delete_resubscribe_meta( $resubscribe_order ) {
-        delete_post_meta( $resubscribe_order->id, '_paylike_transaction_id' );
-        delete_post_meta( $resubscribe_order->id, '_paylike_card_id' );
+        delete_post_meta( get_woo_id( $resubscribe_order ), '_paylike_transaction_id' );
+        delete_post_meta( get_woo_id( $resubscribe_order ), '_paylike_card_id' );
     }
 
     /**
@@ -131,7 +132,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
         if ( $this->id !== $subscription->payment_method || ! $subscription->customer_user ) {
             return $payment_method_to_display;
         }
-        $transaction_id = get_post_meta( $subscription->id, '_paylike_transaction_id', true );
+        $transaction_id = get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true );
         // add more details, if we can get the card
         $result = Paylike\Transaction::fetch( $transaction_id );
         if (
@@ -159,7 +160,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
         $payment_meta[ $this->id ] = array(
             'post_meta' => array(
                 '_paylike_transaction_id' => array(
-                    'value' => get_post_meta( $subscription->id, '_paylike_transaction_id', true ),
+                    'value' => get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true ),
                     'label' => 'A previous transaction ID',
                 )
             ),
@@ -195,10 +196,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
     protected function save_transaction_id( $result, $order ) {
         parent::save_transaction_id( $result, $order );
         // Also store it on the subscriptions being purchased or paid for in the order
-        if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order->id ) ) {
-            $subscriptions = wcs_get_subscriptions_for_order( $order->id );
-        } elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order->id ) ) {
-            $subscriptions = wcs_get_subscriptions_for_renewal_order( $order->id );
+        if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( get_woo_id( $order ) ) ) {
+            $subscriptions = wcs_get_subscriptions_for_order( get_woo_id( $order ) );
+        } elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id( $order ) ) ) {
+            $subscriptions = wcs_get_subscriptions_for_renewal_order( get_woo_id( $order ) );
         } else {
             $subscriptions = array();
         }
@@ -216,10 +217,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
     protected function save_card_id( $card_id, $order ) {
         parent::save_card_id( $card_id, $order );
         // Also store it on the subscriptions being purchased or paid for in the order
-        if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order->id ) ) {
-            $subscriptions = wcs_get_subscriptions_for_order( $order->id );
-        } elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order->id ) ) {
-            $subscriptions = wcs_get_subscriptions_for_renewal_order( $order->id );
+        if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( get_woo_id($order)) ) {
+            $subscriptions = wcs_get_subscriptions_for_order(get_woo_id($order) );
+        } elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id($order)) ) {
+            $subscriptions = wcs_get_subscriptions_for_renewal_order( get_woo_id($order) );
         } else {
             $subscriptions = array();
         }
@@ -247,8 +248,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
         }
         // create a new transaction by card or transaction
         $data = array(
-            'amount'   => $this->get_paylike_amount( $amount, $renewal_order->get_order_currency() ),
-            'currency' => $renewal_order->get_order_currency(),
+            'amount'   => $this->get_paylike_amount( $amount,dk_get_order_currency($renewal_order) ),
+            'currency' => dk_get_order_currency($renewal_order) ,
             'custom'   => array(
                 'email' => $renewal_order->billing_email
             )

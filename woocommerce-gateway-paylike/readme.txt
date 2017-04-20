@@ -96,6 +96,7 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 = 1.2.7 =
 * Added data collection before order gets created
+* Added legacy support for woocommerce < 3.0
 
 = 1.2.6 =
 * Added danish translation for frontend text
