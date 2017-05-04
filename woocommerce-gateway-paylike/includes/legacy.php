@@ -30,4 +30,3 @@ if ( ! function_exists( 'dk_get_order_currency' ) ) {
         }
     }
 }
-?>

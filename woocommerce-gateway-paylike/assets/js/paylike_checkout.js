@@ -100,7 +100,6 @@ jQuery(function ($) {
 
                     var paylike = Paylike(wc_paylike_params.key);
 
-
                     var args = {
                         title: $paylike_payment.data('title'),
                         currency: $paylike_payment.data('currency'),
