@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.2.7
+ * Version: 1.2.8
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -224,7 +224,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
             if ( version_compare( WC_VERSION, WC_PAYLIKE_MIN_WC_VER, '<' ) ) {
                 $message = __( 'WooCommerce Paylike - The minimum WooCommerce version required for this plugin is %1$s. You are running %2$s.', 'woocommerce-gateway-paylike', 'woocommerce-gateway-paylike' );
 
-                return sprintf( $message, WC_STRIPE_MIN_WC_VER, WC_VERSION );
+                return sprintf( $message, WC_PAYLIKE_MIN_WC_VER, WC_VERSION );
             }
             if ( ! function_exists( 'curl_init' ) ) {
                 return __( 'WooCommerce Paylike - cURL is not installed.', 'woocommerce-gateway-paylike' );

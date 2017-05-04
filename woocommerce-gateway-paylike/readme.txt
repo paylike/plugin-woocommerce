@@ -94,6 +94,9 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 == Changelog ==
 
+= 1.2.8 =
+* Updated supported currencies list
+
 = 1.2.7 =
 * Added data collection before order gets created
 * Added legacy support for woocommerce < 3.0
