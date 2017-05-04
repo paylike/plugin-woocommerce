@@ -106,8 +106,15 @@ jQuery(function ($) {
                         amount: $paylike_payment.data('amount'),
                         locale: $paylike_payment.data('locale'),
                         custom: {
-                            email: $paylike_payment.data('email'),
-                            customerIP: wc_paylike_params.customerIP
+                            products: [wc_paylike_params.products
+                            ],
+                            name: $("[name='billing_first_name']").val() + ' ' + $("[name='billing_last_name']").val(),
+                            telephone: $("[name='billing_phone']").val(),
+                            address: $("[name='billing_address_1']").val() + ' ' + $("[name='billing_address_2']").val(),
+                            customerIp: wc_paylike_params.customer_IP,
+                            platform_version: wc_paylike_params.platform_version,
+                            ecommerce: 'WooCommerce',
+                            version: wc_paylike_params.version
                         }
                     };
 

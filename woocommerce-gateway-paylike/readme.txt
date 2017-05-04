@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 1.2.5
+Stable tag: 1.2.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,6 +93,16 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.2.8 =
+* Updated supported currencies list
+
+= 1.2.7 =
+* Added data collection before order gets created
+* Added legacy support for woocommerce < 3.0
+
+= 1.2.6 =
+* Added danish translation for frontend text
 
 = 1.2.5 =
 * Updated POT file

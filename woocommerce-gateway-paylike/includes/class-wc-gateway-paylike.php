@@ -73,8 +73,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         $this->id                 = 'paylike';
         $this->method_title       = __( 'Paylike', 'woocommerce-gateway-paylike' );
         $this->method_description = __( 'Paylike enables you to accept credit and debit cards on your WooCommerce platform. If you don\'t already have an account with Paylike, you can create it <a href="https://paylike.io/">here</a>. Need help with the setup? Read our documentation <a href="https://paylike.io/payment-modules/woocommerce-plugin">here</a>.', 'woocommerce-gateway-paylike' );
-
-        $this->supports = array(
+        $this->supports           = array(
             'products',
             'refunds',
             'subscriptions',
@@ -147,101 +146,164 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         return apply_filters( 'woocommerce_paylike_icon', $icon, $this->id );
     }
 
-    public function get_active_card_logo_url( $type ) {
-        $image_type = strtolower( $type );
-
-        return WC_HTTPS::force_https_url( plugins_url( '../assets/images/' . $image_type . '.png', __FILE__ ) );
-    }
-
-    /**
-     * Get Paylike amount to pay
-     *
-     * @param float $total Amount due.
-     * @param string $currency Accepted currency.
-     *
-     * @return float|int
-     */
-    public function get_paylike_amount( $total, $currency = '' ) {
-        $zero_decimal_currency = array(
-            "CLP",
-            "JPY",
-            "VND"
-        );
-        $currency_code         = $currency != '' ? $currency : get_woocommerce_currency();
-        if ( in_array( $currency_code, $zero_decimal_currency ) ) {
-            $total = number_format( $total, 0, ".", "" );
-        } else {
-            $total = $total * 100;
-        }
-
-        return $total;
-    }
-
-    /**
-     * Check if SSL is enabled and notify the user
-     */
-    public function admin_notices() {
-        if ( 'no' === $this->enabled ) {
-            return;
-        }
-        // Show message if enabled and FORCE SSL is disabled and WordpressHTTPS plugin is not detected.
-        if ( ( function_exists( 'wc_site_is_https' ) && ! wc_site_is_https() ) && ( 'no' === get_option( 'woocommerce_force_ssl_checkout' ) && ! class_exists( 'WordPressHTTPS' ) ) ) {
-            echo '<div class="error paylike-ssl-message"><p>' . sprintf( __( 'Paylike: <a href="%s">Force SSL</a> is disabled; your checkout page may not be secure! Unless you have a valid SSL certificate and force the checkout pages to be secure, only test mode will be allowed.', 'woocommerce-gateway-paylike' ), admin_url( 'admin.php?page=wc-settings&tab=checkout' ) ) . '</p></div>';
-        }
-    }
-
     /**
      * Check if this gateway is enabled
      */
     public function is_available() {
         $supported_currencies = array(
-            'AED',
-            'ARS',
-            'AUD',
-            'AZN',
-            'BAM',
-            'BGN',
-            'BRL',
-            'BYR',
-            'CAD',
-            'CHF',
-            'CLP',
-            'CNY',
-            'CZK',
-            'DKK',
-            'DOP',
-            'EGP',
-            'EUR',
-            'GBP',
-            'HKD',
-            'HRK',
-            'HUF',
-            'ILS',
-            'INR',
-            'ISK',
-            'JPY',
-            'LTL',
-            'MAD',
-            'MXN',
-            'MYR',
-            'NOK',
-            'NZD',
-            'PHP',
-            'PLN',
-            'RON',
-            'RSD',
-            'RUB',
-            'SAR',
-            'SEK',
-            'SGD',
-            'THB',
-            'TND',
-            'TRY',
-            'TWD',
-            'UAH',
-            'USD',
-            'VND',
-            'ZAR'
+            "AED",
+            "AFN",
+            "ALL",
+            "AMD",
+            "ANG",
+            "AOA",
+            "ARS",
+            "AUD",
+            "AWG",
+            "AZN",
+            "BAM",
+            "BBD",
+            "BDT",
+            "BGN",
+            "BHD",
+            "BIF",
+            "BMD",
+            "BND",
+            "BOB",
+            "BRL",
+            "BSD",
+            "BTN",
+            "BWP",
+            "BYR",
+            "BZD",
+            "CAD",
+            "CDF",
+            "CHF",
+            "CLP",
+            "CNY",
+            "COP",
+            "CRC",
+            "CUP",
+            "CVE",
+            "CZK",
+            "DJF",
+            "DKK",
+            "DOP",
+            "DZD",
+            "EGP",
+            "ERN",
+            "ETB",
+            "EUR",
+            "FJD",
+            "FKP",
+            "GBP",
+            "GEL",
+            "GHS",
+            "GIP",
+            "GMD",
+            "GNF",
+            "GTQ",
+            "GYD",
+            "HKD",
+            "HNL",
+            "HRK",
+            "HTG",
+            "HUF",
+            "IDR",
+            "ILS",
+            "INR",
+            "IQD",
+            "IRR",
+            "ISK",
+            "JMD",
+            "JOD",
+            "JPY",
+            "KES",
+            "KGS",
+            "KHR",
+            "KMF",
+            "KPW",
+            "KRW",
+            "KWD",
+            "KYD",
+            "KZT",
+            "LAK",
+            "LBP",
+            "LKR",
+            "LRD",
+            "LSL",
+            "MAD",
+            "MDL",
+            "MGA",
+            "MKD",
+            "MMK",
+            "MNT",
+            "MOP",
+            "MRO",
+            "MUR",
+            "MVR",
+            "MWK",
+            "MXN",
+            "MYR",
+            "MZN",
+            "NAD",
+            "NGN",
+            "NIO",
+            "NOK",
+            "NPR",
+            "NZD",
+            "OMR",
+            "PAB",
+            "PEN",
+            "PGK",
+            "PHP",
+            "PKR",
+            "PLN",
+            "PYG",
+            "QAR",
+            "RON",
+            "RSD",
+            "RUB",
+            "RWF",
+            "SAR",
+            "SBD",
+            "SCR",
+            "SDG",
+            "SEK",
+            "SGD",
+            "SHP",
+            "SLL",
+            "SOS",
+            "SRD",
+            "STD",
+            "SYP",
+            "SZL",
+            "THB",
+            "TJS",
+            "TMT",
+            "TND",
+            "TOP",
+            "TRY",
+            "TTD",
+            "TWD",
+            "TZS",
+            "UAH",
+            "UGX",
+            "USD",
+            "UYU",
+            "UZS",
+            "VEF",
+            "VND",
+            "VUV",
+            "WST",
+            "XAF",
+            "XCD",
+            "XOF",
+            "XPF",
+            "YER",
+            "ZAR",
+            "ZMK",
+            "ZWL"
         );
         if ( 'yes' === $this->enabled ) {
             if ( ! $this->testmode && is_checkout() && ! is_ssl() ) {
@@ -266,7 +328,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
     public function init_form_fields() {
         $this->form_fields = include( 'settings-paylike.php' );
     }
-
 
     /**
      * Process the payment
@@ -343,6 +404,78 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
     }
 
+    /**
+     * Payment form on checkout page
+     */
+    public function payment_fields() {
+        if ( $this->direct_checkout ) {
+            $user = wp_get_current_user();
+            if ( $user->ID ) {
+                $user_email = get_user_meta( $user->ID, 'billing_email', true );
+                $user_email = $user_email ? $user_email : $user->user_email;
+            } else {
+                $user_email = '';
+            }
+            echo '<div
+			id="paylike-payment-data"
+			data-email="' . esc_attr( $user_email ) . '"
+			data-locale="' . get_locale() . '"
+			data-amount="' . esc_attr( $this->get_paylike_amount( WC()->cart->total ) ) . '"
+			data-totalTax="' . esc_attr( $this->get_paylike_amount( WC()->cart->tax_total ) ) . '"
+			data-totalShipping="' . esc_attr( $this->get_paylike_amount( WC()->cart->shipping_total ) ) . '"
+			data-customerIP="' . $this->get_client_ip() . '"
+			data-title="' . get_bloginfo( 'name' ) . '"
+			data-currency="' . esc_attr( get_woocommerce_currency() ) . '"
+			">';
+            echo '</div>';
+        }
+        if ( $this->description ) {
+            echo apply_filters( 'wc_paylike_description', wpautop( wp_kses_post( $this->description ) ) );
+        }
+    }
+
+    public function get_active_card_logo_url( $type ) {
+        $image_type = strtolower( $type );
+
+        return WC_HTTPS::force_https_url( plugins_url( '../assets/images/' . $image_type . '.png', __FILE__ ) );
+    }
+
+    /**
+     * Get Paylike amount to pay
+     *
+     * @param float $total Amount due.
+     * @param string $currency Accepted currency.
+     *
+     * @return float|int
+     */
+    public function get_paylike_amount( $total, $currency = '' ) {
+        $zero_decimal_currency = array(
+            "CLP",
+            "JPY",
+            "VND"
+        );
+        $currency_code         = $currency != '' ? $currency : get_woocommerce_currency();
+        if ( in_array( $currency_code, $zero_decimal_currency ) ) {
+            $total = number_format( $total, 0, ".", "" );
+        } else {
+            $total = $total * 100;
+        }
+
+        return $total;
+    }
+
+    /**
+     * Check if SSL is enabled and notify the user
+     */
+    public function admin_notices() {
+        if ( 'no' === $this->enabled ) {
+            return;
+        }
+        // Show message if enabled and FORCE SSL is disabled and WordpressHTTPS plugin is not detected.
+        if ( ( function_exists( 'wc_site_is_https' ) && ! wc_site_is_https() ) && ( 'no' === get_option( 'woocommerce_force_ssl_checkout' ) && ! class_exists( 'WordPressHTTPS' ) ) ) {
+            echo '<div class="error paylike-ssl-message"><p>' . sprintf( __( 'Paylike: <a href="%s">Force SSL</a> is disabled; your checkout page may not be secure! Unless you have a valid SSL certificate and force the checkout pages to be secure, only test mode will be allowed.', 'woocommerce-gateway-paylike' ), admin_url( 'admin.php?page=wc-settings&tab=checkout' ) ) . '</p></div>';
+        }
+    }
 
     /**
      *
@@ -351,9 +484,23 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
     public function payment_scripts() {
         wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
         wp_enqueue_script( 'woocommerce_paylike', plugins_url( 'assets/js/paylike_checkout.js', WC_PAYLIKE_MAIN_FILE ), array( 'paylike' ), WC_PAYLIKE_VERSION, true );
+        $products = array();
+        $items    = WC()->cart->get_cart();
+        foreach ( $items as $item => $values ) {
+            $_product   = $values['data'];
+            $product    = array(
+                'ID'       => $values['product_id'],
+                'name'     => $_product->get_title(),
+                'quantity' => $values['quantity']
+            );
+            $products[] = $product;
+        }
         $paylike_params = array(
-            'key'        => $this->public_key,
-            'customerIP' => $this->get_client_ip()
+            'key'              => $this->public_key,
+            'customer_IP'      => $this->get_client_ip(),
+            'products'         => $products,
+            'platform_version' => WC()->version,
+            'version'          => WC_PAYLIKE_VERSION
         );
         wp_localize_script( 'woocommerce_paylike', 'wc_paylike_params', apply_filters( 'wc_paylike_params', $paylike_params ) );
     }
@@ -382,11 +529,15 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                     locale: '<?php echo get_locale(); ?>',
                     custom: {
                         orderNo: '<?php echo $order->get_order_number() ?>',
-                        email: '<?php echo $order->billing_email ?>',
-                        name: '<?php echo $order->billing_first_name . ' ' . $order->billing_last_name ?>',
+                        email: '<?php echo $order->get_billing_email() ?>',
+                        name: '<?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ?>',
+                        address: <?php echo $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ?>,
+                        ecommerce: 'WooCommerce',
+                        version: '<?php echo WC_PAYLIKE_VERSION ?>',
+                        platform_version: '<?php echo WC()->version ?>',
                         totalTax: '<?php echo $order->get_total_tax()?>',
-                        totalShipping: '<?php echo $order->get_total_shipping()?>',
-                        customerIP: '<?php echo $this->get_client_ip() ?>',
+                        totalShipping: '<?php echo $order->get_shipping_total()?>',
+                        customerIp: '<?php echo $this->get_client_ip() ?>',
                     },
                 }, function (err, res) {
                     if (err)
@@ -425,8 +576,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                         $this->handle_authorize_result( $result, $order );
                     } else {
                         $data   = array(
-                            'amount'   => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
-                            'currency' => $order->get_order_currency()
+                            'amount'   => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                            'currency' => dk_get_order_currency( $order )
                         );
                         $result = Paylike\Transaction::capture( $transaction_id, $data );
                         $this->handle_capture_result( $result, $order );
@@ -442,37 +593,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         }
         wp_redirect( get_permalink( wc_get_page_id( 'cart' ) ) );
         exit();
-    }
-
-
-    /**
-     * Payment form on checkout page
-     */
-    public function payment_fields() {
-        if ( $this->direct_checkout ) {
-            $user = wp_get_current_user();
-            if ( $user->ID ) {
-                $user_email = get_user_meta( $user->ID, 'billing_email', true );
-                $user_email = $user_email ? $user_email : $user->user_email;
-            } else {
-                $user_email = '';
-            }
-            echo '<div
-			id="paylike-payment-data"
-			data-email="' . esc_attr( $user_email ) . '"
-			data-locale="' . get_locale() . '"
-			data-amount="' . esc_attr( $this->get_paylike_amount( WC()->cart->total ) ) . '"
-			data-totalTax="' . esc_attr( $this->get_paylike_amount( WC()->cart->tax_total ) ) . '"
-			data-totalShipping="' . esc_attr( $this->get_paylike_amount( WC()->cart->shipping_total ) ) . '"
-			data-customerIP="' . $this->get_client_ip() . '"
-			data-title="' . get_bloginfo( 'name' ) . '"
-			data-currency="' . esc_attr( get_woocommerce_currency() ) . '"
-			">';
-            echo '</div>';
-        }
-        if ( $this->description ) {
-            echo apply_filters( 'wc_paylike_description', wpautop( wp_kses_post( $this->description ) ) );
-        }
     }
 
     /**
@@ -493,7 +613,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
             );
             $order->payment_complete();
             $this->save_transaction_id( $result, $order );
-            update_post_meta( $order->id, '_paylike_transaction_captured', 'no' );
+            update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'no' );
         }
     }
 
@@ -515,12 +635,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
             );
             $order->payment_complete();
             $this->save_transaction_id( $result, $order );
-            update_post_meta( $order->id, '_paylike_transaction_captured', 'yes' );
+            update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'yes' );
         }
     }
 
     /**
-     * @param $order
+     * @param WC_Order $order
      * @param $result // array result returned by the api wrapper
      * @param $captured
      *
@@ -624,14 +744,15 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
      * @return bool|int|mixed
      */
     protected function handle_payment( $transaction_id, $order, $amount = false ) {
-        WC_Paylike::log( "Info: Begin processing payment for order $order->id for the amount of {$order->get_total()}" );
+        $order_id = get_woo_id( $order );
+        WC_Paylike::log( "Info: Begin processing payment for order $order_id for the amount of {$order->get_total()}" );
         if ( false == $this->capture ) {
             $result = Paylike\Transaction::fetch( $transaction_id );
             $this->handle_authorize_result( $result, $order, $amount );
         } else {
             $data   = array(
-                'amount'   => $this->get_paylike_amount( $order->order_total, $order->get_order_currency() ),
-                'currency' => $order->get_order_currency()
+                'amount'   => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                'currency' => dk_get_order_currency( $order )
             );
             $result = Paylike\Transaction::capture( $transaction_id, $data );
             $this->handle_capture_result( $result, $order, $amount );
@@ -663,8 +784,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         }
 
         return 1 == $result['transaction']['successful'] &&
-               $result['transaction']['currency'] == $order->get_order_currency() &&
-               $result['transaction']['amount'] == $this->get_paylike_amount( $amount, $order->get_order_currency() );
+               $result['transaction']['currency'] == dk_get_order_currency( $order ) &&
+               $result['transaction']['amount'] == $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) );
     }
 
 
