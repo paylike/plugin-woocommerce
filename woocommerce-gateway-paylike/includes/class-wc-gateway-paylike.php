@@ -515,13 +515,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
         $amount = $this->get_paylike_amount( $order->order_total, $order->get_order_currency() );
         echo '<p>' . __( 'Thank you for your order, please click below to pay and complete your order.', 'woocommerce-gateway-paylike' ) . '</p>';
         ?>
-        <button onclick="pay();"><?php _e( 'Pay Now', 'woocommerce-gateway-paylike' ); ?></button>
+        <button onclick="pay(event);"><?php _e( 'Pay Now', 'woocommerce-gateway-paylike' ); ?></button>
         <script src="https://sdk.paylike.io/3.js"></script>
         <script>
             var paylike = Paylike('<?php echo $this->public_key;?>');
 
-            function pay() {
-
+            function pay(e) {
+                e.preventDefault();
                 paylike.popup({
                     title: '<?php echo get_bloginfo( 'name' ); ?>',
                     currency: '<?php echo get_woocommerce_currency() ?>',
@@ -531,7 +531,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                         orderNo: '<?php echo $order->get_order_number() ?>',
                         email: '<?php echo $order->get_billing_email() ?>',
                         name: '<?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ?>',
-                        address: <?php echo $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ?>,
+                        address: '<?php echo $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ?>',
                         ecommerce: 'WooCommerce',
                         version: '<?php echo WC_PAYLIKE_VERSION ?>',
                         platform_version: '<?php echo WC()->version ?>',
