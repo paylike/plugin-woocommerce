@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 1.2.8
+Stable tag: 1.3.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,6 +93,12 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.3.0 =
+* Fixed minor bug, lack of quotes around the address field on the payment script.
+
+= 1.2.9 =
+* Fixed issue with file including not in the repository
 
 = 1.2.8 =
 * Updated supported currencies list
