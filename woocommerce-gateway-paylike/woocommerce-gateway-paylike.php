@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.3.0
+ * Version: 1.3.2
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.3.0' );
+define( 'WC_PAYLIKE_VERSION', '1.3.2' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -348,7 +348,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                     $order->add_order_note(
                         __( 'Paylike capture complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
                         __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['id'] . PHP_EOL .
-                        __( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['amount'] . PHP_EOL .
+                        __( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) .$this->real_amount($result['transaction']['amount'],$result['transaction']['currency']). PHP_EOL .
                         __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['created']
                     );
                     update_post_meta( get_woo_id( $order ), '_paylike_transaction_id', $result['transaction']['id'] );
@@ -392,6 +392,17 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
         }
 
         /**
+         * Convert the cents amount into the full readable amount
+         * @param $amount_in_cents
+         * @param string $currency
+         * @return string
+         */
+        function real_amount($amount_in_cents, $currency = '')
+        {
+            return strip_tags(wc_price($amount_in_cents / 100, array('ex_tax_label' => false, 'currency' => $currency)));
+        }
+
+        /**
          * Cancel pre-auth on refund/cancellation
          *
          * @param  int $order_id
@@ -430,7 +441,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                     $order->add_order_note(
                         __( 'Paylike refund complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
                         __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['id'] . PHP_EOL .
-                        __( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['amount'] . PHP_EOL .
+                        __( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount($result['transaction']['amount'],$result['transaction']['currency']) . PHP_EOL .
                         __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['transaction']['created']
                     );
                     delete_post_meta( get_woo_id( $order ), '_paylike_transaction_captured' );
