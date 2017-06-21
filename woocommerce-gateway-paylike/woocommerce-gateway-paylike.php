@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.3.2
+ * Version: 1.3.3
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.3.2' );
+define( 'WC_PAYLIKE_VERSION', '1.3.3' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -324,7 +324,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                 $captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
                 if ( $transaction_id && 'no' === $captured ) {
                     $data   = array(
-                        'amount'   => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                        'amount'   => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
                         'currency' => dk_get_order_currency( $order )
                     );
                     $result = Paylike\Transaction::capture( $transaction_id, $data );
@@ -414,7 +414,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
                 $captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
                 if ( $transaction_id ) {
                     $data = array(
-                        'amount' => $this->get_paylike_amount( $order->order_total, dk_get_order_currency( $order ) ),
+                        'amount' => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
                     );
                     if ( 'yes' == $captured ) {
                         $result = Paylike\Transaction::refund( $transaction_id, $data );

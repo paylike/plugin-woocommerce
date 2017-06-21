@@ -403,7 +403,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway
             $this->handle_authorize_result($result, $order, $amount);
         } else {
             $data = array(
-                'amount' => $this->get_paylike_amount($order->order_total, dk_get_order_currency($order)),
+                'amount' => $this->get_paylike_amount($order->get_total(), dk_get_order_currency($order)),
                 'currency' => dk_get_order_currency($order)
             );
             $result = Paylike\Transaction::capture($transaction_id, $data);
@@ -443,7 +443,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway
      * @param WC_Order $order
      * @param bool $amount
      *
-     * @return null
+     * @return WP_Error
      */
     protected function parse_api_transaction_response($result, $order = null, $amount = false)
     {
@@ -477,7 +477,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway
         }
         // we need to overwrite the amount in the case of a subscription
         if (!$amount) {
-            $amount = $order->order_total;
+            $amount = $order->get_total();
         }
 
         return 1 == $result['transaction']['successful'] &&
@@ -582,7 +582,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway
     {
         return __('Transaction ID: ', 'woocommerce-gateway-paylike') . $result['transaction']['id'] . PHP_EOL .
             __('Authorized amount: ', 'woocommerce-gateway-paylike') . $this->real_amount($result['transaction']['amount'],$result['transaction']['currency']) . PHP_EOL .
-    __('Captured amount: ', 'woocommerce-gateway-paylike') . $result['transaction']['capturedAmount'] . PHP_EOL .
+    __('Captured amount: ', 'woocommerce-gateway-paylike') . $this->real_amount($result['transaction']['capturedAmount'],$result['transaction']['currency']) . PHP_EOL .
     __('Charge authorized at: ', 'woocommerce-gateway-paylike') . $result['transaction']['created'];
     }
 
@@ -795,7 +795,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway
     public function receipt_page($order_id)
     {
         $order = wc_get_order($order_id);
-        $amount = $this->get_paylike_amount($order->order_total, $order->get_order_currency());
+        $amount = $this->get_paylike_amount($order->get_total(), $order->get_order_currency());
         echo '<p>' . __('Thank you for your order, please click below to pay and complete your order.', 'woocommerce-gateway-paylike') . '</p>';
         ?>
 		<button onclick="pay(event);"><?php _e('Pay Now', 'woocommerce-gateway-paylike'); ?></button>
@@ -872,7 +872,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway
                         $this->handle_authorize_result($result, $order);
                     } else {
                         $data = array(
-                            'amount' => $this->get_paylike_amount($order->order_total, dk_get_order_currency($order)),
+                            'amount' => $this->get_paylike_amount($order->get_total(), dk_get_order_currency($order)),
                             'currency' => dk_get_order_currency($order)
                         );
                         $result = Paylike\Transaction::capture($transaction_id, $data);
