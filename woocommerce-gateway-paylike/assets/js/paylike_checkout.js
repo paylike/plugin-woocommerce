@@ -23,10 +23,10 @@ jQuery(function ($) {
             },
 
             isPaylikeModalNeeded: function (e) {
-                var token = wc_paylike_form.form.find('input.paylike_token'),
+                var token = wc_paylike_form.form.find('input.paylike_token').length,
                     $required_inputs;
 
-                // If this is a stripe submission (after modal) and token exists, allow submit.
+                // If this is a paylike submission (after modal) and token exists, allow submit.
                 if (wc_paylike_form.paylike_submit && token) {
                     return false;
                 }
@@ -135,7 +135,7 @@ jQuery(function ($) {
                             if (res.transaction) {
                                 var trxid = res.transaction.id;
                                 $form.find('input.paylike_token').remove();
-                                $form.append('<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>');
+                                $paylike_payment.append('<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>');
                             } else {
                                 var cardid = res.card.id;
                                 $form.find('input.paylike_card_id').remove();
