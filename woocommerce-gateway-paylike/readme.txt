@@ -97,6 +97,7 @@ In order to capture a payment you can do so by moving the order into the on hold
 = 1.3.4 =
 * Added better currency support
 * A change in total voids the authorization and resets the token.
+* Minor language file update
 
 
 = 1.3.3 =
