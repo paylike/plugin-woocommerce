@@ -19,7 +19,7 @@ jQuery(function ($) {
             },
 
             isPaylikeChosen: function () {
-                return $('#payment_method_paylike').is(':checked') && ( !$('input[name="wc-paylike-payment-token"]:checked').length || 'new' === $('input[name="wc-paylike-payment-token"]:checked').val() );
+                return $('#payment_method_paylike').is(':checked');
             },
 
             isPaylikeModalNeeded: function (e) {
@@ -28,7 +28,8 @@ jQuery(function ($) {
 
                 // If this is a paylike submission (after modal) and token exists, allow submit.
                 if (wc_paylike_form.paylike_submit && token) {
-                    return false;
+                    if (wc_paylike_form.form.find('input.paylike_token').val() !== '')
+                        return false;
                 }
 
                 // Don't affect submission if modal is not needed.
@@ -154,7 +155,7 @@ jQuery(function ($) {
                 return true;
             }
         }
-        ;
+    ;
 
     wc_paylike_form.init($("form.checkout, form#order_review, form#add_payment_method"));
 })

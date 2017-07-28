@@ -202,6 +202,11 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		} else {
 			if ( $order->get_total() > 0 ) {
 				$transaction_id = $_POST['paylike_token'];
+				if ( empty( $transaction_id ) ) {
+					wc_add_notice( __( 'The transaction id is missing, it seems that the authorization failed or the reference was not sent. Please try the payment again. The previous payment will not be captured.', 'woocommerce-gateway-paylike' ), 'error' );
+
+					return;
+				}
 				$this->handle_payment( $transaction_id, $order );
 			} else {
 				// used for trials, and changing payment method
@@ -380,7 +385,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	function real_amount( $amount_in_cents, $currency = '' ) {
-		return strip_tags( wc_price( $amount_in_cents / 100, array(
+		return strip_tags( wc_price( $amount_in_cents / get_paylike_currency_multiplier( $currency ), array(
 			'ex_tax_label' => false,
 			'currency'     => $currency
 		) ) );
@@ -456,7 +461,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		$data = array();
 		if ( ! is_null( $amount ) ) {
-			$data['amount'] = $this->get_paylike_amount( $amount, dk_get_order_currency($order) );
+			$data['amount'] = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) );
 		}
 		WC_Paylike::log( "Info: Beginning refund for order $order_id for the amount of {$amount}" );
 		$captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
@@ -616,6 +621,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 *
 	 */
 	public function payment_scripts() {
+		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() ) {
+			return;
+		}
 		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
 		wp_enqueue_script( 'woocommerce_paylike', plugins_url( 'assets/js/paylike_checkout.js', WC_PAYLIKE_MAIN_FILE ), array( 'paylike' ), WC_PAYLIKE_VERSION, true );
 		$products = array();
