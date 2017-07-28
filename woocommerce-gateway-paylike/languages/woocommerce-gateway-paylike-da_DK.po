@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2017-06-28 14:45+0000\n"
+"POT-Creation-Date: 2017-07-28 15:53+0000\n"
 "Language: da-DK\n"
 "Plural-Forms: nplurals=2; plural=n != 1\n"
-"PO-Revision-Date: 2017-06-28 14:45+0000\n"
+"PO-Revision-Date: 2017-07-28 15:53+0000\n"
 "X-Generator: Loco - https://localise.biz/\n"
 "Project-Id-Version: WooCommerce Paylike Gateway\n"
 "Report-Msgid-Bugs-To: \n"
@@ -53,7 +53,7 @@ msgid "Settings"
 msgstr ""
 
 #: woocommerce-gateway-paylike.php:344 woocommerce-gateway-paylike.php:365
-#: includes/class-wc-gateway-paylike.php:406
+#: includes/class-wc-gateway-paylike.php:411
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:343
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:364
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:563
@@ -63,8 +63,8 @@ msgstr ""
 #: woocommerce-gateway-paylike.php:345 woocommerce-gateway-paylike.php:438
 #: woocommerce-gateway-paylike.php:472
 #: includes/class-wc-gateway-paylike-addons.php:128
-#: includes/class-wc-gateway-paylike.php:290
-#: includes/class-wc-gateway-paylike.php:770
+#: includes/class-wc-gateway-paylike.php:295
+#: includes/class-wc-gateway-paylike.php:778
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:344
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:437
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:451
@@ -79,9 +79,9 @@ msgstr ""
 
 #: woocommerce-gateway-paylike.php:351 woocommerce-gateway-paylike.php:444
 #: woocommerce-gateway-paylike.php:478
-#: includes/class-wc-gateway-paylike.php:369
-#: includes/class-wc-gateway-paylike.php:425
-#: includes/class-wc-gateway-paylike.php:497
+#: includes/class-wc-gateway-paylike.php:374
+#: includes/class-wc-gateway-paylike.php:430
+#: includes/class-wc-gateway-paylike.php:502
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:350
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:443
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:539
@@ -91,7 +91,7 @@ msgid "Transaction ID: "
 msgstr ""
 
 #: woocommerce-gateway-paylike.php:352
-#: includes/class-wc-gateway-paylike.php:370
+#: includes/class-wc-gateway-paylike.php:375
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:351
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:540
 msgid "Payment Amount: "
@@ -99,8 +99,8 @@ msgstr ""
 
 #: woocommerce-gateway-paylike.php:353 woocommerce-gateway-paylike.php:446
 #: woocommerce-gateway-paylike.php:480
-#: includes/class-wc-gateway-paylike.php:371
-#: includes/class-wc-gateway-paylike.php:499
+#: includes/class-wc-gateway-paylike.php:376
+#: includes/class-wc-gateway-paylike.php:504
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:352
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:445
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:541
@@ -116,7 +116,7 @@ msgid "Error :"
 msgstr ""
 
 #: woocommerce-gateway-paylike.php:437 woocommerce-gateway-paylike.php:456
-#: includes/class-wc-gateway-paylike.php:507
+#: includes/class-wc-gateway-paylike.php:512
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:436
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:455
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:669
@@ -129,7 +129,7 @@ msgid "Paylike refund complete."
 msgstr ""
 
 #: woocommerce-gateway-paylike.php:445
-#: includes/class-wc-gateway-paylike.php:498
+#: includes/class-wc-gateway-paylike.php:503
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/woocommerce-gateway-paylike.php:444
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:660
 msgid "Refund amount: "
@@ -157,9 +157,9 @@ msgid "Neither Transaction ID nor Card ID was found"
 msgstr ""
 
 #: includes/class-wc-gateway-paylike-addons.php:130
-#: includes/class-wc-gateway-paylike.php:295
-#: includes/class-wc-gateway-paylike.php:508
-#: includes/class-wc-gateway-paylike.php:772
+#: includes/class-wc-gateway-paylike.php:300
+#: includes/class-wc-gateway-paylike.php:513
+#: includes/class-wc-gateway-paylike.php:780
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:455
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:670
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:924
@@ -198,37 +198,44 @@ msgid ""
 "Documentation</a>\"."
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:265
+#: includes/class-wc-gateway-paylike.php:206
+msgid ""
+"The transaction id is missing, it seems that the authorization failed or the "
+"reference was not sent. Please try the payment again. The previous payment "
+"will not be captured."
+msgstr ""
+
+#: includes/class-wc-gateway-paylike.php:270
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:426
 msgid "Unable to verify transaction!"
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:368
+#: includes/class-wc-gateway-paylike.php:373
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:538
 msgid "Paylike authorization complete."
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:426
+#: includes/class-wc-gateway-paylike.php:431
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:584
 msgid "Authorized amount: "
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:427
+#: includes/class-wc-gateway-paylike.php:432
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:585
 msgid "Captured amount: "
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:428
+#: includes/class-wc-gateway-paylike.php:433
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:586
 msgid "Charge authorized at: "
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:496
+#: includes/class-wc-gateway-paylike.php:501
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:658
 msgid "Paylike transaction refunded."
 msgstr ""
 
-#: includes/class-wc-gateway-paylike.php:610
+#: includes/class-wc-gateway-paylike.php:615
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:757
 #, php-format
 msgid ""
@@ -389,7 +396,7 @@ msgstr ""
 msgid "Continue to payment"
 msgstr "Gå til betaling"
 
-#: includes/class-wc-gateway-paylike.php:650
+#: includes/class-wc-gateway-paylike.php:658
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:799
 msgid ""
 "Thank you for your order, please click below to pay and complete your order."
@@ -397,7 +404,7 @@ msgstr ""
 "Tak for din bestilling. Klik venligst på \"Gå til betaling\" herunder for at "
 "afslutte din bestilling."
 
-#: includes/class-wc-gateway-paylike.php:652
+#: includes/class-wc-gateway-paylike.php:660
 #: media/sf_sandbox/woocommerce/wp-content/plugins/payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike/includes/class-wc-gateway-paylike.php:801
 msgid "Pay Now"
 msgstr "Betal nu"
