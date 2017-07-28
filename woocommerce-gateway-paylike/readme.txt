@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 1.3.2
+Stable tag: 1.3.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,6 +93,20 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.3.5 =
+* Added fallback for empty transaction id, added verbose logging for connections until
+  this gets switched to the 2.0 api wrapper
+
+= 1.3.4 =
+* Added better currency support
+* A change in total voids the authorization and resets the token.
+* Minor language file update
+
+
+= 1.3.3 =
+* Fixed issue with legacy get total
+* Updated return tags
 
 = 1.3.2 =
 * Added readable amounts in logs
