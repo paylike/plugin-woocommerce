@@ -81,11 +81,13 @@ if ( ! class_exists( 'Paylike\\Adapter' ) ) {
 			fclose( $out );
 			$debug = ob_get_clean();
 			//temporary log until new api version deployment
-			$log   = new \WC_Logger();
-			$log->add( 'woocommerce-gateway-paylike', $debug );
+			$log = new \WC_Logger();
+			$log->add( 'woocommerce-gateway-paylike', PHP_EOL . $debug );
 			$httpCode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
 			curl_close( $ch );
 			$output = json_decode( $result, true );
+			$log->add( 'woocommerce-gateway-paylike', 'Http Code:' . $httpCode );
+			$log->add( 'woocommerce-gateway-paylike', 'Output:' . PHP_EOL . json_encode( $output ) );
 			if ( $httpCode >= 200 && $httpCode <= 299 ) {
 				return $output;
 			} else {
