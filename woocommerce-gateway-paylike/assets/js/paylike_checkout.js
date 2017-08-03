@@ -24,11 +24,18 @@ jQuery(function ($) {
 
             isPaylikeModalNeeded: function (e) {
                 var token = wc_paylike_form.form.find('input.paylike_token').length,
+                    card = wc_paylike_form.form.find('input.paylike_card_id').length,
                     $required_inputs;
 
                 // If this is a paylike submission (after modal) and token exists, allow submit.
                 if (wc_paylike_form.paylike_submit && token) {
                     if (wc_paylike_form.form.find('input.paylike_token').val() !== '')
+                        return false;
+                }
+
+                // If this is a paylike submission (after modal) and card exists, allow submit.
+                if (wc_paylike_form.paylike_submit && card) {
+                    if (wc_paylike_form.form.find('input.paylike_card_id').val() !== '')
                         return false;
                 }
 
@@ -83,6 +90,21 @@ jQuery(function ($) {
             unblock: function () {
                 wc_paylike_form.form.unblock();
             },
+            logTransactionResponsePopup: function (err, res) {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: wc_paylike_params.ajax_url,
+                    data: {
+                        action: 'paylike_log_transaction_data',
+                        err: err,
+                        res: res
+                    },
+                    success: function (msg) {
+                        console.log(msg);
+                    }
+                });
+            },
 
             onClose: function () {
                 wc_paylike_form.unblock();
@@ -107,14 +129,24 @@ jQuery(function ($) {
                         amount: $paylike_payment.data('amount'),
                         locale: $paylike_payment.data('locale'),
                         custom: {
+                            email: $("[name='billing_email']").val(),
                             products: [wc_paylike_params.products
                             ],
-                            name: $("[name='billing_first_name']").val() + ' ' + $("[name='billing_last_name']").val(),
-                            telephone: $("[name='billing_phone']").val(),
-                            address: $("[name='billing_address_1']").val() + ' ' + $("[name='billing_address_2']").val(),
-                            customerIp: wc_paylike_params.customer_IP,
-                            platform_version: wc_paylike_params.platform_version,
-                            ecommerce: 'WooCommerce',
+                            customer: {
+                                name: $("[name='billing_first_name']").val() + ' ' + $("[name='billing_last_name']").val(),
+                                email: $("[name='billing_email']").val(),
+                                telephone: $("[name='billing_phone']").val(),
+                                address: $("[name='billing_address_1']").val() + ' ' + $("[name='billing_address_2']").val(),
+                                customerIp: wc_paylike_params.customer_IP,
+                            },
+                            platform: {
+                                name: 'WordPress',
+                                version: wc_paylike_params.platform_version
+                            },
+                            ecommerce: {
+                                name: 'WooCommerce',
+                                version: wc_paylike_params.ecommerce_version
+                            },
                             version: wc_paylike_params.version
                         }
                     };
@@ -129,8 +161,12 @@ jQuery(function ($) {
 
                     paylike.popup(args,
                         function (err, res) {
-                            if (err)
-                                return console.warn(err);
+                            // log this for debugging purposes
+                            wc_paylike_form.logTransactionResponsePopup(err, res);
+                            if (err) {
+                                alert(err);
+                                return err
+                            }
 
                             console.log(res);
                             if (res.transaction) {
