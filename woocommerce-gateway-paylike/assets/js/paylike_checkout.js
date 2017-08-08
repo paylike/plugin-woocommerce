@@ -130,14 +130,15 @@ jQuery(function ($) {
                         locale: $paylike_payment.data('locale'),
                         custom: {
                             email: $("[name='billing_email']").val(),
+                            orderId: $paylike_payment.data('order_id'),
                             products: [wc_paylike_params.products
                             ],
                             customer: {
                                 name: $("[name='billing_first_name']").val() + ' ' + $("[name='billing_last_name']").val(),
                                 email: $("[name='billing_email']").val(),
-                                telephone: $("[name='billing_phone']").val(),
+                                phoneNo: $("[name='billing_phone']").val(),
                                 address: $("[name='billing_address_1']").val() + ' ' + $("[name='billing_address_2']").val(),
-                                customerIp: wc_paylike_params.customer_IP,
+                                IP: wc_paylike_params.customer_IP,
                             },
                             platform: {
                                 name: 'WordPress',
@@ -164,7 +165,6 @@ jQuery(function ($) {
                             // log this for debugging purposes
                             wc_paylike_form.logTransactionResponsePopup(err, res);
                             if (err) {
-                                alert(err);
                                 return err
                             }
 

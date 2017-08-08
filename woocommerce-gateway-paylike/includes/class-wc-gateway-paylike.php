@@ -96,7 +96,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->description        = $this->get_option( 'description' );
 		$this->enabled            = $this->get_option( 'enabled' );
 		$this->testmode           = 'yes' === $this->get_option( 'testmode' );
-		$this->capture            = 'yes' === $this->get_option( 'capture', 'yes' );
+		$this->capture            = 'instant' === $this->get_option( 'capture', 'instant' );
 		$this->direct_checkout    = 'yes' === $this->get_option( 'direct_checkout', 'yes' );
 		$this->compatibility_mode = 'yes' === $this->get_option( 'compatibility_mode', 'yes' );
 		$this->secret_key         = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
@@ -564,13 +564,35 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				}
 			}
 
+			/**
+			 * If we are on the failed payment page we need to use the order instead of the cart.
+			 *
+			 */
+			if ( ! isset( $_GET['pay_for_order'] ) ) {
+				$order_id         = "Could not be determined at this point";
+				$amount           = WC()->cart->total;
+				$amount_tax       = WC()->cart->tax_total;
+				$amount_shippling = WC()->cart->shipping_total;
+				$currency         = get_woocommerce_currency();
+			} else {
+				$order_id         = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
+				$order            = wc_get_order( $order_id );
+				$currency         = $order->get_order_currency();
+				$amount           = $order->get_total();
+				$amount_tax       = $order->get_total_tax();
+				$amount_shippling = $order->get_shipping_total();
+
+			}
+
+
 			echo '<div
 			id="paylike-payment-data"
 			data-email="' . esc_attr( $user_email ) . '"
 			data-locale="' . get_locale() . '"
-			data-amount="' . esc_attr( $this->get_paylike_amount( WC()->cart->total ) ) . '"
-			data-totalTax="' . esc_attr( $this->get_paylike_amount( WC()->cart->tax_total ) ) . '"
-			data-totalShipping="' . esc_attr( $this->get_paylike_amount( WC()->cart->shipping_total ) ) . '"
+			data-order_id="' . $order_id . '"
+			data-amount="' . esc_attr( $this->get_paylike_amount( $amount, $currency ) ) . '"
+			data-totalTax="' . esc_attr( $this->get_paylike_amount( $amount_tax, $currency ) ) . '"
+			data-totalShipping="' . esc_attr( $this->get_paylike_amount( $amount_shippling, $currency ) ) . '"
 			data-customerIP="' . $this->get_client_ip() . '"
 			data-title="' . get_bloginfo( 'name' ) . '"
 			data-currency="' . esc_attr( get_woocommerce_currency() ) . '"
@@ -633,15 +655,33 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
 		wp_enqueue_script( 'woocommerce_paylike', plugins_url( 'assets/js/paylike_checkout.js', WC_PAYLIKE_MAIN_FILE ), array( 'paylike' ), WC_PAYLIKE_VERSION, true );
 		$products = array();
-		$items    = WC()->cart->get_cart();
-		foreach ( $items as $item => $values ) {
-			$_product   = $values['data'];
-			$product    = array(
-				'ID'       => $values['product_id'],
-				'name'     => $_product->get_title(),
-				'quantity' => $values['quantity']
-			);
-			$products[] = $product;
+		if ( ! isset( $_GET['pay_for_order'] ) ) {
+			$items = WC()->cart->get_cart();
+
+			foreach ( $items as $item => $values ) {
+				$_product   = $values['data'];
+				$product    = array(
+					'ID'       => $values['product_id'],
+					'name'     => $_product->get_title(),
+					'quantity' => $values['quantity']
+				);
+				$products[] = $product;
+			}
+		} else {
+			$order_id = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
+			$order    = wc_get_order( $order_id );
+			$products = array();
+			$items    = $order->get_items();
+			$pf       = new WC_Product_Factory();
+			foreach ( $items as $item => $values ) {
+				$_product   = $pf->get_product( $values['product_id'] );
+				$product    = array(
+					'ID'       => $values['product_id'],
+					'name'     => $_product->get_title(),
+					'quantity' => $values['quantity']
+				);
+				$products[] = $product;
+			}
 		}
 		$paylike_params = array(
 			'key'               => $this->public_key,
@@ -666,8 +706,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$amount   = $this->get_paylike_amount( $order->get_total(), $order->get_order_currency() );
 		$products = array();
 		$items    = $order->get_items();
+		$pf       = new WC_Product_Factory();
 		foreach ( $items as $item => $values ) {
-			$_product   = $values['data'];
+			$_product   = $pf->get_product( $values['product_id'] );
 			$product    = array(
 				'ID'       => $values['product_id'],
 				'name'     => $_product->get_title(),
@@ -693,16 +734,15 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                         orderNo: '<?php echo $order->get_order_number() ?>',
                         products: [<?php echo json_encode( $products ) ?>],
                         customer: {
-                            email: '<?php echo $order->get_billing_email() ?>',
                             name: '<?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ?>',
+                            email: '<?php echo $order->get_billing_email() ?>',
+                            phoneNo: '<?php echo $order->get_billing_phone() ?>',
                             address: '<?php echo $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ?>',
-                            customerIp: '<?php echo $this->get_client_ip() ?>',
+                            IP: '<?php echo $this->get_client_ip() ?>'
                         },
-                        totalTax: '<?php echo $order->get_total_tax()?>',
-                        totalShipping: '<?php echo $order->get_shipping_total()?>',
                         platform: {
                             name: 'WordPress',
-                            version: '<?php echo $wp_version ?>''
+                            version: '<?php echo $wp_version ?>'
                         },
                         ecommerce: {
                             name: 'WooCommerce',

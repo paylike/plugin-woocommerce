@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.3.6
+ * Version: 1.3.7
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.3.6' );
+define( 'WC_PAYLIKE_VERSION', '1.3.7' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -99,6 +99,12 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		private $compatibility_mode = 'yes';
 
 		/**
+		 * Capture mode, is this instant or delayed
+		 * @var string
+		 */
+		private $capture_mode = 'instant';
+
+		/**
 		 * Notices (array)
 		 * @var array
 		 */
@@ -126,6 +132,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			include_once( plugin_basename( 'includes/api/Paylike/Client.php' ) );
 			// Init the gateway itself
 			$this->init_gateways();
+			$this->db_update();
 			add_action( 'wp_ajax_paylike_log_transaction_data', array( $this, 'log_transaction_data' ) );
 			add_action( 'wp_ajax_nopriv_paylike_log_transaction_data', array( $this, 'log_transaction_data' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
@@ -198,8 +205,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		}
 
 		/**
-		 * @return string
-		 * Get the stored secret key depending on the type of payment sent.
+		 * Check if we are in incompatibility mode or not
 		 */
 		public function get_compatibility_mode() {
 			$options = get_option( 'woocommerce_paylike_settings' );
@@ -210,6 +216,20 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			}
 
 			return $this->compatibility_mode;
+		}
+
+		/**
+		 * Check if the capture mode is instant or delayed
+		 */
+		public function get_capture_mode() {
+			$options = get_option( 'woocommerce_paylike_settings' );
+			if ( isset( $options['capture'] ) ) {
+				$this->capture_mode = ( 'instant' === $options['capture'] ? $options['capture'] : 0 );
+			} else {
+				$this->capture_mode = 0;
+			}
+
+			return $this->capture_mode;
 		}
 
 		/**
@@ -300,6 +320,25 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			if ( $this->subscription_support_enabled ) {
 				require_once( plugin_basename( 'includes/class-wc-gateway-paylike-addons.php' ) );
 			}
+		}
+
+		/**
+		 *  Perform database updates when changing structure
+		 */
+		public function db_update() {
+			$current_db_version = get_option( 'paylike_db_version', 1 );
+			$options            = get_option( 'woocommerce_paylike_settings' );
+			if ( $current_db_version == 1 ) {
+
+				if ( 'yes' === $options['capture'] ) {
+					$options['capture'] = 'instant';
+				} else {
+					$options['capture'] = 'delayed';
+				}
+				$current_db_version ++;
+			}
+			update_option( 'woocommerce_paylike_settings', apply_filters( 'woocommerce_settings_api_sanitized_fields_paylike', $options ) );
+			update_option( 'paylike_db_version', $current_db_version );
 		}
 
 		/**
