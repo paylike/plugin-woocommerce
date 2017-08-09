@@ -12,26 +12,26 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		if ( class_exists( 'WC_Subscriptions_Order' ) ) {
 			add_action( 'woocommerce_scheduled_subscription_payment_' . $this->id, array(
 				$this,
-				'scheduled_subscription_payment'
+				'scheduled_subscription_payment',
 			), 10, 2 );
 			add_action( 'wcs_resubscribe_order_created', array( $this, 'delete_resubscribe_meta' ), 10 );
 			add_action( 'woocommerce_subscription_failing_payment_method_updated_' . $this->id, array(
 				$this,
-				'update_failing_payment_method'
+				'update_failing_payment_method',
 			), 10, 2 );
 			// display the credit card used for a subscription in the "My Subscriptions" table
 			add_filter( 'woocommerce_my_subscriptions_payment_method', array(
 				$this,
-				'maybe_render_subscription_payment_method'
+				'maybe_render_subscription_payment_method',
 			), 10, 2 );
 			// allow store managers to manually set Paylike as the payment method on a subscription
 			add_filter( 'woocommerce_subscription_payment_meta', array(
 				$this,
-				'add_subscription_payment_meta'
+				'add_subscription_payment_meta',
 			), 10, 2 );
 			add_filter( 'woocommerce_subscription_validate_payment_meta', array(
 				$this,
-				'validate_subscription_payment_meta'
+				'validate_subscription_payment_meta',
 			), 10, 2 );
 		}
 	}
@@ -46,6 +46,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	public function scheduled_subscription_payment( $amount_to_charge, $renewal_order ) {
 		$result = $this->process_subscription_payment( $renewal_order, $amount_to_charge );
 		if ( is_wp_error( $result ) ) {
+			/* translators: %1$s is replaced with the error message */
 			$renewal_order->update_status( 'failed', sprintf( __( 'Paylike Transaction Failed (%s)', 'woocommerce-gateway-paylike' ), $result->get_error_message() ) );
 		}
 	}
@@ -61,7 +62,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * only containing the subscription product we are renewing
 	 * @param int $amount
 	 *
-	 * @return bool
+	 * @return bool|int|mixed|null|WP_Error
 	 */
 	public function process_subscription_payment( $order = null, $amount = 0 ) {
 		if ( 0 == $amount ) {
@@ -114,10 +115,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $renewal_order ) ),
 			'currency' => dk_get_order_currency( $renewal_order ),
 			'custom'   => array(
-				'email' => $renewal_order->billing_email
-			)
+				'email' => $renewal_order->billing_email,
+			),
 		);
-		if ( $type == 'card' ) {
+		if ( 'card' === $type ) {
 			$data['cardId'] = $entity_id;
 		} else {
 			$data['transactionId'] = $entity_id;
@@ -126,11 +127,11 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		$new_transaction = Paylike\Transaction::create( $merchant_id, $data );
 		// check for errors
 		if ( ! $new_transaction ) {
-			WC_Paylike::log( "Fatal Error: Creation of transaction has failed, the result from the api wrapper was false" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+			WC_Paylike::log( 'Fatal Error: Creation of transaction has failed, the result from the api wrapper was false' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 			return new WP_Error( 'paylike_error', __( 'cURL request failed.', 'woocommerce-gateway-paylike' ) );
-		} else if ( ! isset( $new_transaction['transaction'] ) || ! isset( $new_transaction['transaction']['id'] ) ) {
-			WC_Paylike::log( "Fatal Error: Creation of transaction has failed, the transaction failed" . PHP_EOL . json_encode( $new_transaction ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		} elseif ( ! isset( $new_transaction['transaction'] ) || ! isset( $new_transaction['transaction']['id'] ) ) {
+			WC_Paylike::log( 'Fatal Error: Creation of transaction has failed, the transaction failed' . PHP_EOL . json_encode( $new_transaction ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 			return new WP_Error( 'paylike_error', __( 'Error: ', 'woocommerce-gateway-paylike' ) . $this->get_response_error( $new_transaction ) );
 		}
@@ -147,13 +148,13 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * @return bool|int|mixed|null|WP_Error
 	 */
 	private function get_merchant_id( $entity_id, $type = 'transaction' ) {
-		if ( $type == 'card' ) {
+		if ( 'card' == $type ) {
 			// try to get the card
 			WC_Paylike::log( "Info: Attempting to fetch the card {$entity_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 			$entity = Paylike\Card::fetch( $entity_id );
 			$entity = $this->parse_api_card_response( $entity );
 			if ( is_wp_error( $entity ) ) {
-				WC_Paylike::log( "Fatal Error: Card fetching has failed, the result from the verification threw and wp error:" . $entity->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+				WC_Paylike::log( 'Fatal Error: Card fetching has failed, the result from the verification threw and wp error:' . $entity->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 				return $entity;
 			}
@@ -164,18 +165,18 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$entity = Paylike\Transaction::fetch( $entity_id );
 			$entity = $this->parse_api_transaction_response( $entity );
 			if ( is_wp_error( $entity ) ) {
-				WC_Paylike::log( "Fatal Error: Transaction fetching has failed, the result from the verification threw and wp error:" . $entity->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+				WC_Paylike::log( 'Fatal Error: Transaction fetching has failed, the result from the verification threw and wp error:' . $entity->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 				return $entity;
 			}
 			$entity = $entity['transaction'];
 		}
 		if ( ! $entity['merchantId'] ) {
-			WC_Paylike::log( "Fatal Error: The merchant id is missing:" . json_encode( $entity ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+			WC_Paylike::log( 'Fatal Error: The merchant id is missing:' . json_encode( $entity ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 			return new WP_Error( 'paylike_error', __( 'Merchant ID not found', 'woocommerce-gateway-paylike' ) );
 		}
-		WC_Paylike::log( "Success: The merchant was found" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		WC_Paylike::log( 'Success: The merchant was found' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 		return $entity['merchantId'];
 	}
@@ -227,6 +228,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$result['transaction']['card']
 		) {
 			$card                      = $result['transaction']['card'];
+			/* translators: %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id */
 			$payment_method_to_display = sprintf( __( 'Via %s card ending in %s (%s)', 'woocommerce-gateway-paylike' ), ucfirst( $card['scheme'] ), $card['last4'], ucfirst( $this->id ) );
 		}
 
@@ -252,7 +254,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 				'paylike_card_id'        => array(
 					'value' => get_post_meta( get_woo_id( $subscription ), '_paylike_card_id', true ),
 					'label' => 'A previous card ID',
-				)
+				),
 			),
 		);
 
