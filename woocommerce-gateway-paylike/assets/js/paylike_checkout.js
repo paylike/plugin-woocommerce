@@ -22,7 +22,7 @@ jQuery(function ($) {
                 return $('#payment_method_paylike').is(':checked');
             },
 
-            isPaylikeModalNeeded: function (e) {
+            isPaylikeModalNeeded: function () {
                 var token = wc_paylike_form.form.find('input.paylike_token').length,
                     card = wc_paylike_form.form.find('input.paylike_card_id').length,
                     $required_inputs;
@@ -48,8 +48,8 @@ jQuery(function ($) {
                 if ($('input#terms').length === 1 && $('input#terms:checked').length === 0) {
                     return false;
                 }
-
-                if ($('#createaccount').is(':checked') && $('#account_password').length && $('#account_password').val() === '') {
+                var $account_password=$('#account_password');
+                if ($('#createaccount').is(':checked') && $account_password.length && $account_password.val() === '') {
                     return false;
                 }
 
@@ -99,15 +99,8 @@ jQuery(function ($) {
                         action: 'paylike_log_transaction_data',
                         err: err,
                         res: res
-                    },
-                    success: function (msg) {
-                        console.log(msg);
                     }
                 });
-            },
-
-            onClose: function () {
-                wc_paylike_form.unblock();
             },
 
             onSubmit: function (e) {
@@ -122,22 +115,23 @@ jQuery(function ($) {
                     token.val('');
 
                     var paylike = Paylike(wc_paylike_params.key);
-
+                    var $billing_email=$("[name='billing_email']");
                     var args = {
                         title: $paylike_payment.data('title'),
                         currency: $paylike_payment.data('currency'),
                         amount: $paylike_payment.data('amount'),
                         locale: $paylike_payment.data('locale'),
                         custom: {
-                            email: $("[name='billing_email']").val(),
+                            email: $billing_email.val(),
+                            orderId: $paylike_payment.data('order_id'),
                             products: [wc_paylike_params.products
                             ],
                             customer: {
                                 name: $("[name='billing_first_name']").val() + ' ' + $("[name='billing_last_name']").val(),
-                                email: $("[name='billing_email']").val(),
-                                telephone: $("[name='billing_phone']").val(),
+                                email: $billing_email.val(),
+                                phoneNo: $("[name='billing_phone']").val(),
                                 address: $("[name='billing_address_1']").val() + ' ' + $("[name='billing_address_2']").val(),
-                                customerIp: wc_paylike_params.customer_IP,
+                                IP: wc_paylike_params.customer_IP
                             },
                             platform: {
                                 name: 'WordPress',
@@ -164,7 +158,6 @@ jQuery(function ($) {
                             // log this for debugging purposes
                             wc_paylike_form.logTransactionResponsePopup(err, res);
                             if (err) {
-                                alert(err);
                                 return err
                             }
 
