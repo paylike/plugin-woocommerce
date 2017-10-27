@@ -234,9 +234,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * by either only authorizing the payment
 	 * or making the capture directly
 	 *
-	 * @param $transaction_id
+	 * @param          $transaction_id
 	 * @param WC_Order $order
-	 * @param $amount
+	 * @param          $amount
 	 *
 	 * @return bool|int|mixed
 	 */
@@ -261,8 +261,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 	/**
 	 * @param WC_Order $order
-	 * @param $result // array result returned by the api wrapper
-	 * @param int $amount
+	 * @param          $result // array result returned by the api wrapper
+	 * @param int      $amount
 	 */
 	function handle_authorize_result( $result, $order, $amount = 0 ) {
 		$transaction = $result;
@@ -288,9 +288,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	/**
 	 * Parses api transaction response to for errors
 	 *
-	 * @param $result
+	 * @param          $result
 	 * @param WC_Order $order
-	 * @param bool $amount
+	 * @param bool     $amount
 	 *
 	 * @return WP_Error
 	 */
@@ -312,8 +312,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * the data was not tempered with
 	 *
 	 *
-	 * @param $result
-	 * @param WC_Order $order
+	 * @param            $result
+	 * @param WC_Order   $order
 	 * @param bool|false $amount used to overwrite the amount, when we don't pay the full order
 	 *
 	 * @return bool
@@ -336,7 +336,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	/**
 	 * Get Paylike amount to pay
 	 *
-	 * @param float $total Amount due.
+	 * @param float  $total Amount due.
 	 * @param string $currency Accepted currency.
 	 *
 	 * @return float|int
@@ -383,7 +383,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	/**
 	 * Convert the cents amount into the full readable amount
 	 *
-	 * @param $amount_in_cents
+	 * @param        $amount_in_cents
 	 * @param string $currency
 	 *
 	 * @return string
@@ -400,13 +400,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @param $order
 	 */
 	protected function save_transaction_id( $result, $order ) {
-		update_post_meta( $order->id, '_paylike_transaction_id', $result['transaction']['id'] );
+		update_post_meta( get_woo_id( $order ), '_paylike_transaction_id', $result['transaction']['id'] );
 	}
 
 	/**
 	 * @param WC_Order $order
-	 * @param $result // array result returned by the api wrapper
-	 * @param int $amount
+	 * @param          $result // array result returned by the api wrapper
+	 * @param int      $amount
 	 */
 	function handle_capture_result( $result, $order, $amount = 0 ) {
 		$result = $this->parse_api_transaction_response( $result, $order, $amount );
@@ -453,8 +453,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	/**
 	 * Refund a transaction
 	 *
-	 * @param  int $order_id
-	 * @param  float $amount
+	 * @param  int    $order_id
+	 * @param  float  $amount
 	 * @param  string $reason
 	 *
 	 * @return bool
@@ -486,8 +486,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 	/**
 	 * @param WC_Order $order
-	 * @param $result // array result returned by the api wrapper
-	 * @param $captured
+	 * @param          $result // array result returned by the api wrapper
+	 * @param          $captured
 	 *
 	 * @return bool
 	 */
@@ -556,9 +556,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 						// all good everything is still valid
 						$token = '<input type="hidden" class="paylike_token" name="paylike_token" value="' . $transaction_id . '">';
 					} else {
-						$data   = array(
+						$data = array(
 							'amount' => $result['transaction']['amount'],
 						);
+						WC_Paylike::log( 'Voiding the transaction as it was not succesfull or it had different amount.' . json_encode( $result ) . '--' . $currency . '--' . $amount . '--' . $this->get_paylike_amount( $amount, $currency ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 						$result = Paylike\Transaction::void( $transaction_id, $data );
 					}
 				}
@@ -763,7 +764,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			<input type="hidden" name="reference" value="<?php echo $order_id ?>"/>
 			<input type="hidden" name="amount" value="<?php echo $this->get_order_total() ?>"/>
 			<input type="hidden" name="signature"
-			       value="<?php echo $this->get_signature( $order_id ); ?>"/>
+					value="<?php echo $this->get_signature( $order_id ); ?>"/>
 		</form>
 		<?php
 	}

@@ -69,7 +69,7 @@ return apply_filters( 'wc_paylike_settings',
 			'default'     => 'yes',
 			'desc_tip'    => true,
 		),
-		'direct_checkout'    => array(
+		/*'direct_checkout'    => array(
 			'title'       => __( 'Direct Checkout', 'woocommerce-gateway-paylike' ),
 			'label'       => __( 'Pay on checkout', 'woocommerce-gateway-paylike' ),
 			'type'        => 'checkbox',
@@ -77,6 +77,7 @@ return apply_filters( 'wc_paylike_settings',
 			'default'     => 'yes',
 			'desc_tip'    => true,
 		),
+		*/
 		'checkout_mode'      => array(
 			'title'    => __( 'Checkout mode', 'woocommerce-gateway-paylike' ),
 			'type'     => 'select',
