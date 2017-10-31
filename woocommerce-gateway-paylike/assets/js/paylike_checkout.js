@@ -48,7 +48,7 @@ jQuery(function ($) {
                 if ($('input#terms').length === 1 && $('input#terms:checked').length === 0) {
                     return false;
                 }
-                var $account_password=$('#account_password');
+                var $account_password = $('#account_password');
                 if ($('#createaccount').is(':checked') && $account_password.length && $account_password.val() === '') {
                     return false;
                 }
@@ -115,7 +115,7 @@ jQuery(function ($) {
                     token.val('');
 
                     var paylike = Paylike(wc_paylike_params.key);
-                    var $billing_email=$("[name='billing_email']");
+                    var $billing_email = $("[name='billing_email']");
                     var args = {
                         title: $paylike_payment.data('title'),
                         currency: $paylike_payment.data('currency'),
@@ -141,7 +141,7 @@ jQuery(function ($) {
                                 name: 'WooCommerce',
                                 version: wc_paylike_params.ecommerce_version
                             },
-                            version: wc_paylike_params.version
+                            paylikePluginVersion: wc_paylike_params.version
                         }
                     };
 

@@ -31,3 +31,13 @@ Under the WooCommerce Paylike settings, you can:
  * Add test/live keys
  * Set payment mode (test/live)
  * Change the capture type (Instant/Manual by changing the order status)
+ 
+ ## How to
+ 
+ 1. Capture
+ * In Instant mode, the orders are captured automatically
+ * In delayed mode you can capture an order by moving the order to the completed status. 
+ 2. Refund
+   * To refund an order you can use the refund action in woocommerce, type the amount and use the refund via paylike button.
+ 3. Void
+   * To void an order you can use the refund action in woocommerce, type the amount and use the refund via paylike button. You can only do this if the order is not captured, if you have captured already use the refund. 

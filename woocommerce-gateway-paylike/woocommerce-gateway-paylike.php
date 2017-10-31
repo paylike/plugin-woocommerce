@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.3.7
+ * Version: 1.3.8
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.3.7' );
+define( 'WC_PAYLIKE_VERSION', '1.3.8' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -240,7 +240,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		static function get_environment_warning() {
 			if ( version_compare( phpversion(), WC_PAYLIKE_MIN_PHP_VER, '<' ) ) {
 				/* translators: %1$s is replaced with the php version %2$s is replaced with the current php version */
-				$message = __( 'WooCommerce Paylike - The minimum PHP version required for this plugin is %1$s. You are running %2$s.', 'woocommerce-gateway-paylike', 'woocommerce-gateway-paylike' );
+				$message = __( 'WooCommerce Paylike - The minimum PHP version required for this plugin is %1$s. You are running %2$s.', 'woocommerce-gateway-paylike' );
 
 				return sprintf( $message, WC_PAYLIKE_MIN_PHP_VER, phpversion() );
 			}
@@ -249,7 +249,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			}
 			if ( version_compare( WC_VERSION, WC_PAYLIKE_MIN_WC_VER, '<' ) ) {
 				/* translators: %1$s is replaced with the woocommerce version %2$s is replaced with the current woocommerce version */
-				$message = __( 'WooCommerce Paylike - The minimum WooCommerce version required for this plugin is %1$s. You are running %2$s.', 'woocommerce-gateway-paylike', 'woocommerce-gateway-paylike' );
+				$message = __( 'WooCommerce Paylike - The minimum WooCommerce version required for this plugin is %1$s. You are running %2$s.', 'woocommerce-gateway-paylike' );
 
 				return sprintf( $message, WC_PAYLIKE_MIN_WC_VER, WC_VERSION );
 			}
@@ -353,6 +353,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				}
 				$current_db_version ++;
 			}
+
 			update_option( 'woocommerce_paylike_settings', apply_filters( 'woocommerce_settings_api_sanitized_fields_paylike', $options ) );
 			update_option( 'paylike_db_version', $current_db_version );
 		}
@@ -396,7 +397,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 
 		/**
 		 * @param WC_Order $order
-		 * @param $result // array result returned by the api wrapper
+		 * @param          $result // array result returned by the api wrapper
 		 */
 		function handle_capture_result( $order, $result ) {
 			if ( ! $result ) {
@@ -434,7 +435,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		}
 
 		/**
-		 * @param $total
+		 * @param      $total
 		 * @param null $currency
 		 *  Format the amount based on the currency
 		 *
@@ -453,7 +454,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		/**
 		 * Convert the cents amount into the full readable amount
 		 *
-		 * @param $amount_in_cents
+		 * @param        $amount_in_cents
 		 * @param string $currency
 		 *
 		 * @return string
@@ -495,7 +496,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 
 		/**
 		 * @param WC_Order $order
-		 * @param $result // array result returned by the api wrapper
+		 * @param          $result // array result returned by the api wrapper
 		 */
 		function handle_refund_result( $order, $result ) {
 			if ( ! $result ) {
@@ -532,7 +533,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 
 		/**
 		 * @param WC_Order $order
-		 * @param $result // array result returned by the api wrapper
+		 * @param          $result // array result returned by the api wrapper
 		 */
 		function handle_void_result( $order, $result ) {
 			if ( ! $result ) {
@@ -590,6 +591,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				error_log( $message );
 			}
 		}
+
 
 
 	}
