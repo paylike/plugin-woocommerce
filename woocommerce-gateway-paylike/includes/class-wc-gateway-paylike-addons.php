@@ -167,10 +167,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data = null, $httpVerb = 'get' );
 			if ( $data ) {
 				foreach ( $data as $merchant ) {
-					if ( $this->testmode == 'yes' && $merchant['test'] ) {
+					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key']==$this->public_key ) {
 						return $merchant['id'];
 					}
-					if ( ! $merchant['test'] && $this->testmode != 'yes' ) {
+					if ( ! $merchant['test'] && $this->testmode != 'yes'  && $merchant['key']==$this->public_key ) {
 						return $merchant['id'];
 					}
 				}

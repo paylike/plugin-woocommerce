@@ -2,10 +2,10 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
-Tested up to: 4.7
+Tested up to: 4.8.3
 Stable tag: 1.3.8
 WC requires at least: 2.5
-WC tested up to: 3.1
+WC tested up to: 3.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -95,6 +95,12 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.3.8 =
+* Added account key validation
+* Updated custom attributes to match standards
+* Updated subcriptions merchant id to match the public key merchant
+* Consistency & deprecated notices related updates
 
 = 1.3.7 =
 * Updated language files
