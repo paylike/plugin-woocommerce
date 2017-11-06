@@ -290,7 +290,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	public function add_subscription_payment_meta( $payment_meta, $subscription ) {
 		$payment_meta[ $this->id ] = array(
 			'post_meta' => array(
-				'_aylike_transaction_id' => array(
+				'_paylike_transaction_id' => array(
 					'value' => get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true ),
 					'label' => 'A previous transaction ID',
 				),
