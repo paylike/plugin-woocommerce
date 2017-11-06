@@ -3,10 +3,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
+/**
+ * Class WC_Gateway_Paylike_Addons
+ *
+ * The addons class, used for subscriptions.
+ */
 class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 
 
+	/**
+	 * WC_Gateway_Paylike_Addons constructor.
+	 */
 	public function __construct() {
 		parent::__construct();
 		if ( class_exists( 'WC_Subscriptions_Order' ) ) {
@@ -19,12 +26,12 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 				$this,
 				'update_failing_payment_method',
 			), 10, 2 );
-			// display the credit card used for a subscription in the "My Subscriptions" table
+			// display the credit card used for a subscription in the "My Subscriptions" table.
 			add_filter( 'woocommerce_my_subscriptions_payment_method', array(
 				$this,
 				'maybe_render_subscription_payment_method',
 			), 10, 2 );
-			// allow store managers to manually set Paylike as the payment method on a subscription
+			// allow store managers to manually set Paylike as the payment method on a subscription.
 			add_filter( 'woocommerce_subscription_payment_meta', array(
 				$this,
 				'add_subscription_payment_meta',
@@ -38,10 +45,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 
 
 	/**
-	 * scheduled_subscription_payment function.
+	 * Trigger scheduled subscription payment.
 	 *
-	 * @param $amount_to_charge float The amount to charge.
-	 * @param $renewal_order WC_Order A WC_Order object created to record the renewal payment.
+	 * @param float    $amount_to_charge The amount to charge.
+	 * @param WC_Order $renewal_order An order object created to record the renewal payment.
 	 */
 	public function scheduled_subscription_payment( $amount_to_charge, $renewal_order ) {
 		$result = $this->process_subscription_payment( $renewal_order, $amount_to_charge );
@@ -57,10 +64,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * we mimic recurring payments, using the last
 	 * transaction id - see @https://github.com/paylike/api-docs#recurring-payments
 	 *
-	 * @param WC_Order $order
-	 * the renewal order created from the initial order
-	 * only containing the subscription product we are renewing
-	 * @param int $amount
+	 * @param WC_Order $order the renewal order created from the initial order only containing the subscription product we are renewing.
+	 * @param int      $amount The amount for the subscription.
 	 *
 	 * @return bool|int|mixed|null|WP_Error
 	 */
@@ -70,9 +75,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 
 			return true;
 		}
-		// get last transaction id used
+		// get last transaction id used.
 		$last_transaction_id = $this->get_transaction_id( $order );
 		$last_card_id        = $this->get_card_id( $order );
+		$new_transaction     = null;
 		if ( ! $last_transaction_id && ! $last_card_id ) {
 			if ( ! $last_transaction_id ) {
 				return new WP_Error( 'paylike_error', __( 'Neither Transaction ID nor Card ID was found', 'woocommerce-gateway-paylike' ) );
@@ -80,8 +86,9 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		}
 		$order_id = get_woo_id( $order );
 		WC_Paylike::log( "Info: Begin processing subscription payment for order {$order_id} for the amount of {$amount}" );
-		// create a new transaction from a previous one, or a card
-		if ( $last_card_id ) { // card can be added after a subscription, should get checked first
+		// create a new transaction from a previous one, or a card.
+		if ( $last_card_id ) {
+			// card can be added after a subscription, should get checked first.
 			$new_transaction = $this->create_new_transaction( $last_card_id, $order, $amount, $type = 'card' );
 		} else {
 			$new_transaction = $this->create_new_transaction( $last_transaction_id, $order, $amount );
@@ -98,19 +105,19 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * used to simulate recurring payments
 	 * see @https://github.com/paylike/api-docs#recurring-payments
 	 *
-	 * @param $entity_id
-	 * @param WC_Order $renewal_order
-	 * @param $amount
-	 * @param string $type
+	 * @param int      $entity_id The reference id.
+	 * @param WC_Order $renewal_order The order that is used for renewal.
+	 * @param int      $amount The amount for which the transaction is created.
+	 * @param string   $type The type for which the transaction needs to be created.
 	 *
 	 * @return int|mixed|null
 	 */
 	protected function create_new_transaction( $entity_id, $renewal_order, $amount, $type = 'transaction' ) {
-		$merchant_id = $this->get_merchant_id( $entity_id, $type );
+		$merchant_id = $this->get_global_merchant_id();
 		if ( is_wp_error( $merchant_id ) ) {
 			return $merchant_id;
 		}
-		// create a new transaction by card or transaction
+		// create a new transaction by card or transaction.
 		$data = array(
 			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $renewal_order ) ),
 			'currency' => dk_get_order_currency( $renewal_order ),
@@ -125,7 +132,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		}
 		WC_Paylike::log( "Info: Starting to create a transaction {$data['amount']} in {$data['currency']} for {$merchant_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 		$new_transaction = Paylike\Transaction::create( $merchant_id, $data );
-		// check for errors
+		// check for errors.
 		if ( ! $new_transaction ) {
 			WC_Paylike::log( 'Fatal Error: Creation of transaction has failed, the result from the api wrapper was false' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
@@ -140,16 +147,53 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	}
 
 	/**
-	 * Gets merchant id
+	 * Gets global merchant id.
 	 *
-	 * @param $entity_id - card id / transaction id
-	 * @param string $type - 'card' or 'transaction'
+	 * @param int    $entity_id Transaction or card id reference.
+	 * @param string $type The type of the transaction.
+	 *
+	 * @return bool|int|mixed|null|WP_Error
+	 */
+	private function get_global_merchant_id() {
+		$data = null;
+		WC_Paylike::log( 'Info: Attempting to fetch the global merchant id ' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		$adapter = \Paylike\Client::getAdapter();
+		$data    = $adapter->request( 'me', $data, 'get' );
+		if ( ! isset( $data['identity'] ) ) {
+			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+
+			return new WP_Error( 'paylike_error', $error );
+		} else {
+			$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data = null, $httpVerb = 'get' );
+			if ( $data ) {
+				foreach ( $data as $merchant ) {
+					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key']==$this->public_key ) {
+						return $merchant['id'];
+					}
+					if ( ! $merchant['test'] && $this->testmode != 'yes'  && $merchant['key']==$this->public_key ) {
+						return $merchant['id'];
+					}
+				}
+			}
+		}
+		$error = __( 'No valid merchant id was found', 'woocommerce-gateway-paylike' );
+
+		return new WP_Error( 'paylike_error', $error );
+
+	}
+
+
+	/**
+	 * Gets merchant id from transaction or card
+	 *
+	 * @param int    $entity_id card id / transaction id.
+	 * @param string $type 'card' or 'transaction'.
 	 *
 	 * @return bool|int|mixed|null|WP_Error
 	 */
 	private function get_merchant_id( $entity_id, $type = 'transaction' ) {
 		if ( 'card' == $type ) {
-			// try to get the card
+			// try to get the card.
 			WC_Paylike::log( "Info: Attempting to fetch the card {$entity_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 			$entity = Paylike\Card::fetch( $entity_id );
 			$entity = $this->parse_api_card_response( $entity );
@@ -160,7 +204,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			}
 			$entity = $entity['card'];
 		} else {
-			// try to get the transaction
+			// try to get the transaction.
 			WC_Paylike::log( "Info: Attempting to fetch the transaction {$entity_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 			$entity = Paylike\Transaction::fetch( $entity_id );
 			$entity = $this->parse_api_transaction_response( $entity );
@@ -184,10 +228,9 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	/**
 	 * Update the paylike_transaction_id for a subscription after using Paylike to complete a payment to make up for
 	 * an automatic renewal payment which previously failed.
-	 * @access public
 	 *
 	 * @param WC_Subscription $subscription The subscription for which the failing payment method relates.
-	 * @param WC_Order $renewal_order The order which recorded the successful payment (to make up for the failed automatic payment).
+	 * @param WC_Order        $renewal_order The order which recorded the successful payment (to make up for the failed automatic payment).
 	 *
 	 * @return void
 	 */
@@ -199,7 +242,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	/**
 	 * Don't transfer Paylike transaction id meta to resubscribe orders.
 	 *
-	 * @param WC_Order $resubscribe_order The order created for the customer to resubscribe to the old expired/cancelled subscription
+	 * @param WC_Order $resubscribe_order The order created for the customer to resubscribe to the old expired/cancelled subscription.
 	 */
 	public function delete_resubscribe_meta( $resubscribe_order ) {
 		delete_post_meta( get_woo_id( $resubscribe_order ), '_paylike_transaction_id' );
@@ -209,25 +252,25 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	/**
 	 * Render the payment method used for a subscription in the "My Subscriptions" table
 	 *
-	 * @param string $payment_method_to_display the default payment method text to display
-	 * @param WC_Subscription $subscription the subscription details
+	 * @param string          $payment_method_to_display the default payment method text to display.
+	 * @param WC_Subscription $subscription the subscription details.
 	 *
 	 * @return string the subscription payment method
 	 */
 	public function maybe_render_subscription_payment_method( $payment_method_to_display, $subscription ) {
-		// bail for other payment methods
+		// bail for other payment methods.
 		if ( $this->id !== $subscription->payment_method || ! $subscription->customer_user ) {
 			return $payment_method_to_display;
 		}
 		$transaction_id = get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true );
-		// add more details, if we can get the card
+		// add more details, if we can get the card.
 		$result = Paylike\Transaction::fetch( $transaction_id );
 		if (
 			$result &&
 			1 == $result['transaction']['successful'] &&
 			$result['transaction']['card']
 		) {
-			$card                      = $result['transaction']['card'];
+			$card = $result['transaction']['card'];
 			/* translators: %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id */
 			$payment_method_to_display = sprintf( __( 'Via %s card ending in %s (%s)', 'woocommerce-gateway-paylike' ), ucfirst( $card['scheme'] ), $card['last4'], ucfirst( $this->id ) );
 		}
@@ -239,8 +282,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * Include the payment meta data required to process automatic recurring payments so that store managers can
 	 * manually set up automatic recurring payments for a customer via the Edit Subscriptions screen in 2.0+.
 	 *
-	 * @param array $payment_meta associative array of meta data required for automatic payments
-	 * @param WC_Subscription $subscription An instance of a subscription object
+	 * @param array           $payment_meta associative array of meta data required for automatic payments.
+	 * @param WC_Subscription $subscription An instance of a subscription object.
 	 *
 	 * @return array
 	 */
@@ -265,10 +308,9 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * Validate the payment meta data required to process automatic recurring payments so that store managers can
 	 * manually set up automatic recurring payments for a customer via the Edit Subscriptions screen in 2.0+.
 	 *
-	 * @param $payment_method_id - the ID of the payment method to validate
-	 * @param $payment_meta - associative array of meta data required for automatic payments
+	 * @param $payment_method_id The ID of the payment method to validate.
+	 * @param $payment_meta Associative array of meta data required for automatic payments.
 	 *
-	 * @return array
 	 * @throws Exception
 	 */
 	public function validate_subscription_payment_meta( $payment_method_id, $payment_meta ) {
@@ -282,14 +324,14 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	}
 
 	/**
-	 * Saves the transaction id on the order and subscription
+	 * Saves the transaction id on the order and subscription.
 	 *
-	 * @param $result
-	 * @param WC_Order $order
+	 * @param array    $result The result returned by the api wrapper.
+	 * @param WC_Order $order The order asociated with the order.
 	 */
 	protected function save_transaction_id( $result, $order ) {
 		parent::save_transaction_id( $result, $order );
-		// Also store it on the subscriptions being purchased or paid for in the order
+		// Also store it on the subscriptions being purchased or paid for in the order.
 		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( get_woo_id( $order ) ) ) {
 			$subscriptions = wcs_get_subscriptions_for_order( get_woo_id( $order ) );
 		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id( $order ) ) ) {
@@ -303,14 +345,14 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	}
 
 	/**
-	 * Saves the card id on the order and subscription
+	 * Saves the card id on the order and subscription.
 	 *
-	 * @param $card_id
-	 * @param WC_Order $order
+	 * @param int      $card_id The card reference.
+	 * @param WC_Order $order The order reference.
 	 */
 	protected function save_card_id( $card_id, $order ) {
 		parent::save_card_id( $card_id, $order );
-		// Also store it on the subscriptions being purchased or paid for in the order
+		// Also store it on the subscriptions being purchased or paid for in the order.
 		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( get_woo_id( $order ) ) ) {
 			$subscriptions = wcs_get_subscriptions_for_order( get_woo_id( $order ) );
 		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id( $order ) ) ) {
