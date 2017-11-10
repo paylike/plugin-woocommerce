@@ -158,29 +158,31 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function validate_test_secret_key_field( $key, $value ) {
 
-		if ( $value != '' ) {
+		if ( $value ) {
 			$adapter = \Paylike\Client::getAdapter();
-			$data    = null;
-			$adapter->setApiKey( $value );
-			$data = $adapter->request( 'me', $data, 'get' );
-			if ( ! isset( $data['identity'] ) ) {
-				$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
-				WC_Admin_Settings::add_error( $error );
-				throw new Exception( $error );
-			} else {
-				$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data, 'get' );
-				if ( $data ) {
-					foreach ( $data as $merchant ) {
-						if ( $merchant['test'] ) {
-							$this->validation_test_public_keys[] = $merchant['key'];
+			if ( $adapter ) {
+				$data = null;
+				$adapter->setApiKey( $value );
+				$data = $adapter->request( 'me', $data, 'get' );
+				if ( ! isset( $data['identity'] ) ) {
+					$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+					WC_Admin_Settings::add_error( $error );
+					throw new Exception( $error );
+				} else {
+					$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data, 'get' );
+					if ( $data ) {
+						foreach ( $data as $merchant ) {
+							if ( $merchant['test'] ) {
+								$this->validation_test_public_keys[] = $merchant['key'];
+							}
 						}
 					}
 				}
-			}
-			if ( empty( $this->validation_test_public_keys ) ) {
-				$error = __( 'The test private key is not valid or set to live mode.', 'woocommerce-gateway-paylike' );
-				WC_Admin_Settings::add_error( $error );
-				throw new Exception( $error );
+				if ( empty( $this->validation_test_public_keys ) ) {
+					$error = __( 'The test private key is not valid or set to live mode.', 'woocommerce-gateway-paylike' );
+					WC_Admin_Settings::add_error( $error );
+					throw new Exception( $error );
+				}
 			}
 		}
 
@@ -198,7 +200,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function validate_test_public_key_field( $key, $value ) {
 
-		if ( $value != '' ) {
+		if ( $value ) {
 
 			if ( ! empty( $this->validation_test_public_keys ) ) {
 				if ( ! in_array( $value, $this->validation_test_public_keys ) ) {
@@ -223,29 +225,31 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function validate_secret_key_field( $key, $value ) {
 
-		if ( $value != '' ) {
+		if ( $value ) {
 			$adapter = \Paylike\Client::getAdapter();
-			$data    = null;
-			$adapter->setApiKey( $value );
-			$data = $adapter->request( 'me', $data, 'get' );
-			if ( ! isset( $data['identity'] ) ) {
-				$error = __( "The live private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
-				WC_Admin_Settings::add_error( $error );
-				throw new Exception( $error );
-			} else {
-				$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data, 'get' );
-				if ( $data ) {
-					foreach ( $data as $merchant ) {
-						if ( ! $merchant['test'] ) {
-							$this->validation_live_public_keys[] = $merchant['key'];
+			if ( $adapter ) {
+				$data = null;
+				$adapter->setApiKey( $value );
+				$data = $adapter->request( 'me', $data, 'get' );
+				if ( ! isset( $data['identity'] ) ) {
+					$error = __( "The live private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+					WC_Admin_Settings::add_error( $error );
+					throw new Exception( $error );
+				} else {
+					$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data, 'get' );
+					if ( $data ) {
+						foreach ( $data as $merchant ) {
+							if ( ! $merchant['test'] ) {
+								$this->validation_live_public_keys[] = $merchant['key'];
+							}
 						}
 					}
 				}
-			}
-			if ( empty( $this->validation_live_public_keys ) ) {
-				$error = __( 'The live private key is not valid or set to test mode.', 'woocommerce-gateway-paylike' );
-				WC_Admin_Settings::add_error( $error );
-				throw new Exception( $error );
+				if ( empty( $this->validation_live_public_keys ) ) {
+					$error = __( 'The live private key is not valid or set to test mode.', 'woocommerce-gateway-paylike' );
+					WC_Admin_Settings::add_error( $error );
+					throw new Exception( $error );
+				}
 			}
 		}
 
@@ -263,7 +267,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function validate_public_key_field( $key, $value ) {
 
-		if ( $value != '' ) {
+		if ( $value ) {
 			if ( ! empty( $this->validation_live_public_keys ) ) {
 				if ( ! in_array( $value, $this->validation_live_public_keys ) ) {
 					$error = __( 'The live public key doesn\'t seem to be valid', 'woocommerce-gateway-paylike' );
