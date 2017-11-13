@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
 Tested up to: 4.8.3
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 WC requires at least: 2.5
 WC tested up to: 3.2.2
 License: GPLv3
@@ -95,6 +95,9 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.4.2 =
+* Added hungarian translation
 
 = 1.4.1 =
 * Fixed fatal error for missing keys
