@@ -167,10 +167,10 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data = null, $httpVerb = 'get' );
 			if ( $data ) {
 				foreach ( $data as $merchant ) {
-					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key']==$this->public_key ) {
+					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key'] == $this->public_key ) {
 						return $merchant['id'];
 					}
-					if ( ! $merchant['test'] && $this->testmode != 'yes'  && $merchant['key']==$this->public_key ) {
+					if ( ! $merchant['test'] && $this->testmode != 'yes' && $merchant['key'] == $this->public_key ) {
 						return $merchant['id'];
 					}
 				}
@@ -294,7 +294,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 					'value' => get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true ),
 					'label' => 'A previous transaction ID',
 				),
-				'paylike_card_id'        => array(
+				'paylike_card_id'         => array(
 					'value' => get_post_meta( get_woo_id( $subscription ), '_paylike_card_id', true ),
 					'label' => 'A previous card ID',
 				),
@@ -340,7 +340,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$subscriptions = array();
 		}
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( $subscription->id, '_paylike_transaction_id', $result['transaction']['id'] );
+			update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', $result['transaction']['id'] );
 		}
 	}
 
@@ -361,7 +361,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$subscriptions = array();
 		}
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( $subscription->id, '_paylike_card_id', $card_id );
+			update_post_meta( get_woo_id( $subscription ), '_paylike_card_id', $card_id );
 		}
 	}
 }
