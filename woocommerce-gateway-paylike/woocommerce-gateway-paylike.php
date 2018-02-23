@@ -5,9 +5,11 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.4.2
+ * Version: 1.4.3
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
+ * WC requires at least: 2.5
+ * WC tested up to: 3.3
  *
  * Copyright (c) 2016 Derikon Development
  *

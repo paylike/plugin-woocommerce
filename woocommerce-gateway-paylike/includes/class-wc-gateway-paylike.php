@@ -297,7 +297,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				}
 			}
 		} else {
-			$icon .= '<img  src="' . esc_url( plugins_url( 'images/paylike.png', __FILE__ ) ) . '" alt="Paylike Gateway" />';
+			$icon .= '<img  src="' . esc_url( plugins_url( 'assets/images/paylike.png', __FILE__ ) ) . '" alt="Paylike Gateway" />';
 		}
 
 		return apply_filters( 'woocommerce_paylike_icon', $icon, $this->id );
@@ -1041,7 +1041,27 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @return mixed
 	 */
 	protected function get_transaction_id( $order ) {
-		return get_post_meta( $order->id, '_paylike_transaction_id', true );
+		$transaction_id = get_post_meta( get_woo_id( $order ), '_paylike_transaction_id', true );
+		if ( $transaction_id ) {
+			return $transaction_id;
+		}
+
+		// we continue our search on the subscriptions
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( get_woo_id( $order ) ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( get_woo_id( $order ) );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id( $order ) ) ) {
+			$subscriptions = wcs_get_subscriptions_for_renewal_order( get_woo_id( $order ) );
+		} else {
+			$subscriptions = array();
+		}
+		foreach ( $subscriptions as $subscription ) {
+			$transaction_id = get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true );
+			if ( $transaction_id ) {
+				return $transaction_id;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1050,6 +1070,26 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @return mixed
 	 */
 	protected function get_card_id( $order ) {
-		return get_post_meta( $order->id, '_paylike_card_id', true );
+		$card_id = get_post_meta( get_woo_id( $order ), '_paylike_card_id', true );
+		if ( $card_id ) {
+			return $card_id;
+		}
+
+		// we continue our search on the subscriptions
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( get_woo_id( $order ) ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( get_woo_id( $order ) );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id( $order ) ) ) {
+			$subscriptions = wcs_get_subscriptions_for_renewal_order( get_woo_id( $order ) );
+		} else {
+			$subscriptions = array();
+		}
+		foreach ( $subscriptions as $subscription ) {
+			$card_id = get_post_meta( get_woo_id( $subscription ), '_paylike_card_id', true );
+			if ( $card_id ) {
+				return $card_id;
+			}
+		}
+
+		return false;
 	}
 }
