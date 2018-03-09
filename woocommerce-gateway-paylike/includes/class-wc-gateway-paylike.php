@@ -697,8 +697,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			} else {
 				$user_email = '';
 			}
-
-			$token = '';
+			$user_name    = '';
+			$user_address = '';
+			$user_phone   = '';
+			$token        = '';
 			/* This may be in ajax, so we need to check if the total has changed */
 			if ( isset( $_POST['post_data'] ) ) {
 				$post_data = array();
@@ -738,15 +740,22 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			} else {
 				$order_id        = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
 				$order           = wc_get_order( $order_id );
-				$currency        = dk_get_order_currency( $order->get_order_currency() );
+				$currency        = dk_get_order_currency( $order );
 				$amount          = $order->get_total();
 				$amount_tax      = $order->get_total_tax();
 				$amount_shipping = $order->get_shipping_total();
+				$user_email      = $order->get_billing_email();
+				$user_name       = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+				$user_address    = $order->get_billing_address_1() . ' ' . $order->get_billing_address_2();
+				$user_phone      = $order->get_billing_phone();
 			}
 
 			echo '<div
-			id="paylike-payment-data"
+			id="paylike-payment-data"' . '"
 			data-email="' . esc_attr( $user_email ) . '"
+			data-name="' . esc_attr( $user_name ) . '"
+			data-phone="' . esc_attr( $user_phone ) . '"
+			data-address="' . esc_attr( $user_address ) . '"
 			data-locale="' . esc_attr( get_locale() ) . '"
 			data-order_id="' . esc_attr( $order_id ) . '"
 			data-amount="' . esc_attr( $this->get_paylike_amount( $amount, $currency ) ) . '"

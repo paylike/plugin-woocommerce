@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
 Tested up to: 4.9.4
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 WC requires at least: 2.5
 WC tested up to: 3.3
 License: GPLv3
@@ -96,7 +96,11 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 == Changelog ==
 
-= 1.4.2 =
+= 1.4.4 =
+* Fatal error fix for manual payment page
+* Update in payment data sent over manual payment after order page
+
+= 1.4.3 =
 * Added better support for retry payment in subscriptions
 
 = 1.4.2 =

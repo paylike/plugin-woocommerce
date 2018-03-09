@@ -102,7 +102,37 @@ jQuery(function ($) {
                     }
                 });
             },
+            getName: function ($paylike_payment) {
+                var $name = $("[name='billing_first_name']");
+                var name = '';
+                if ($name.length > 0) {
+                    name = $name.val() + ' ' + $("[name='billing_last_name']").val();
+                } else {
+                    name = $paylike_payment.data('name');
+                }
+                return name;
+            },
+            getAddress: function ($paylike_payment) {
+                var $address = $("[name='billing_address_1']");
+                var address = '';
+                if ($address.length > 0) {
+                    address = $address.val() + ' ' + $("[name='billing_address_2']").val();
+                } else {
+                    address = $paylike_payment.data('address');
+                }
+                return address;
+            },
+            getPhoneNo: function ($paylike_payment) {
 
+                var $phone = $("[name='billing_phone']");
+                var phone = '';
+                if ($phone.length > 0) {
+                    phone = $phone.val()
+                } else {
+                    phone = $paylike_payment.data('phone');
+                }
+                return phone;
+            },
             onSubmit: function (e) {
                 if (wc_paylike_form.isPaylikeModalNeeded()) {
                     e.preventDefault();
@@ -114,6 +144,9 @@ jQuery(function ($) {
 
                     token.val('');
 
+                    var name = wc_paylike_form.getName($paylike_payment);
+                    var phoneNo = wc_paylike_form.getPhoneNo($paylike_payment);
+                    var address = wc_paylike_form.getAddress($paylike_payment);
                     var paylike = Paylike(wc_paylike_params.key);
                     var $billing_email = $("[name='billing_email']");
                     var args = {
@@ -127,10 +160,10 @@ jQuery(function ($) {
                             products: [wc_paylike_params.products
                             ],
                             customer: {
-                                name: $("[name='billing_first_name']").val() + ' ' + $("[name='billing_last_name']").val(),
+                                name: name,
                                 email: $billing_email.val(),
-                                phoneNo: $("[name='billing_phone']").val(),
-                                address: $("[name='billing_address_1']").val() + ' ' + $("[name='billing_address_2']").val(),
+                                phoneNo: phoneNo,
+                                address: address,
                                 IP: wc_paylike_params.customer_IP
                             },
                             platform: {
