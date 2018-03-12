@@ -107,6 +107,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->init_settings();
 		// Get setting values.
 		$this->title              = $this->get_option( 'title' );
+		$this->popup_title        = $this->get_option( 'popup_title' );
 		$this->description        = $this->get_option( 'description' );
 		$this->enabled            = $this->get_option( 'enabled' );
 		$this->testmode           = 'yes' === $this->get_option( 'testmode' );
@@ -297,7 +298,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				}
 			}
 		} else {
-			$icon .= '<img  src="' . esc_url( plugins_url( 'assets/images/paylike.png', __FILE__ ) ) . '" alt="Paylike Gateway" />';
+			$icon .= '<img  src="' . esc_url( plugins_url( '../assets/images/paylike.png', __FILE__ ) ) . '" alt="Paylike Gateway" />';
 		}
 
 		return apply_filters( 'woocommerce_paylike_icon', $icon, $this->id );
@@ -743,11 +744,11 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				$currency        = dk_get_order_currency( $order );
 				$amount          = $order->get_total();
 				$amount_tax      = $order->get_total_tax();
-				$amount_shipping = $order->get_shipping_total();
-				$user_email      = $order->get_billing_email();
-				$user_name       = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
-				$user_address    = $order->get_billing_address_1() . ' ' . $order->get_billing_address_2();
-				$user_phone      = $order->get_billing_phone();
+				$amount_shipping = dk_get_order_shipping_total( $order );
+				$user_email      = dk_get_order_data( $order, 'get_billing_email' );
+				$user_name       = dk_get_order_data( $order, 'get_billing_first_name' ) . ' ' . dk_get_order_data( $order, 'get_billing_last_name' );
+				$user_address    = dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' );
+				$user_phone      = dk_get_order_data( $order, 'get_billing_phone' );
 			}
 
 			echo '<div
@@ -846,7 +847,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				$product    = array(
 					'ID'       => $values['product_id'],
 					'name'     => $_product->get_title(),
-					'quantity' => $values['quantity'],
+					'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 				);
 				$products[] = $product;
 			}
@@ -903,19 +904,21 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$product    = array(
 				'ID'       => $values['product_id'],
 				'name'     => $_product->get_title(),
-				'quantity' => $values['quantity'],
+				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 			);
 			$products[] = $product;
 		}
 		echo '<p>' . __( 'Thank you for your order, please click below to pay and complete your order.', 'woocommerce-gateway-paylike' ) . '</p>';
 		?>
-		<button onclick="pay(event);"><?php _e( 'Pay Now', 'woocommerce-gateway-paylike' ); ?></button>
+		<button id="paylike-payment-button"
+				onclick="pay(event);"><?php _e( 'Pay Now', 'woocommerce-gateway-paylike' ); ?></button>
 		<script src="https://sdk.paylike.io/3.js"></script>
 		<script>
             var paylike = Paylike('<?php echo $this->public_key;?>');
 
             function pay(e) {
                 e.preventDefault();
+
                 paylike.popup({
                     title: '<?php echo esc_attr( $this->popup_title ); ?>',
                     currency: '<?php echo get_woocommerce_currency() ?>',
@@ -925,10 +928,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                         orderId: '<?php echo $order->get_order_number(); ?>',
                         products: [<?php echo json_encode( $products ); ?>],
                         customer: {
-                            name: '<?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(); ?>',
-                            email: '<?php echo $order->get_billing_email(); ?>',
-                            phoneNo: '<?php echo $order->get_billing_phone(); ?>',
-                            address: '<?php echo $order->get_billing_address_1() . ' ' . $order->get_billing_address_2(); ?>',
+                            name: '<?php echo dk_get_order_data( $order, 'get_billing_first_name' ) . ' ' . dk_get_order_data( $order, 'get_billing_last_name' ); ?>',
+                            email: '<?php echo dk_get_order_data( $order, 'get_billing_email' ); ?>',
+                            phoneNo: '<?php echo dk_get_order_data( $order, 'get_billing_phone' ); ?>',
+                            address: '<?php echo dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ); ?>',
                             IP: '<?php echo $this->get_client_ip(); ?>'
                         },
                         platform: {
@@ -947,11 +950,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
                     var trxid = res.transaction.id;
                     jQuery("#complete_order").append('<input type="hidden" name="transaction_id" value="' + trxid + '" /> ');
+                    jQuery('#paylike-payment-button').attr('disabled', 'disabled');
                     document.getElementById("complete_order").submit();
                 });
             }
 		</script>
-		<form id="complete_order" action="<?php echo WC()->api_request_url( get_class( $this ) ) ?>">
+		<form id="complete_order" method="POST" action="<?php echo WC()->api_request_url( get_class( $this ) ) ?>">
 			<input type="hidden" name="reference" value="<?php echo $order_id; ?>"/>
 			<input type="hidden" name="amount" value="<?php echo $this->get_order_total(); ?>"/>
 			<input type="hidden" name="signature"
