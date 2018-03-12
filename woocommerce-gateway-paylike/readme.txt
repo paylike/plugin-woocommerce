@@ -96,6 +96,10 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 == Changelog ==
 
+= 1.4.5 =
+* Fix manual payment page issues with older woocommerce versions
+* Disable pay button on payment loading for manual payment page
+
 = 1.4.4 =
 * Fatal error fix for manual payment page
 * Update in payment data sent over manual payment after order page

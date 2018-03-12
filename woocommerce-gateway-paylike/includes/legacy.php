@@ -30,3 +30,34 @@ if ( ! function_exists( 'dk_get_order_currency' ) ) {
 		}
 	}
 }
+
+if ( ! function_exists( 'dk_get_order_data' ) ) {
+	/**
+	 * @param WC_Order $order
+	 *
+	 * @return mixed
+	 */
+	function dk_get_order_data( $order,$method ) {
+		if ( method_exists( $order, $method ) ) {
+			return $order->$method();
+		} else {
+			$attribute=str_replace('get_','',$method);
+			return $order->$attribute;
+		}
+	}
+}
+
+if ( ! function_exists( 'dk_get_order_shipping_total' ) ) {
+	/**
+	 * @param WC_Order $order
+	 *
+	 * @return mixed
+	 */
+	function dk_get_order_shipping_total( $order ) {
+		if ( method_exists( $order, 'get_shipping_total' ) ) {
+			return $order->get_shipping_total();
+		} else {
+			return $order->get_total_shipping();
+		}
+	}
+}
