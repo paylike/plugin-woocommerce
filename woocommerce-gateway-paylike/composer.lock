@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "89bb4a0b816a57bda35a6b96580088f5",
+    "packages": [
+        {
+            "name": "paylike/php-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paylike/php-api.git",
+                "reference": "fc6c11463ba2b454f01b2fd5d545a1a144c27d40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paylike/php-api/zipball/fc6c11463ba2b454f01b2fd5d545a1a144c27d40",
+                "reference": "fc6c11463ba2b454f01b2fd5d545a1a144c27d40",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Paylike\\": "src",
+                    "Paylike\\Tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ionut Calara",
+                    "email": "ionut.calara@gmail.com"
+                }
+            ],
+            "description": "PHP SDK to communicate with the Paylike HTTP api",
+            "time": "2018-04-11T14:04:43+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

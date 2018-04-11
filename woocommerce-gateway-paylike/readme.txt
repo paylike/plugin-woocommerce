@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce
 Requires at least: 4.4
 Tested up to: 4.9.4
-Stable tag: 1.4.4
+Stable tag: 1.5.0
 WC requires at least: 2.5
 WC tested up to: 3.3
 License: GPLv3
@@ -95,6 +95,11 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.5.0 =
+* Moved to new api wrapper
+* More verbose http communication response
+* Prevent capturing when user is not allowed to
 
 = 1.4.5 =
 * Fix manual payment page issues with older woocommerce versions

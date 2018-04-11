@@ -1,0 +1,16 @@
+{
+  "name": "paylike/plugin-woocommerce",
+  "description": "WooCommerce plugin for paylike",
+  "version": "1.5.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ionut Calara",
+      "email": "ionut.calara@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "paylike/php-api": "^1.0"
+  }
+}
