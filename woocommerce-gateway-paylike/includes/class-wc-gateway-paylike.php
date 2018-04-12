@@ -156,6 +156,28 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function validate_capture_field( $key, $value ) {
+		if ( $value == 'delayed' ) {
+			return $value;
+		}
+		// value is instant so we need to check if the user is allowed to capture
+		$can_capture = $this->can_user_capture();
+		if ( is_wp_error( $can_capture ) ) {
+			$error = __( 'The account used is not allowed to capture. Instant mode is not available.', 'woocommerce-gateway-paylike' );
+			WC_Admin_Settings::add_error( $error );
+			throw new Exception( $error );
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Validate the secret test key.
 	 *
 	 * @param string $key the name of the attribute.
@@ -685,6 +707,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				if ( ! $error_message ) {
 					$error_message = 'There has been an problem with the refund. Refresh the order to see more details';
 				}
+
 				return new WP_Error( 'paylike_error', __( 'Error: ', 'woocommerce-gateway-paylike' ) . $error_message );
 			}
 		}
@@ -1148,5 +1171,72 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return WP_Error
+	 */
+	protected function can_user_capture() {
+
+		$merchant_id = $this->get_global_merchant_id();
+		if ( is_wp_error( $merchant_id ) ) {
+			return $merchant_id;
+		}
+		WC_Paylike::log( 'Info: Attempting to fetch the merchant data' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		try {
+			$merchant = $this->paylike_client->merchants()->fetch( $merchant_id );
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			$error = __( "The merchant couldn't be found", 'woocommerce-gateway-paylike' );
+
+			return new WP_Error( 'paylike_error', $error );
+		}
+
+		if ( true == $merchant['claim']['canCapture'] ) {
+			return true;
+		}
+
+		$error = __( "The merchant is not allowed to capture", 'woocommerce-gateway-paylike' );
+
+		return new WP_Error( 'paylike_error', $error );
+	}
+
+	/**
+	 * Gets global merchant id.
+	 *
+	 * @param int    $entity_id Transaction or card id reference.
+	 * @param string $type The type of the transaction.
+	 *
+	 * @return bool|int|mixed|null|WP_Error
+	 */
+	protected function get_global_merchant_id() {
+		WC_Paylike::log( 'Info: Attempting to fetch the global merchant id ' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		try {
+			$identity = $this->paylike_client->apps()->fetch();
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+
+			return new WP_Error( 'paylike_error', $error );
+		}
+		try {
+			$url          = 'identities/' . $identity['id'] . '/merchants?limit=10';
+			$api_response = $this->paylike_client->client->request( 'GET', $url );
+			$merchants    = $api_response->json;
+			if ( $merchants ) {
+				foreach ( $merchants as $merchant ) {
+					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key'] == $this->public_key ) {
+						return $merchant['id'];
+					}
+					if ( ! $merchant['test'] && $this->testmode != 'yes' && $merchant['key'] == $this->public_key ) {
+						return $merchant['id'];
+					}
+				}
+			}
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			$error = __( 'No valid merchant id was found', 'woocommerce-gateway-paylike' );
+
+			return new WP_Error( 'paylike_error', $error );
+		}
+
+
 	}
 }
