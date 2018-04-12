@@ -142,45 +142,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		return $new_transaction;
 	}
 
-	/**
-	 * Gets global merchant id.
-	 *
-	 * @param int    $entity_id Transaction or card id reference.
-	 * @param string $type The type of the transaction.
-	 *
-	 * @return bool|int|mixed|null|WP_Error
-	 */
-	private function get_global_merchant_id() {
-		$data = null;
-		WC_Paylike::log( 'Info: Attempting to fetch the global merchant id ' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-		try {
-			$identity = $this->paylike_client->apps()->fetch();
-		} catch ( \Paylike\Exception\ApiException $exception ) {
-			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 
-			return new WP_Error( 'paylike_error', $error );
-		}
-		try {
-			$url          = 'identities/' . $identity['id'] . '/merchants?limit=10';
-			$api_response = $this->paylike_client->client->request( 'GET', $url );
-			$merchants    = $api_response->json;
-			if ( $merchants ) {
-				foreach ( $merchants as $merchant ) {
-					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key'] == $this->public_key ) {
-						return $merchant['id'];
-					}
-					if ( ! $merchant['test'] && $this->testmode != 'yes' && $merchant['key'] == $this->public_key ) {
-						return $merchant['id'];
-					}
-				}
-			}
-		} catch ( \Paylike\Exception\ApiException $exception ) {
-			$error = __( 'No valid merchant id was found', 'woocommerce-gateway-paylike' );
-
-			return new WP_Error( 'paylike_error', $error );
-		}
-
-	}
 
 
 	/**
