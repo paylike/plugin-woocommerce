@@ -644,7 +644,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	protected function get_transaction_capture_details( $transaction ) {
-		return __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
+		return __( 'Paylike capture complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
+		       __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
 		       __( 'Authorized amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['amount'], $transaction['currency'] ) . PHP_EOL .
 		       __( 'Captured amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['capturedAmount'], $transaction['currency'] ) . PHP_EOL .
 		       __( 'Charge authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
