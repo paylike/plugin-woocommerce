@@ -2,6 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
 return apply_filters( 'wc_paylike_settings',
 	array(
 		'enabled'            => array(
@@ -123,14 +124,6 @@ return apply_filters( 'wc_paylike_settings',
 				'visaelectron' => 'Visa Electron',
 			),
 			'default'  => array( 'mastercard', 'maestro', 'visa', 'visaelectron' ),
-		),
-		'logging'            => array(
-			'title'       => __( 'Logging', 'woocommerce-gateway-paylike' ),
-			'label'       => __( 'Log debug messages', 'woocommerce-gateway-paylike' ),
-			'type'        => 'checkbox',
-			'description' => __( 'Save debug messages to the WooCommerce System Status log.', 'woocommerce-gateway-paylike' ),
-			'default'     => 'no',
-			'desc_tip'    => true,
-		),
+		)
 	)
 );

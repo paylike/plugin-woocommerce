@@ -97,7 +97,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			return $new_transaction;
 		}
 
-		return $this->handle_payment( $new_transaction['transaction']['id'], $order, $amount );
+		return $this->handle_payment( $new_transaction, $order, $amount );
 	}
 
 	/**
@@ -131,56 +131,18 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$data['transactionId'] = $entity_id;
 		}
 		WC_Paylike::log( "Info: Starting to create a transaction {$data['amount']} in {$data['currency']} for {$merchant_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-		$new_transaction = Paylike\Transaction::create( $merchant_id, $data );
-		// check for errors.
-		if ( ! $new_transaction ) {
-			WC_Paylike::log( 'Fatal Error: Creation of transaction has failed, the result from the api wrapper was false' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		try {
+			$new_transaction = $this->paylike_client->transactions()->create( $merchant_id, $data );
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			WC_Paylike::handle_exceptions( $renewal_order, $exception, 'Issue: Creating the transaction failed!' );
 
-			return new WP_Error( 'paylike_error', __( 'cURL request failed.', 'woocommerce-gateway-paylike' ) );
-		} elseif ( ! isset( $new_transaction['transaction'] ) || ! isset( $new_transaction['transaction']['id'] ) ) {
-			WC_Paylike::log( 'Fatal Error: Creation of transaction has failed, the transaction failed' . PHP_EOL . json_encode( $new_transaction ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-
-			return new WP_Error( 'paylike_error', __( 'Error: ', 'woocommerce-gateway-paylike' ) . $this->get_response_error( $new_transaction ) );
+			return new WP_Error( 'paylike_error', __( 'There was a problem creating the transaction!.', 'woocommerce-gateway-paylike' ) );
 		}
 
 		return $new_transaction;
 	}
 
-	/**
-	 * Gets global merchant id.
-	 *
-	 * @param int    $entity_id Transaction or card id reference.
-	 * @param string $type The type of the transaction.
-	 *
-	 * @return bool|int|mixed|null|WP_Error
-	 */
-	private function get_global_merchant_id() {
-		$data = null;
-		WC_Paylike::log( 'Info: Attempting to fetch the global merchant id ' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-		$adapter = \Paylike\Client::getAdapter();
-		$data    = $adapter->request( 'me', $data, 'get' );
-		if ( ! isset( $data['identity'] ) ) {
-			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 
-			return new WP_Error( 'paylike_error', $error );
-		} else {
-			$data = $adapter->request( 'identities/' . $data['identity']['id'] . '/merchants?limit=10', $data = null, $httpVerb = 'get' );
-			if ( $data ) {
-				foreach ( $data as $merchant ) {
-					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key'] == $this->public_key ) {
-						return $merchant['id'];
-					}
-					if ( ! $merchant['test'] && $this->testmode != 'yes' && $merchant['key'] == $this->public_key ) {
-						return $merchant['id'];
-					}
-				}
-			}
-		}
-		$error = __( 'No valid merchant id was found', 'woocommerce-gateway-paylike' );
-
-		return new WP_Error( 'paylike_error', $error );
-
-	}
 
 
 	/**
@@ -195,28 +157,27 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		if ( 'card' == $type ) {
 			// try to get the card.
 			WC_Paylike::log( "Info: Attempting to fetch the card {$entity_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-			$entity = Paylike\Card::fetch( $entity_id );
-			$entity = $this->parse_api_card_response( $entity );
-			if ( is_wp_error( $entity ) ) {
-				WC_Paylike::log( 'Fatal Error: Card fetching has failed, the result from the verification threw and wp error:' . $entity->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+			try {
+				$entity = $this->paylike_client->cards()->fetch( $entity_id );
+			} catch ( \Paylike\Exception\ApiException $exception ) {
+				WC_Paylike::handle_exceptions( null, $exception, 'Fetching card entity failed' );
 
-				return $entity;
+				return new WP_Error( 'paylike_error', __( 'The card could not be fetched.', 'woocommerce-gateway-paylike' ) );
 			}
-			$entity = $entity['card'];
 		} else {
 			// try to get the transaction.
 			WC_Paylike::log( "Info: Attempting to fetch the transaction {$entity_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-			$entity = Paylike\Transaction::fetch( $entity_id );
-			$entity = $this->parse_api_transaction_response( $entity );
-			if ( is_wp_error( $entity ) ) {
-				WC_Paylike::log( 'Fatal Error: Transaction fetching has failed, the result from the verification threw and wp error:' . $entity->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+			try {
+				$entity = $this->paylike_client->transactions()->fetch( $entity_id );
+			} catch ( \Paylike\Exception\ApiException $exception ) {
+				WC_Paylike::handle_exceptions( null, $exception, 'Fetching transaction entity failed' );
 
-				return $entity;
+				return new WP_Error( 'paylike_error', __( 'The transaction could not be fetched.', 'woocommerce-gateway-paylike' ) );
 			}
 			$entity = $entity['transaction'];
 		}
 		if ( ! $entity['merchantId'] ) {
-			WC_Paylike::log( 'Fatal Error: The merchant id is missing:' . json_encode( $entity ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+			WC_Paylike::log( 'Issue: The merchant id is missing:' . json_encode( $entity ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 			return new WP_Error( 'paylike_error', __( 'Merchant ID not found', 'woocommerce-gateway-paylike' ) );
 		}
@@ -264,12 +225,12 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		}
 		$transaction_id = get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true );
 		// add more details, if we can get the card.
-		$result = Paylike\Transaction::fetch( $transaction_id );
-		if (
-			$result &&
-			1 == $result['transaction']['successful'] &&
-			$result['transaction']['card']
-		) {
+		try {
+			$transaction = $this->paylike_client->transactions()->fetch( $transaction_id );
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			WC_Paylike::handle_exceptions( null, $exception, 'Fetching transaction entity failed' );
+		}
+		if ( 1 == $transaction['successful'] && $result['transaction']['card'] ) {
 			$card = $result['transaction']['card'];
 			/* translators: %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id */
 			$payment_method_to_display = sprintf( __( 'Via %s card ending in %s (%s)', 'woocommerce-gateway-paylike' ), ucfirst( $card['scheme'] ), $card['last4'], ucfirst( $this->id ) );
@@ -340,7 +301,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$subscriptions = array();
 		}
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', $result['transaction']['id'] );
+			update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', $result['id'] );
 		}
 	}
 
