@@ -242,7 +242,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		if ( ! in_array( $value, $this->validation_test_public_keys ) ) {
 			$error = __( 'The test public key doesn\'t seem to be valid', 'woocommerce-gateway-paylike' );
-			WC_Paylike::handle_exceptions( null, $exception, $error );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
 		}
@@ -312,7 +311,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			if ( ! empty( $this->validation_live_public_keys ) ) {
 				if ( ! in_array( $value, $this->validation_live_public_keys ) ) {
 					$error = __( 'The live public key doesn\'t seem to be valid', 'woocommerce-gateway-paylike' );
-					WC_Paylike::handle_exceptions( null, $exception, $error );
 					WC_Admin_Settings::add_error( $error );
 					throw new Exception( $error );
 				}
@@ -593,8 +591,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public static function get_response_error( $result ) {
 		$error = array();
-		foreach ( $result as $field_error ) {
-			$error[] = $field_error['field'] . ':' . $field_error['message'];
+		if ( $result ) {
+			foreach ( $result as $field_error ) {
+				$error[] = $field_error['field'] . ':' . $field_error['message'];
+			}
 		}
 		$error_message = implode( ' ', $error );
 
