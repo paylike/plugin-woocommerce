@@ -169,7 +169,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		// value is instant so we need to check if the user is allowed to capture
 		$can_capture = $this->can_user_capture();
 		if ( is_wp_error( $can_capture ) ) {
-			$error = __( 'The account used is not allowed to capture. Instant mode is not available.', 'woocommerce-gateway-paylike' );
+			$error = __( 'The Paylike account used is not allowed to capture. Instant mode is not available.', 'woocommerce-gateway-paylike' );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
 		}
@@ -197,6 +197,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		} catch ( \Paylike\Exception\ApiException $exception ) {
 			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 			WC_Admin_Settings::add_error( $error );
+			WC_Paylike::handle_exceptions( null, $exception, $error );
 			throw new Exception( $error );
 		}
 		try {
@@ -241,6 +242,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		if ( ! in_array( $value, $this->validation_test_public_keys ) ) {
 			$error = __( 'The test public key doesn\'t seem to be valid', 'woocommerce-gateway-paylike' );
+			WC_Paylike::handle_exceptions( null, $exception, $error );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
 		}
@@ -267,6 +269,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$identity = $paylike_client->apps()->fetch();
 		} catch ( \Paylike\Exception\ApiException $exception ) {
 			$error = __( "The live private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+			WC_Paylike::handle_exceptions( null, $exception, $error );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
 		}
@@ -286,6 +289,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		if ( empty( $this->validation_live_public_keys ) ) {
 			$error = __( 'The live private key is not valid or set to test mode.', 'woocommerce-gateway-paylike' );
+			WC_Paylike::handle_exceptions( null, $exception, $error );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
 		}
@@ -308,6 +312,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			if ( ! empty( $this->validation_live_public_keys ) ) {
 				if ( ! in_array( $value, $this->validation_live_public_keys ) ) {
 					$error = __( 'The live public key doesn\'t seem to be valid', 'woocommerce-gateway-paylike' );
+					WC_Paylike::handle_exceptions( null, $exception, $error );
 					WC_Admin_Settings::add_error( $error );
 					throw new Exception( $error );
 				}
