@@ -201,9 +201,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			throw new Exception( $error );
 		}
 		try {
-			$url          = 'identities/' . $identity['id'] . '/merchants?limit=10';
-			$api_response = $paylike_client->client->request( 'GET', $url );
-			$merchants    = $api_response->json;
+			$merchants = $paylike_client->merchants()->find( $identity['id'] );
 			if ( $merchants ) {
 				foreach ( $merchants as $merchant ) {
 					if ( $merchant['test'] ) {
@@ -274,9 +272,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			throw new Exception( $error );
 		}
 		try {
-			$url          = 'identities/' . $identity['id'] . '/merchants?limit=10';
-			$api_response = $paylike_client->client->request( 'GET', $url );
-			$merchants    = $api_response->json;
+			$merchants = $paylike_client->merchants()->find( $identity['id'] );
 			if ( $merchants ) {
 				foreach ( $merchants as $merchant ) {
 					if ( ! $merchant['test'] ) {
@@ -1237,9 +1233,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			return new WP_Error( 'paylike_error', $error );
 		}
 		try {
-			$url          = 'identities/' . $identity['id'] . '/merchants?limit=10';
-			$api_response = $this->paylike_client->client->request( 'GET', $url );
-			$merchants    = $api_response->json;
+			$merchants = $paylike_client->merchants()->find( $identity['id'] );
 			if ( $merchants ) {
 				foreach ( $merchants as $merchant ) {
 					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key'] == $this->public_key ) {
