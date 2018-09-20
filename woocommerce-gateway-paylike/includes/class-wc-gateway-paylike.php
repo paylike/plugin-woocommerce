@@ -1233,7 +1233,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			return new WP_Error( 'paylike_error', $error );
 		}
 		try {
-			$merchants = $paylike_client->merchants()->find( $identity['id'] );
+			$merchants = $this->paylike_client->merchants()->find( $identity['id'] );
 			if ( $merchants ) {
 				foreach ( $merchants as $merchant ) {
 					if ( $this->testmode == 'yes' && $merchant['test'] && $merchant['key'] == $this->public_key ) {
