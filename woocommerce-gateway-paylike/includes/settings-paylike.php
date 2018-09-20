@@ -80,15 +80,6 @@ return apply_filters( 'wc_paylike_settings',
 			'default'     => 'yes',
 			'desc_tip'    => true,
 		),
-		/*'direct_checkout'    => array(
-			'title'       => __( 'Direct Checkout', 'woocommerce-gateway-paylike' ),
-			'label'       => __( 'Pay on checkout', 'woocommerce-gateway-paylike' ),
-			'type'        => 'checkbox',
-			'description' => __( 'Whether or not to show the payment popup on the checkout page or show it on the receipt page. Uncheck this if you have issues on the checkout page with the payment.', 'woocommerce-gateway-paylike' ),
-			'default'     => 'yes',
-			'desc_tip'    => true,
-		),
-		*/
 		'checkout_mode'      => array(
 			'title'    => __( 'Checkout mode', 'woocommerce-gateway-paylike' ),
 			'type'     => 'select',
