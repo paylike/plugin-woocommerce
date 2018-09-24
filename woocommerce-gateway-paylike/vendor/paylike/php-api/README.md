@@ -63,6 +63,9 @@ $merchants = $paylike->merchants();
 $merchants->create($args);
 $merchants->fetch($merchant_id);
 $merchants->update($merchant_id, $args);
+$all_merchants = $merchants->find($app_id,$args);
+$some_merchants = $merchants->before($app_id,$before);
+$some_merchants = $merchants->after($app_id,$before);
  
 $cards = $paylike->cards();
 $cards->create($merchant_id, $args);
@@ -74,7 +77,26 @@ $transactions->fetch($transaction_id);
 $transactions->capture($transaction_id, $args);
 $transactions->void($transaction_id, $args);
 $transactions->refund($transaction_id, $args);
+$all_transactions = $transactions->find($merchant_id,$args);
+$some_transactions = $transactions->before($merchant_id,$before);
+$some_transactions = $transactions->after($merchant_id,$before);
+
+// explicit args
+$limit = 10;
+$after = '5b8e839d7cc76f04ecd3f733';
+$before = '5b98deef882cf804f6108700';
+$api_transactions = $transactions->find($merchant_id, array(
+    'limit' => $limit,
+    'after' => $after,
+    'before' => $before,
+    'filter' => array(
+    	'successful' => true
+    )
+));
 ``` 
+
+## Pagination
+The methods that return multiple merchants/transactions (find,after,before) use cursors, so you don't need to worry about pagination, you can access any index, or iterate all the items, this is handled in the background.
 
 ## Error handling
 

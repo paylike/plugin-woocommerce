@@ -11,6 +11,6 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "paylike/php-api": "^1.0"
+    "paylike/php-api": "^1.0.3"
   }
 }

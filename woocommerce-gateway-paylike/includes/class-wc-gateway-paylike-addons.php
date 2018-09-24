@@ -143,8 +143,6 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	}
 
 
-
-
 	/**
 	 * Gets merchant id from transaction or card
 	 *

@@ -37,11 +37,12 @@ if ( ! function_exists( 'dk_get_order_data' ) ) {
 	 *
 	 * @return mixed
 	 */
-	function dk_get_order_data( $order,$method ) {
+	function dk_get_order_data( $order, $method ) {
 		if ( method_exists( $order, $method ) ) {
 			return $order->$method();
 		} else {
-			$attribute=str_replace('get_','',$method);
+			$attribute = str_replace( 'get_', '', $method );
+
 			return $order->$attribute;
 		}
 	}
