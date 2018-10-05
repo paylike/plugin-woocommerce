@@ -110,7 +110,7 @@ jQuery(function ($) {
                 } else {
                     name = $paylike_payment.data('name');
                 }
-                return name;
+                return wc_paylike_form.escapeQoutes(name);
             },
             getAddress: function ($paylike_payment) {
                 var $address = $("[name='billing_address_1']");
@@ -120,7 +120,7 @@ jQuery(function ($) {
                 } else {
                     address = $paylike_payment.data('address');
                 }
-                return address;
+                return wc_paylike_form.escapeQoutes(address);
             },
             getPhoneNo: function ($paylike_payment) {
 
@@ -131,7 +131,7 @@ jQuery(function ($) {
                 } else {
                     phone = $paylike_payment.data('phone');
                 }
-                return phone;
+                return wc_paylike_form.escapeQoutes(phone);
             },
             onSubmit: function (e) {
                 if (wc_paylike_form.isPaylikeModalNeeded()) {
@@ -215,6 +215,9 @@ jQuery(function ($) {
                 }
 
                 return true;
+            },
+            escapeQoutes(str) {
+                return str.replace(/"/g, '\\"');
             }
         }
     ;
