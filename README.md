@@ -8,8 +8,8 @@ Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 ## Supported WooCommerce versions
 
-* The plugin has been tested with most versions of WooCommerce at every iteration. We recommend using the latest version of WooCommerce, but if that is not possible for some reason, test the plugin with your WooCommerce version and it would probably. 
-* WooCommerce version last tested on: 3.4.5
+* The plugin has been tested with most versions of WooCommerce at every iteration. We recommend using the latest version of WooCommerce, but if that is not possible for some reason, test the plugin with your WooCommerce version and it would probably function properly. 
+* WooCommerce version last tested on: *3.4.5*
 
 ## Installation
 
