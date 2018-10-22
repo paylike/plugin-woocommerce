@@ -1,9 +1,9 @@
 === WooCommerce Paylike Payment Gateway ===
 Contributors: ionut.calara
-Tags: credit card, gateway, paylike, woocommerce
+Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
 Tested up to: 4.9.6
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 WC requires at least: 3.0
 WC tested up to: 3.4.5
 License: GPLv3
@@ -82,11 +82,19 @@ Yes, the plugin supports test mode.
 
 = Does the plugin support subscriptions? =
 
-Yes, the plugin supports the subscriptions plugin. 
+Yes, the plugin supports the subscriptions plugin.
+
+= Can the plugin be used in a multisite environment? =
+
+Yes, the plugin works normally under multisite, the automated tests we run get ran on standard installations as well as on testing multisite installs.
 
 = How do i capture a payment if i have set the option to not capture the money on checkout? =
 
 In order to capture a payment you can do so by moving the order into the on hold status, and after that move to either processing or complete. This will automatically trigger the capturing process.
+
+= Where can I find more info? =
+
+You can find more information on the [Paylike website](https://paylike.io/plugins/woocommerce) and on [GitHub](https://github.com/paylike/plugin-woocommerce)
 
 == Screenshots ==
 
@@ -95,6 +103,12 @@ In order to capture a payment you can do so by moving the order into the on hold
 3. Payment screen
 
 == Changelog ==
+
+= 1.5.9 =
+* Update readme to specify multisite support
+* Update error messages
+* Add warning when not capturing order
+* Update localization files
 
 = 1.5.8 =
 * Fix quote escape for customer data
@@ -124,105 +138,3 @@ In order to capture a payment you can do so by moving the order into the on hold
 * Moved to new api wrapper
 * More verbose http communication response
 * Prevent capturing when user is not allowed to
-
-= 1.4.5 =
-* Fix manual payment page issues with older woocommerce versions
-* Disable pay button on payment loading for manual payment page
-
-= 1.4.4 =
-* Fatal error fix for manual payment page
-* Update in payment data sent over manual payment after order page
-
-= 1.4.3 =
-* Added better support for retry payment in subscriptions
-
-= 1.4.2 =
-* Added hungarian translation
-
-= 1.4.1 =
-* Fixed fatal error for missing keys
-
-= 1.4.0 =
-* Fixed key name for manual subscriptions
-* Updated language file
-
-= 1.3.9 =
-* Minor logo fix
-
-= 1.3.8 =
-* Added account key validation
-* Updated custom attributes to match standards
-* Updated subcriptions merchant id to match the public key merchant
-* Consistency & deprecated notices related updates
-
-= 1.3.7 =
-* Updated language files
-* Fixed failed payment page
-
-= 1.3.6 =
-* Added more verbose debugging for every api related operation
-
-= 1.3.5 =
-* Added fallback for empty transaction id, added verbose logging for connections until
-  this gets switched to the 2.0 api wrapper
-
-= 1.3.4 =
-* Added better currency support
-* A change in total voids the authorization and resets the token.
-* Minor language file update
-
-
-= 1.3.3 =
-* Fixed issue with legacy get total
-* Updated return tags
-
-= 1.3.2 =
-* Added readable amounts in logs
-* Fixed amount difference in legacy mode
-* Updated api wrapper
-
-= 1.3.1 =
-* Added return for the error so that the order isn't completed on different amount.
-
-= 1.3.0 =
-* Fixed minor bug, lack of quotes around the address field on the payment script.
-
-= 1.2.9 =
-* Fixed issue with file including not in the repository
-
-= 1.2.8 =
-* Updated supported currencies list
-
-= 1.2.7 =
-* Added data collection before order gets created
-* Added legacy support for woocommerce < 3.0
-
-= 1.2.6 =
-* Added danish translation for frontend text
-
-= 1.2.5 =
-* Updated POT file
-
-= 1.2.4 =
-* Minor fields, moved has fields method down so that it doesn't get overwritten
-
-= 1.2.3 =
-* Updated api wrapper
-
-= 1.2.2 =
-* Fixed communication issue with the api on some php versions.
-
-= 1.2.1 =
-* Added missing files
-
-= 1.2.0 =
-* Added subscriptions support
-
-= 1.1.1 =
-* Added compatibility mode,moving an order from processing to complete can capture the payment
-
-= 1.1 =
-* Added support for direct checkout
-
-= 1.0 =
-* Initial release
