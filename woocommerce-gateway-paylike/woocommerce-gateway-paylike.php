@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.5.8
+ * Version: 1.5.9
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 2.5
@@ -149,6 +149,11 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
 			if ( ! $this->get_compatibility_mode() ) {
 				add_action( 'woocommerce_order_status_processing_to_completed', array( $this, 'capture_payment' ) );
+			} else {
+				add_action( 'woocommerce_order_status_processing_to_completed', array(
+					$this,
+					'maybe_capture_warning'
+				) );
 			}
 			add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
 			add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
@@ -414,7 +419,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 * @param WC_Order $order
 		 * @param array    $result // array result returned by the api wrapper.
 		 */
-		function handle_capture_result( $order, $result ) {
+		public function handle_capture_result( $order, $result ) {
 
 			if ( 1 == $result['successful'] ) {
 				$order->add_order_note(
@@ -442,6 +447,34 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		}
 
 		/**
+		 * Handler for moving from processing to completed
+		 * while the compatibility mode is enabled
+		 *
+		 * @param $order_id int
+		 */
+		public function maybe_capture_warning( $order_id ) {
+			$order = wc_get_order( $order_id );
+			if ( 'paylike' != $order->payment_method ) {
+				return false;
+			}
+			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
+			$captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
+			if ( ! ( $transaction_id && 'no' === $captured ) ) {
+				return false;
+			}
+
+			// at this point the user has moved an order that is not captured
+			// which was paid via paylike and we will add a warning stating that no capture has taken place
+
+			$order->add_order_note(
+				__( '<b>Warning:</b> Order has not been captured!', 'woocommerce-gateway-paylike' ) . PHP_EOL .
+				__( 'Compatibility mode is enabled. This means that moving the order from processing to completed does not actually capture the order.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
+				__( 'You can either move the order to on hold and then to processing or go to settings and uncheck the `Compatibility Mode` checkbox.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
+				__( 'If you choose the latter, then you can come back to the order move it back to processing, then move it again to completed.', 'woocommerce-gateway-paylike' )
+			);
+		}
+
+		/**
 		 * @param      $total
 		 * @param null $currency
 		 *  Format the amount based on the currency
@@ -466,7 +499,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 *
 		 * @return string
 		 */
-		function real_amount( $amount_in_cents, $currency = '' ) {
+		public function real_amount( $amount_in_cents, $currency = '' ) {
 			return strip_tags( wc_price( $amount_in_cents / get_paylike_currency_multiplier( $currency ), array(
 				'ex_tax_label' => false,
 				'currency'     => $currency,
@@ -618,6 +651,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$order->add_order_note( $message );
 			}
 			WC_Paylike::log( $message . PHP_EOL . json_encode( $exception->getJsonBody() ) );
+
+			return $message;
 		}
 
 		/**
