@@ -649,7 +649,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 
 			if ( $order ) {
 				$order->add_order_note( $message );
-				WC_Admin_Notices::add_custom_notice( 'paylike_order_situation', '<p>' . $message . '</p>' );
 			}
 			WC_Paylike::log( $message . PHP_EOL . json_encode( $exception->getJsonBody() ) );
 
