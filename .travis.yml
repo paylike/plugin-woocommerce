@@ -39,8 +39,6 @@ script:
 
 after_script:
   - ./vendor/bin/steward results -vvv
-  - cat selenium-node-1.log
-  - cat selenium-server.log
 cache:
   directories:
     - $HOME/.composer/cache
