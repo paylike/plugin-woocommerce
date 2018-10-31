@@ -585,9 +585,9 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->waitForElement( '#the-list' );
 		$woo = $this->getPluginVersion( 'woocommerce/woocommerce.php' );
 		$this->main_test->log( '----VERSIONS----' );
-		$this->main_test->log( 'WooCommerce %s', $woo );
+		echo sprintf( 'WooCommerce %s', $woo );
 		$paylike = $this->getPluginVersion( 'payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike.php' );
-		$this->main_test->log( 'Paylike %s', $paylike );
+		echo sprintf( 'Paylike %s', $paylike );
 	}
 
 	private function getPluginVersion( $file ) {

@@ -39,6 +39,8 @@ script:
 
 after_script:
   - ./vendor/bin/steward results -vvv
+  - ./vendor/bin/steward run staging $BROWSER --group="woocommerce_full_test" -vv # This can fail often due but its good info
+  - ./vendor/bin/steward results -vvv
 cache:
   directories:
     - $HOME/.composer/cache
