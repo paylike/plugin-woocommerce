@@ -580,14 +580,24 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 * @throws NoSuchElementException
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 */
-	private function outputVersions() {
+	private function getVersions() {
 		$this->goToPage( 'wp-admin/plugins.php' );
 		$this->waitForElement( '#the-list' );
-		$woo = $this->getPluginVersion( 'woocommerce/woocommerce.php' );
-		$this->main_test->log( '----VERSIONS----' );
-		echo sprintf( 'WooCommerce %s', $woo );
+		$woo     = $this->getPluginVersion( 'woocommerce/woocommerce.php' );
 		$paylike = $this->getPluginVersion( 'payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike.php' );
-		echo sprintf( 'Paylike %s', $paylike );
+
+		return [ 'ecommerce' => $woo, 'plugin' => $paylike ];
+	}
+
+	/**
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
+	 */
+	private function outputVersions() {
+		$versions = $this->getVersions();
+		$this->main_test->log( '----VERSIONS----' );
+		$this->main_test->log( 'WooCommerce %s', $versions['ecommerce'] );
+		$this->main_test->log( 'Paylike %s', $versions['plugin'] );
 	}
 
 	private function getPluginVersion( $file ) {
@@ -596,6 +606,18 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$version = explode( '|', $version );
 
 		return $version[0];
+	}
+
+	/**
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
+	 */
+	private function logVersionsRemotly() {
+		$versions = $this->getVersions();
+		$this->wd->get( getenv( 'REMOTE_LOG_URL' ) . '&key=' . $this->get_slug( $versions['ecommerce'] ) . '&tag=woocommerce&view=html&' . http_build_query( $versions ) );
+		$this->waitForElement( '#message' );
+		$message = $this->getText( '#message' );
+		$this->main_test->assertEquals( 'Success!', $message, "Remote log failed" );
 	}
 
 
@@ -637,6 +659,13 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	private function go() {
 		$this->changeWindow();
 		$this->loginAdmin();
+
+		if ( $this->log_version ) {
+			$this->logVersionsRemotly();
+
+			return $this;
+		}
+
 		if ( $this->settings_check ) {
 			$this->settingsCheck();
 

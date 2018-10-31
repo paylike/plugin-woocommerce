@@ -22,6 +22,7 @@ class WoocommerceTestHelper {
 	public $exclude_subscription = false;
 	public $settings_check = false;
 	public $stop_email = true;
+	public $log_version = false;
 	public $main_test;
 
 	/**
@@ -361,12 +362,12 @@ class WoocommerceTestHelper {
 		return $this->base_url . '/' . $page;
 	}
 
-	/**
-	 * @param $query
-	 *
-	 * @throws \Facebook\WebDriver\Exception\NoSuchElementException
-	 * @throws \Facebook\WebDriver\Exception\TimeOutException
-	 */
+	public function get_slug($str, $delimiter = '-'){
+
+		$slug = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
+		return $slug;
+
+	}
 
 
 }
