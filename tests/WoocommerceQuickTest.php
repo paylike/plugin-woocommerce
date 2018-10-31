@@ -34,12 +34,13 @@ class WoocommerceQuickTest extends AbstractTestCase {
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
 	 */
-	public function testUsdPaymentAfterOrderInstant() {
+	public function testUsdPaymentBeforeOrderInstant() {
 		$this->runner = new WoocommerceRunner( $this );
 		$this->runner->ready( array(
 				'capture_mode'           => 'instant',
-				'checkout_mode'          => 'after_order',
+				'checkout_mode'          => 'before_order',
 				'exclude_manual_payment' => true,
+				'exclude_subscription'   => true,
 			)
 		);
 	}

@@ -1,6 +1,7 @@
 #Testing
 
 As you can see the plugin is bundled with selenium testing on this repository. You can use the tests, if you have some experience with testing it could be helpful. 
+*DO NOT USE IN PRODUCTION, THE TESTS DELETE ORDERS FOR CLEANUP PURPOSES*
 
 ## Requirements
 

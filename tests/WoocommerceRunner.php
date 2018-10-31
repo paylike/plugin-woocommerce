@@ -135,6 +135,10 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->click( '.order-view' );
 	}
 
+	/**
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
+	 */
 	public function placeOrder() {
 		$this->waitForElement( '#place_order' );
 		$this->waitElementDisappear( '.blockUI.blockOverlay' );
@@ -158,7 +162,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	public function clearCartItem() {
 		try {
 			$cartCount = $this->getText( '.site-header-cart span.count' );
-		}catch (StaleElementReferenceException $exception){
+		} catch ( StaleElementReferenceException $exception ) {
 			// try again
 			$cartCount = $this->getText( '.site-header-cart span.count' );
 		}
@@ -181,7 +185,8 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	}
 
 	/**
-	 *
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 */
 	public function logInFrontend() {
 		$this->elementExists( '.woocommerce-form-login .lost_password' );
@@ -347,8 +352,8 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	}
 
 	/**
-	 *
-	 *
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 */
 	public function popupPaylike() {
 		try {
@@ -543,7 +548,8 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	}
 
 	/**
-	 *
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 */
 	private function verifyKey() {
 		$this->verifyKeyValid();
@@ -592,11 +598,31 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		return $version[0];
 	}
 
+
+	/**
+	 * @throws NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
+	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
+	 */
+	private function orderCleanup() {
+		$this->goToPage( 'wp-admin/edit.php?post_type=shop_order' );
+		$this->click( '#cb-select-all-1' );
+		$this->selectValue( '#bulk-action-selector-top', 'trash' );
+		$this->click( '#doaction2' );
+		$this->acceptAlert();
+		$this->waitForElement( '#message' );
+		$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
+		$this->click( '#delete_all' );
+		$this->waitForElement( '#message' );
+	}
+
 	/**
 	 * @throws \Facebook\WebDriver\Exception\NoSuchElementException
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
+	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
 	 */
 	private function settingsCheck() {
+		$this->orderCleanup();
 		$this->outputVersions();
 		$this->verifyKey();
 		$this->changeDecimal();
