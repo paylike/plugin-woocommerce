@@ -287,6 +287,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$this->click( ".add-line-item", false );
 			$this->click( ".add-order-item" );
 		}
+		$this->click( '.wc-backbone-modal .select2-selection');
 		$this->wd->getKeyboard()->sendKeys( "Hoo" );
 		$this->waitForElement( ".select2-results__option--highlighted" );
 		$this->pressEnter();
@@ -377,7 +378,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->waitForElement( '.woocommerce_subscriptions_related_orders a' );
 		$orderId = $this->getText( '.woocommerce_subscriptions_related_orders a' );
 		$orderId = str_replace( '#', '', "subscription_id => $orderId" );
-		$this->goToPage( 'wp-admin/edit.php?post_type=scheduled-action', '.type-scheduled-action' );
+		$this->goToPage( 'wp-admin/tools.php?page=action-scheduler&orderby=schedule&order=desc', '.column-schedule' );
 		$this->waitForElement( '.args.column-args' );
 		$scheduledActions = $this->findElements( '#the-list tr.iedit' );
 		/** @var RemoteWebElement $scheduledAction */
