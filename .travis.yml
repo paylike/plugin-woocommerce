@@ -37,6 +37,7 @@ before_script:
 script:
   - ./vendor/bin/steward run staging $BROWSER --group="woocommerce_quick_test" -vv # Run the tests in $BROWSER and specify `staging` as an environment name
 after_success:
+- ./vendor/bin/steward results -vvv
 - ./vendor/bin/steward run staging $BROWSER --group="woocommerce_full_test" -vv
 - ./vendor/bin/steward results -vvv
 - ./vendor/bin/steward run staging $BROWSER --group="woocommerce_version_log" -vv
