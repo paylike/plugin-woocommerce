@@ -39,7 +39,7 @@ class WoocommerceQuickTest extends AbstractTestCase {
 		$this->runner->ready( array(
 				'capture_mode'           => 'instant',
 				'checkout_mode'          => 'before_order',
-				'exclude_manual_payment' => true,
+				'exclude_manual_payment' => false,
 				'exclude_subscription'   => true,
 			)
 		);

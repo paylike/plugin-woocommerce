@@ -1,4 +1,4 @@
-# WooCommerce plugin for Paylike [![Build Status](https://travis-ci.org/ionutcalara/plugin-woocommerce.svg?branch=master)](https://travis-ci.org/ionutcalara/plugin-woocommerce)
+# WooCommerce plugin for Paylike [![Build Status](https://travis-ci.org/paylike/plugin-woocommerce.svg?branch=master)](https://travis-ci.org/paylike/plugin-woocommerce)
 
 This plugin is *not* developed or maintained by Paylike but kindly made
 available by a user.
@@ -6,10 +6,12 @@ available by a user.
 Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 
-## Supported WooCommerce versions
+## Supported WooCommerce versions 
 
-* The plugin has been tested with most versions of WooCommerce at every iteration. We recommend using the latest version of WooCommerce, but if that is not possible for some reason, test the plugin with your WooCommerce version and it would probably function properly. 
-* WooCommerce version last tested on: *3.4.7*
+[![Last succesfull test](https://log.derikon.ro/api/v1/log/read?tag=woocommerce&view=svg&label=WooCommerce&key=ecommerce&background=96588a)](https://log.derikon.ro/api/v1/log/read?tag=woocommerce&view=html)
+
+*The plugin has been tested with most versions of WooCommerce at every iteration. We recommend using the latest version of WooCommerce, but if that is not possible for some reason, test the plugin with your WooCommerce version and it would probably function properly.* 
+
 
 ## Installation
 

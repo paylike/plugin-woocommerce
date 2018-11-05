@@ -3,6 +3,7 @@
 
 namespace Woocommerce;
 
+use Facebook\WebDriver\Exception\NoAlertOpenException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\Remote\RemoteWebElement;
@@ -287,6 +288,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$this->click( ".add-line-item", false );
 			$this->click( ".add-order-item" );
 		}
+		$this->click( '.wc-backbone-modal .select2-selection' );
 		$this->wd->getKeyboard()->sendKeys( "Hoo" );
 		$this->waitForElement( ".select2-results__option--highlighted" );
 		$this->pressEnter();
@@ -377,7 +379,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->waitForElement( '.woocommerce_subscriptions_related_orders a' );
 		$orderId = $this->getText( '.woocommerce_subscriptions_related_orders a' );
 		$orderId = str_replace( '#', '', "subscription_id => $orderId" );
-		$this->goToPage( 'wp-admin/edit.php?post_type=scheduled-action', '.type-scheduled-action' );
+		$this->goToPage( 'wp-admin/tools.php?page=action-scheduler&orderby=schedule&order=desc', '.column-schedule' );
 		$this->waitForElement( '.args.column-args' );
 		$scheduledActions = $this->findElements( '#the-list tr.iedit' );
 		/** @var RemoteWebElement $scheduledAction */
@@ -631,11 +633,16 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->click( '#cb-select-all-1' );
 		$this->selectValue( '#bulk-action-selector-top', 'trash' );
 		$this->click( '#doaction2' );
-		$this->acceptAlert();
-		$this->waitForElement( '#message' );
-		$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
-		$this->click( '#delete_all' );
-		$this->waitForElement( '#message' );
+		try {
+			$this->wd->switchTo()->alert()->accept();
+			$this->acceptAlert();
+			$this->waitForElement( '#message' );
+			$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
+			$this->click( '#delete_all' );
+			$this->waitForElement( '#message' );
+		} catch ( NoAlertOpenException $exception ) {
+			// we may not have the alert so just move on
+		}
 	}
 
 	/**
