@@ -3,6 +3,7 @@
 
 namespace Woocommerce;
 
+use Facebook\WebDriver\Exception\NoAlertOpenException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\StaleElementReferenceException;
 use Facebook\WebDriver\Remote\RemoteWebElement;
@@ -287,7 +288,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$this->click( ".add-line-item", false );
 			$this->click( ".add-order-item" );
 		}
-		$this->click( '.wc-backbone-modal .select2-selection');
+		$this->click( '.wc-backbone-modal .select2-selection' );
 		$this->wd->getKeyboard()->sendKeys( "Hoo" );
 		$this->waitForElement( ".select2-results__option--highlighted" );
 		$this->pressEnter();
@@ -632,11 +633,16 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->click( '#cb-select-all-1' );
 		$this->selectValue( '#bulk-action-selector-top', 'trash' );
 		$this->click( '#doaction2' );
-		$this->acceptAlert();
-		$this->waitForElement( '#message' );
-		$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
-		$this->click( '#delete_all' );
-		$this->waitForElement( '#message' );
+		try {
+			$this->wd->switchTo()->alert()->accept();
+			$this->acceptAlert();
+			$this->waitForElement( '#message' );
+			$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
+			$this->click( '#delete_all' );
+			$this->waitForElement( '#message' );
+		} catch ( NoAlertOpenException $exception ) {
+			// we may not have the alert so just move on
+		}
 	}
 
 	/**
