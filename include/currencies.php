@@ -205,7 +205,7 @@ if ( ! function_exists( 'get_paylike_currency' ) ) {
 					'code'     => 'CLP',
 					'currency' => 'Chilean peso',
 					'numeric'  => '152',
-					'exponent' => 2,
+					'exponent' => 0,
 				),
 			'CNY' =>
 				array(
@@ -624,11 +624,11 @@ if ( ! function_exists( 'get_paylike_currency' ) ) {
 					'numeric'  => '446',
 					'exponent' => 2,
 				),
-			'MRO' =>
+			'MRU' =>
 				array(
-					'code'     => 'MRO',
+					'code'     => 'MRU',
 					'currency' => 'Mauritanian ouguiya',
-					'numeric'  => '478',
+					'numeric'  => '929',
 					'exponent' => 2,
 				),
 			'MUR' =>
@@ -880,11 +880,11 @@ if ( ! function_exists( 'get_paylike_currency' ) ) {
 					'numeric'  => '968',
 					'exponent' => 2,
 				),
-			'STD' =>
+			'STN' =>
 				array(
-					'code'     => 'STD',
+					'code'     => 'STN',
 					'currency' => 'São Tomé and Príncipe dobra',
-					'numeric'  => '678',
+					'numeric'  => '930',
 					'exponent' => 2,
 				),
 			'SYP' =>
@@ -976,7 +976,7 @@ if ( ! function_exists( 'get_paylike_currency' ) ) {
 					'code'     => 'UGX',
 					'currency' => 'Ugandan shilling',
 					'numeric'  => '800',
-					'exponent' => 2,
+					'exponent' => 0,
 				),
 			'USD' =>
 				array(
@@ -1000,11 +1000,11 @@ if ( ! function_exists( 'get_paylike_currency' ) ) {
 					'numeric'  => '860',
 					'exponent' => 2,
 				),
-			'VEF' =>
+			'VES' =>
 				array(
 					'code'     => 'VEF',
 					'currency' => 'Venezuelan bolívar',
-					'numeric'  => '937',
+					'numeric'  => '928',
 					'exponent' => 2,
 				),
 			'VND' =>

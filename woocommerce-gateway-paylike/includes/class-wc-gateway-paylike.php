@@ -532,6 +532,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	protected function parse_api_transaction_response( $transaction, $order = null, $amount = false ) {
 		if ( ! $this->is_transaction_successful( $transaction, $order, $amount ) ) {
 			$error_message = WC_Gateway_Paylike::get_response_error( $transaction );
+			WC_Paylike::log( 'Transaction with error:' . json_encode( $transaction ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 			return new WP_Error( 'paylike_error', __( 'Error: ', 'woocommerce-gateway-paylike' ) . $error_message );
 		}
@@ -1002,7 +1003,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                 e.preventDefault();
 
                 paylike.popup({
-                    title: '<?php echo addslashes(esc_attr( $this->popup_title )); ?>',
+                    title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>',
                     currency: '<?php echo get_woocommerce_currency() ?>',
                     amount:  <?php echo $amount; ?>,
                     locale: '<?php echo get_locale(); ?>',
@@ -1010,10 +1011,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                         orderId: '<?php echo $order->get_order_number(); ?>',
                         products: [<?php echo json_encode( $products ); ?>],
                         customer: {
-                            name: '<?php echo addslashes(dk_get_order_data( $order, 'get_billing_first_name' )) . ' ' . addslashes(dk_get_order_data( $order, 'get_billing_last_name' )); ?>',
-                            email: '<?php echo addslashes(dk_get_order_data( $order, 'get_billing_email' )); ?>',
-                            phoneNo: '<?php echo addslashes(dk_get_order_data( $order, 'get_billing_phone' )); ?>',
-                            address: '<?php echo addslashes(dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' )); ?>',
+                            name: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_first_name' ) ) . ' ' . addslashes( dk_get_order_data( $order, 'get_billing_last_name' ) ); ?>',
+                            email: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_email' ) ); ?>',
+                            phoneNo: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_phone' ) ); ?>',
+                            address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) ); ?>',
                             IP: '<?php echo $this->get_client_ip(); ?>'
                         },
                         platform: {
