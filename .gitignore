@@ -88,3 +88,4 @@ fabric.properties
 .DS_Store
 vendor
 .env
+.env.production

@@ -978,7 +978,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	public function receipt_page( $order_id ) {
 		global $wp_version;
 		$order    = wc_get_order( $order_id );
-		$amount   = $this->get_paylike_amount( $order->get_total(), $order->get_order_currency() );
+		$amount   = $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) );
 		$products = array();
 		$items    = $order->get_items();
 		$pf       = new WC_Product_Factory();
