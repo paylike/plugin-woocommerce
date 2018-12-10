@@ -9,7 +9,7 @@
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 2.5
- * WC tested up to: 3.5.0
+ * WC tested up to: 3.5.2
  *
  * Copyright (c) 2016 Derikon Development
  *
