@@ -592,6 +592,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public static function get_response_error( $result ) {
 		$error = array();
+		// if this is just one error
+		if ( isset( $result['text'] ) ) {
+			return $result['text'];
+		}
+
+		// otherwise this is a multi field error
 		if ( $result ) {
 			foreach ( $result as $field_error ) {
 				$error[] = $field_error['field'] . ':' . $field_error['message'];
