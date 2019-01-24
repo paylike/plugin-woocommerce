@@ -216,7 +216,7 @@ jQuery(function ($) {
 
                 return true;
             },
-            escapeQoutes(str) {
+            escapeQoutes:function(str) {
                 return str.toString().replace(/"/g, '\\"');
             }
         }

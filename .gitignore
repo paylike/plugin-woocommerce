@@ -87,5 +87,6 @@ fabric.properties
 .idea
 .DS_Store
 vendor
+!woocommerce-gateway-paylike/vendor
 .env
 .env.production
