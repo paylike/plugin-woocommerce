@@ -5,11 +5,11 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.6.5
+ * Version: 1.6.6
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 2.5
- * WC tested up to: 3.5.2
+ * WC tested up to: 3.5.7
  *
  * Copyright (c) 2016 Derikon Development
  *
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.6.5' );
+define( 'WC_PAYLIKE_VERSION', '1.6.6' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -291,9 +291,9 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		/**
 		 * Get setting link.
 		 *
+		 * @return string Setting link
 		 * @since 1.0.0
 		 *
-		 * @return string Setting link
 		 */
 		public function get_setting_link() {
 			if ( function_exists( 'WC' ) ) {
@@ -486,7 +486,10 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$currency = get_woocommerce_currency();
 			}
 			$multiplier = get_paylike_currency_multiplier( $currency );
-			$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units
+			$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+			if ( function_exists( 'bcmul' ) ) {
+				$amount = ceil( bcmul( $total, $multiplier ) );
+			}
 
 			return $amount;
 		}
@@ -509,7 +512,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		/**
 		 * Cancel pre-auth on refund/cancellation
 		 *
-		 * @param  int $order_id
+		 * @param int $order_id
 		 */
 		public function cancel_payment( $order_id ) {
 			$order = wc_get_order( $order_id );
