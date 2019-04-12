@@ -44,3 +44,8 @@ Under the WooCommerce Paylike settings, you can:
    * To refund an order you can use the refund action in woocommerce, type the amount and use the refund via paylike button.
  3. Void
    * To void an order you can use the refund action in woocommerce, type the amount and use the refund via paylike button. You can only do this if the order is not captured, if you have captured already use the refund. 
+
+
+## Advanced
+
+Due to the floating point precision issue with some numbers, it is recommended to have the bcmath extension installed. 

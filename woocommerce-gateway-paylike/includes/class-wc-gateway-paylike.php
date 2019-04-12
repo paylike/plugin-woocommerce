@@ -579,6 +579,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		$multiplier = get_paylike_currency_multiplier( $currency );
 		$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+		if ( function_exists( 'bcmul' ) ) {
+			$amount = ceil( bcmul( $total, $multiplier ) );
+		}
 
 		return $amount;
 	}
@@ -677,9 +680,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	/**
 	 * Refund a transaction process function.
 	 *
-	 * @param  int    $order_id The id of the order related to the transaction.
-	 * @param  float  $amount The amount that is being refunded. Defaults to full amount.
-	 * @param  string $reason The reason, no longer used.
+	 * @param int    $order_id The id of the order related to the transaction.
+	 * @param float  $amount The amount that is being refunded. Defaults to full amount.
+	 * @param string $reason The reason, no longer used.
 	 *
 	 * @return bool
 	 */
@@ -1114,11 +1117,11 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	/**
 	 * Sends the failed order email to admin
 	 *
-	 * @version 3.1.0
-	 * @since 3.1.0
-	 *
 	 * @param int $order_id
 	 *
+	 * @since 3.1.0
+	 *
+	 * @version 3.1.0
 	 */
 	public function send_failed_order_email( $order_id ) {
 		$emails = WC()->mailer()->get_emails();

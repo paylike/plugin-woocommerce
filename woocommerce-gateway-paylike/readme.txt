@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
 Tested up to: 5.0
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 WC requires at least: 3.0
 WC tested up to: 3.4.7
 License: GPLv3
@@ -96,6 +96,7 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 You can find more information on the [Paylike website](https://paylike.io/plugins/woocommerce) and on [GitHub](https://github.com/paylike/plugin-woocommerce)
 
+
 == Screenshots ==
 
 1. The settings panel for the Paylike gateway
@@ -104,6 +105,8 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 
 == Changelog ==
 
+= 1.6.6 =
+* Update amount calculation to use the bc math extension for better floating point precision
 
 = 1.6.5 =
 * Minor IE fix
