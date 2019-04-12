@@ -291,9 +291,9 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		/**
 		 * Get setting link.
 		 *
+		 * @return string Setting link
 		 * @since 1.0.0
 		 *
-		 * @return string Setting link
 		 */
 		public function get_setting_link() {
 			if ( function_exists( 'WC' ) ) {
@@ -486,7 +486,10 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$currency = get_woocommerce_currency();
 			}
 			$multiplier = get_paylike_currency_multiplier( $currency );
-			$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units
+			$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+			if ( function_exists( 'bcmul' ) ) {
+				$amount = ceil( bcmul( $total, $multiplier ) );
+			}
 
 			return $amount;
 		}
@@ -509,7 +512,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		/**
 		 * Cancel pre-auth on refund/cancellation
 		 *
-		 * @param  int $order_id
+		 * @param int $order_id
 		 */
 		public function cancel_payment( $order_id ) {
 			$order = wc_get_order( $order_id );
