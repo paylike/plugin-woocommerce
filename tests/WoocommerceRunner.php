@@ -402,7 +402,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->waitForElement( 'refund_amount' );
 		$refund       = preg_match_all( '!\d+!', $this->getText( '.woocommerce-Price-amount.amount' ), $refund_value );
 		$refund_value = $refund_value[0];
-		$this->type( '#refund_amount', $refund_value[0] );
+		$this->type( '.refund .refund_line_total', $refund_value[0] );
 		$this->click( '.do-api-refund' );
 		$this->acceptAlert();
 		try {
