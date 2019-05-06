@@ -412,7 +412,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		}
 		$this->waitForElement( '.note_content p' );
 		$text = $this->pluckElement( '.note_content p', 0 )->getText();
-		if ( $text == 'Order status changed from Processing to Refunded.' ) {
+		if ( $text == 'Order status changed from Processing to Refunded.'|| $text == 'Order status changed from Completed to Refunded.' ) {
 			$text = $this->pluckElement( '.note_content p', 1 )->getText();
 		}
 		$messages = explode( "\n", $text );

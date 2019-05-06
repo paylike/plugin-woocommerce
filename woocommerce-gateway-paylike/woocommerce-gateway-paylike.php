@@ -5,11 +5,11 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.6.6
+ * Version: 1.7.0
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 2.5
- * WC tested up to: 3.5.7
+ * WC tested up to: 3.6.2
  *
  * Copyright (c) 2016 Derikon Development
  *
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.6.6' );
+define( 'WC_PAYLIKE_VERSION', '1.7.0' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -388,13 +388,24 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		}
 
 		/**
+		 * Return order that can be captured, check for partial void or refund
+		 *
+		 * @param WC_Order $order
+		 *
+		 * @return mixed
+		 */
+		protected function get_order_amount( $order ) {
+			return $order->get_total() - $order->get_total_refunded();
+		}
+
+		/**
 		 * Capture payment when the order is changed from on-hold to complete or processing
 		 *
 		 * @param $order_id int
 		 */
 		public function capture_payment( $order_id ) {
 			$order = wc_get_order( $order_id );
-			if ( 'paylike' != $order->payment_method ) {
+			if ( 'paylike' != $order->get_payment_method() ) {
 				return false;
 			}
 			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
@@ -403,7 +414,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$data = array(
-				'amount'   => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
+				'amount'   => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 				'currency' => dk_get_order_currency( $order ),
 			);
 			WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
@@ -425,7 +436,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$order->add_order_note(
 					__( 'Paylike capture complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
 					__( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $result['id'] . PHP_EOL .
-					__( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $result['amount'], $result['currency'] ) . PHP_EOL .
+					__( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $result['capturedAmount'], $result['currency'] ) . PHP_EOL .
 					__( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['created']
 				);
 				WC_Paylike::log( 'Info: Capture was successful' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
@@ -525,7 +536,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$data     = array(
-				'amount' => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
+				'amount' => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 			);
 			$currency = dk_get_order_currency( $order );
 			if ( 'yes' == $captured ) {
@@ -557,7 +568,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$order->add_order_note(
 					__( 'Paylike refund complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
 					__( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $result['id'] . PHP_EOL .
-					__( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $result['amount'], $result['currency'] ) . PHP_EOL .
+					__( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $result['refundedAmount'], $result['currency'] ) . PHP_EOL .
 					__( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['created']
 				);
 				WC_Paylike::log( 'Info: Refund was successful' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
@@ -585,7 +596,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$order->add_order_note(
 					__( 'Paylike void complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
 					__( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $result['id'] . PHP_EOL .
-					__( 'Voided amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $result['amount'], $result['currency'] ) . PHP_EOL .
+					__( 'Voided amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $result['voidedAmount'], $result['currency'] ) . PHP_EOL .
 					__( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $result['created']
 				);
 				WC_Paylike::log( 'Info: Void was successful' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
