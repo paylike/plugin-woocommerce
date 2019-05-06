@@ -427,6 +427,17 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Return order that can be captured, check for partial void or refund
+	 *
+	 * @param WC_Order $order
+	 *
+	 * @return mixed
+	 */
+	protected function get_order_amount( $order ) {
+		return $order->get_total() - $order->get_total_refunded();
+	}
+
+	/**
 	 * Handles API interaction for the order
 	 * by either only authorizing the payment
 	 * or making the capture directly
@@ -439,7 +450,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	protected function handle_payment( $transaction_id, $order, $amount = false ) {
 		$order_id = get_woo_id( $order );
-		WC_Paylike::log( '------------- Start payment --------------' . PHP_EOL . "Info: Begin processing payment for order $order_id for the amount of {$order->get_total()}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		WC_Paylike::log( '------------- Start payment --------------' . PHP_EOL . "Info: Begin processing payment for order $order_id for the amount of {$this->get_order_amount($order)}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 		if ( false == $this->capture ) {
 			try {
 				$result = $this->paylike_client->transactions()->fetch( $transaction_id );
@@ -449,7 +460,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			}
 		} else {
 			$data = array(
-				'amount'   => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
+				'amount'   => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 				'currency' => dk_get_order_currency( $order ),
 			);
 			WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
