@@ -496,10 +496,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$order->add_order_note(
 				$this->get_transaction_authorization_details( $result )
 			);
-			$order->payment_complete();
 			$this->save_transaction_id( $result, $order );
 			WC_Paylike::log( 'Info: Authorize was successful' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 			update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'no' );
+			$order->payment_complete();
 		}
 	}
 
@@ -524,9 +524,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				$this->get_transaction_capture_details( $result )
 			);
 			WC_Paylike::log( 'Info: Capture was successful' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-			$order->payment_complete();
 			$this->save_transaction_id( $result, $order );
 			update_post_meta( get_woo_id( $order ), '_paylike_transaction_captured', 'yes' );
+			$order->payment_complete();
 		}
 	}
 
