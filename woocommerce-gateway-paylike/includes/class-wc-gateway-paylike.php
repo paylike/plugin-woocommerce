@@ -1235,7 +1235,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 *
 	 * @return bool|int|mixed|null|WP_Error
 	 */
-	protected function get_global_merchant_id() {
+	public function get_global_merchant_id() {
 		WC_Paylike::log( 'Info: Attempting to fetch the global merchant id ' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 		if ( ! $this->paylike_client ) {
 			if ( '' !== $this->secret_key ) {
