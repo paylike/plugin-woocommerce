@@ -106,6 +106,11 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 == Changelog ==
 
 
+= 1.7.1 =
+* Update translation files
+* Increment tested up to
+* Move payment complete after transaction data has been saved
+
 = 1.7.0 =
 * Update amount calculation to include previous refunds and voids
 
