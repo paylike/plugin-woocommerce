@@ -55,19 +55,19 @@ jQuery(function ($) {
                 
                 // Shipmondo: Business shipping, but no business name
                 if ($('#shipping_method input:checked').val() == 'pakkelabels_shipping_postnord_business' && $("#billing_company").val() == '') {
-					return false;
+                    return false;
                 }
 
-				// Shipmondo: Pickup point shipping, but no pickup point selected
-				var shipmondoPickupPointTypes = [
-					"pakkelabels_shipping_gls",
-					"pakkelabels_shipping_pdk",
-					"pakkelabels_shipping_dao",
-					"pakkelabels_shipping_bring"
-				];
-				
-				if (shipmondoPickupPointTypes.includes($('#shipping_method input:checked').val()) && $("#hidden_chosen_shop input[name='shop_ID']").val() == '') {
-					return false;
+                // Shipmondo: Pickup point shipping, but no pickup point selected
+                var shipmondoPickupPointTypes = [
+                    "pakkelabels_shipping_gls",
+                    "pakkelabels_shipping_pdk",
+                    "pakkelabels_shipping_dao",
+                    "pakkelabels_shipping_bring"
+                ];
+                
+                if (shipmondoPickupPointTypes.includes($('#shipping_method input:checked').val()) && $("#hidden_chosen_shop input[name='shop_ID']").val() == '') {
+                    return false;
                 }
 
                 // check to see if we need to validate shipping address
