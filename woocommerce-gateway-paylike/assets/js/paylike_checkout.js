@@ -52,7 +52,7 @@ jQuery(function ($) {
                 if ($('#createaccount').is(':checked') && $account_password.length && $account_password.val() === '') {
                     return false;
                 }
-
+                                
                 // check to see if we need to validate shipping address
                 if ($('#ship-to-different-address-checkbox').is(':checked')) {
                     $required_inputs = $('.woocommerce-billing-fields .validate-required, .woocommerce-shipping-fields .validate-required');
@@ -73,6 +73,8 @@ jQuery(function ($) {
                         return false;
                     }
                 }
+                
+                if (!wc_paylike_form.validateShipmondo()) return false;
 
                 return true;
             },
@@ -218,6 +220,43 @@ jQuery(function ($) {
             },
             escapeQoutes:function(str) {
                 return str.toString().replace(/"/g, '\\"');
+            },
+            validateShipmondo:function() {
+                
+                // Check if Shipmondo (Pakkelabels.dk) shipping option is selected
+                if ($('#shipping_method input:checked').val().indexOf("pakkelabels") >= 0) {
+                    
+                    // Business shipping, but no business name
+                    var shipmondoBusinessTypes = [
+                        "pakkelabels_shipping_gls_business",
+                        "pakkelabels_shipping_postnord_business",
+                        "pakkelabels_shipping_bring_business"
+                    ];
+                    
+                    if (shipmondoBusinessTypes.includes($('#shipping_method input:checked').val()) && $("#billing_company").val() == '') {
+                        return false;
+                    }
+    
+                    // Pickup point shipping, but no pickup point selected
+                    var shipmondoPickupPointTypes = [
+                        "pakkelabels_shipping_gls",
+                        "pakkelabels_shipping_pdk",
+                        "pakkelabels_shipping_dao",
+                        "pakkelabels_shipping_bring"
+                    ];
+                    
+                    // Check if pickup point shipping is selected
+                    if (shipmondoPickupPointTypes.includes($('#shipping_method input:checked').val())) {
+                        // Check if a shopID exists
+                        if ($("#hidden_chosen_shop input[name='shop_ID']").val() == '') {
+                            return false;
+                        }
+                    }
+                    
+                }
+                
+                return true;
+
             }
         }
     ;
