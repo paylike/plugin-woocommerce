@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.7.1
+ * Version: 1.7.2
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 2.5
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.7.0' );
+define( 'WC_PAYLIKE_VERSION', '1.7.2' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -142,6 +142,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			// Init the gateway itself.
 			$this->init_gateways();
 			$this->db_update();
+			// make sure client is set
+			$secret = $this->get_secret_key();
 			add_action( 'wp_ajax_paylike_log_transaction_data', array( $this, 'log_transaction_data' ) );
 			add_action( 'wp_ajax_nopriv_paylike_log_transaction_data', array( $this, 'log_transaction_data' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
@@ -687,7 +689,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			if ( empty( self::$log ) ) {
 				self::$log = new WC_Logger();
 			}
-			self::$log->add( 'woocommerce-gateway-paylike', $message );
+			self::$log->debug( $message, array( 'source' => 'woocommerce-gateway-paylike' ) );
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( $message );
 			}

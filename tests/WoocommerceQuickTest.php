@@ -7,6 +7,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Lmc\Steward\ConfigProvider;
 use Lmc\Steward\Test\AbstractTestCase;
 
 /**

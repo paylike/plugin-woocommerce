@@ -41,12 +41,12 @@ class CustomCapabilitiesResolver implements CustomCapabilitiesResolverInterface 
 			$capabilities->setCapability( 'ms:someEdgeCapability', 'true' );
 		}
 		// When on CI, run Chrome in headless mode
-		if ( ( new CiDetector() )->isCiDetected() && $this->config->browserName === WebDriverBrowserType::CHROME ) {
+		if ( ( ( new CiDetector() )->isCiDetected() || getenv( 'HEADLESS' ) ) && $this->config->browserName === WebDriverBrowserType::CHROME ) {
 			$chromeOptions = new ChromeOptions();
 			// In headless Chrome 60, window size cannot be changed run-time:
 			// https://bugs.chromium.org/p/chromium/issues/detail?id=604324#c46
 			// --no-sandbox is workaround for Chrome crashing: https://github.com/SeleniumHQ/selenium/issues/4961
-			$chromeOptions->addArguments( [ '--headless', 'window-size=1024,768', '--no-sandbox' ] );
+			$chromeOptions->addArguments( [ '--headless', 'window-size=1600,996', '--no-sandbox' ] );
 			$capabilities->setCapability( ChromeOptions::CAPABILITY, $chromeOptions );
 		}
 

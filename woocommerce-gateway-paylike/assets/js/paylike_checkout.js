@@ -76,6 +76,8 @@ jQuery(function ($) {
                 
                 if (!wc_paylike_form.validateShipmondo()) return false;
 
+                if (!wc_paylike_form.validateShipmondo()) return false;
+
                 return true;
             },
 
@@ -222,10 +224,12 @@ jQuery(function ($) {
                 return str.toString().replace(/"/g, '\\"');
             },
             validateShipmondo:function() {
-                
+                var selectedShipping=$('#shipping_method input:checked').val();
+                if(!selectedShipping){
+                    return true;
+                }
                 // Check if Shipmondo (Pakkelabels.dk) shipping option is selected
-                if ($('#shipping_method input:checked').val().indexOf("pakkelabels") >= 0) {
-                    
+                if (selectedShipping.indexOf("pakkelabels") >= 0) {
                     // Business shipping, but no business name
                     var shipmondoBusinessTypes = [
                         "pakkelabels_shipping_gls_business",
@@ -244,7 +248,7 @@ jQuery(function ($) {
                         "pakkelabels_shipping_dao",
                         "pakkelabels_shipping_bring"
                     ];
-                    
+                  
                     // Check if pickup point shipping is selected
                     if (shipmondoPickupPointTypes.includes($('#shipping_method input:checked').val())) {
                         // Check if a shopID exists
@@ -252,9 +256,7 @@ jQuery(function ($) {
                             return false;
                         }
                     }
-                    
                 }
-                
                 return true;
 
             }
