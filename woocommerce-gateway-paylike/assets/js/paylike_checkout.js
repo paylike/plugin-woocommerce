@@ -55,13 +55,13 @@ jQuery(function ($) {
                 
                 //Shipmondo: Business shipping, but no business name
                 var shipmondoBusinessTypes = [
-					"pakkelabels_shipping_gls_business",
-					"pakkelabels_shipping_postnord_business",
-					"pakkelabels_shipping_bring_business"
-				];
-				
+                    "pakkelabels_shipping_gls_business",
+                    "pakkelabels_shipping_postnord_business",
+                    "pakkelabels_shipping_bring_business"
+                ];
+                
                 if(shipmondoBusinessTypes.includes($('#shipping_method input:checked').val()) && $("#billing_company").val() == ''){
-					return false;
+                    return false;
                 }
 
                 // Shipmondo: Pickup point shipping, but no pickup point selected
