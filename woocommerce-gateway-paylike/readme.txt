@@ -2,10 +2,10 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 5.2
-Stable tag: 1.7.1
+Tested up to: 5.2.2
+Stable tag: 1.7.2
 WC requires at least: 3.0
-WC tested up to: 3.6.3
+WC tested up to: 3.6.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -105,6 +105,8 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 
 == Changelog ==
 
+= 1.7.2 =
+* Fix capture bug o order status change
 
 = 1.7.1 =
 * Update translation files

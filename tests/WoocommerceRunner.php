@@ -10,6 +10,7 @@ use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Lmc\Steward\ConfigProvider;
 
 class WoocommerceRunner extends WoocommerceTestHelper {
 
@@ -412,7 +413,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		}
 		$this->waitForElement( '.note_content p' );
 		$text = $this->pluckElement( '.note_content p', 0 )->getText();
-		if ( $text == 'Order status changed from Processing to Refunded.'|| $text == 'Order status changed from Completed to Refunded.' ) {
+		if ( $text == 'Order status changed from Processing to Refunded.' || $text == 'Order status changed from Completed to Refunded.' ) {
 			$text = $this->pluckElement( '.note_content p', 1 )->getText();
 		}
 		$messages = explode( "\n", $text );
