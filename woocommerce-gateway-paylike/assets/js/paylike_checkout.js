@@ -73,6 +73,8 @@ jQuery(function ($) {
                         return false;
                     }
                 }
+                
+                if (!wc_paylike_form.validateShipmondo()) return false;
 
                 return true;
             },
@@ -134,7 +136,6 @@ jQuery(function ($) {
                 return wc_paylike_form.escapeQoutes(phone);
             },
             onSubmit: function (e) {
-                if (!wc_paylike_form.validateShipmondo()) return true;
                 if (wc_paylike_form.isPaylikeModalNeeded()) {
                     e.preventDefault();
 
