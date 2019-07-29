@@ -107,6 +107,7 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 
 = 1.7.2 =
 * Fix capture bug o order status change
+* Add Shipmondo validation support
 
 = 1.7.1 =
 * Update translation files
@@ -137,38 +138,3 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 
 = 1.6.0 =
 * Update last tested version for WooCommerce
-
-= 1.5.9 =
-* Update readme to specify multisite support
-* Update error messages
-* Add warning when not capturing order
-* Update localization files
-
-= 1.5.8 =
-* Fix quote escape for customer data
-
-= 1.5.7 =
-* Fix not included file
-
-= 1.5.6 =
-* Update merchants calls to the cursor implementation
-
-= 1.5.5 =
-* Update tested up to tags
-
-= 1.5.4 =
-* Minor key fix
-
-= 1.5.3 =
-* Key check fix
-
-= 1.5.2 =
-* Minor messages update
-
-= 1.5.1 =
-* Fix version issue
-
-= 1.5.0 =
-* Moved to new api wrapper
-* More verbose http communication response
-* Prevent capturing when user is not allowed to
