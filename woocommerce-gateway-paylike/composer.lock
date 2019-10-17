@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "paylike/php-api",
-            "version": "1.0.3",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paylike/php-api.git",
-                "reference": "a1cd5dd3fc6647943d5102d4bb93fd97e8c1eea0"
+                "reference": "85cd1fd04f98afd68b628735aad94add2f4c0223"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paylike/php-api/zipball/a1cd5dd3fc6647943d5102d4bb93fd97e8c1eea0",
-                "reference": "a1cd5dd3fc6647943d5102d4bb93fd97e8c1eea0",
+                "url": "https://api.github.com/repos/paylike/php-api/zipball/85cd1fd04f98afd68b628735aad94add2f4c0223",
+                "reference": "85cd1fd04f98afd68b628735aad94add2f4c0223",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "PHP SDK to communicate with the Paylike HTTP api",
-            "time": "2018-09-20T14:02:20+00:00"
+            "time": "2019-10-17T08:41:20+00:00"
         }
     ],
     "packages-dev": [],

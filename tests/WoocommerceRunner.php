@@ -205,7 +205,12 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 */
 	public function choosePaylike() {
 		$this->waitElementDisappear( '.blockUI.blockOverlay' );
-		$this->click( '.payment_method_paylike label' );
+		try {
+			$this->click( '.payment_method_paylike label' );
+		} catch ( \Exception $exception ) {
+			$this->waitElementDisappear( '.blockUI.blockOverlay' );
+			$this->click( '.payment_method_paylike label' );
+		}
 		$this->waitForElement( '#place_order' );
 		$this->click( '#place_order' );
 	}
@@ -238,7 +243,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 */
 	public function finalPaylike() {
 		if ( $this->checkout_mode == 'before_order' && ! $this->manual_payment ) {
-			$amount         = (int) $this->getElementData( '#paylike-payment-data', 'amount' );
+			$amount = (int) $this->getElementData( '#paylike-payment-data', 'amount' );
 			$expectedAmount = $this->getText( '.order-total span.amount' );
 			$expectedAmount = preg_replace( "/[^0-9.]/", "", $expectedAmount );
 			$expectedAmount = trim( $expectedAmount, '.' );
@@ -304,7 +309,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 */
 	public function verifyTransactionNote() {
 		$this->waitForElement( '.note_content p' );
-		$text     = $this->pluckElement( '.note_content p', 1 )->getText();
+		$text = $this->pluckElement( '.note_content p', 1 )->getText();
 		$messages = explode( "\n", $text );
 		if ( $this->capture_mode == 'instant' ) {
 			$this->main_test->assertEquals( 'Paylike capture complete.', $messages[0], "Checking order note for capture." );
@@ -401,7 +406,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	public function refund() {
 		$this->click( '.refund-items' );
 		$this->waitForElement( 'refund_amount' );
-		$refund       = preg_match_all( '!\d+!', $this->getText( '.woocommerce-Price-amount.amount' ), $refund_value );
+		$refund = preg_match_all( '!\d+!', $this->getText( '.woocommerce-Price-amount.amount' ), $refund_value );
 		$refund_value = $refund_value[0];
 		$this->type( '.refund .refund_line_total', $refund_value[0] );
 		$this->click( '.do-api-refund' );
@@ -431,7 +436,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->saveOrder();
 		$this->selectValue( '#order_status', 'wc-completed' );
 		$this->saveOrder();
-		$text     = $this->pluckElement( '.note_content p', 1 )->getText();
+		$text = $this->pluckElement( '.note_content p', 1 )->getText();
 		$messages = explode( "\n", $text );
 		$this->main_test->assertEquals( 'Paylike capture complete.', $messages[0], "Delayed capture" );
 	}
@@ -445,7 +450,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->moveOrderToStatus( 'Completed' );
 		$this->click( '.save_order' );
 		$this->waitForElement( '#message' );
-		$text     = $this->pluckElement( '.note_content p', 1 )->getText();
+		$text = $this->pluckElement( '.note_content p', 1 )->getText();
 		$messages = explode( "\n", $text );
 		$this->main_test->assertEquals( 'Warning: Order has not been captured!', $messages[0], "Not captured warning" );
 	}
@@ -586,7 +591,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	private function getVersions() {
 		$this->goToPage( 'wp-admin/plugins.php' );
 		$this->waitForElement( '#the-list' );
-		$woo     = $this->getPluginVersion( 'woocommerce/woocommerce.php' );
+		$woo = $this->getPluginVersion( 'woocommerce/woocommerce.php' );
 		$paylike = $this->getPluginVersion( 'payment-gateway-via-paylike-for-woocommerce/woocommerce-gateway-paylike.php' );
 
 		return [ 'ecommerce' => $woo, 'plugin' => $paylike ];
