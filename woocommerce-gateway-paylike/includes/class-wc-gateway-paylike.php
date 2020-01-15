@@ -1023,9 +1023,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                 e.preventDefault();
 
                 paylike.popup({
-                    title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>',
-                    currency: '<?php echo get_woocommerce_currency() ?>',
-                    amount:  <?php echo $amount; ?>,
+                    title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount!=0) { ?>
+	                currency: '<?php echo get_woocommerce_currency() ?>',
+                    amount:  <?php echo $amount; ?>, <?php } ?>
                     locale: '<?php echo get_locale(); ?>',
                     custom: {
                         orderId: '<?php echo $order->get_order_number(); ?>',
@@ -1050,9 +1050,16 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
                 }, function (err, res) {
                     if (err)
                         return console.warn(err);
-
-                    var trxid = res.transaction.id;
-                    jQuery("#complete_order").append('<input type="hidden" name="transaction_id" value="' + trxid + '" /> ');
+	                var $form=jQuery("#complete_order");
+	                if (res.transaction) {
+		                var trxid = res.transaction.id;
+		                $form.find('input.paylike_token').remove();
+		                $form.append('<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>');
+	                } else {
+		                var cardid = res.card.id;
+		                $form.find('input.paylike_card_id').remove();
+		                $form.append('<input type="hidden" class="paylike_card_id" name="paylike_card_id" value="' + cardid + '"/>');
+	                }
                     jQuery('#paylike-payment-button').attr('disabled', 'disabled');
                     document.getElementById("complete_order").submit();
                 });
@@ -1085,32 +1092,49 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		@ob_clean();
 		header( 'HTTP/1.1 200 OK' );
 		try {
-			if ( isset( $_REQUEST['reference'] ) && isset( $_REQUEST['signature'] ) && isset( $_REQUEST['transaction_id'] ) && isset( $_REQUEST['amount'] ) ) {
+			if ( isset( $_REQUEST['reference'] ) && isset( $_REQUEST['signature'] ) && isset( $_REQUEST['amount'] ) ) {
 				$signature = strtoupper( md5( $_REQUEST['amount'] . $_REQUEST['reference'] . $this->public_key ) );
 				$order_id  = absint( $_REQUEST['reference'] );
 				$order     = wc_get_order( $order_id );
 				if ( $signature === $_REQUEST['signature'] ) {
-					$transaction_id = $_REQUEST['transaction_id'];
-					if ( false == $this->capture ) {
-						WC_Paylike::log( "Info: Starting to authorize {$transaction_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-						try {
-							$result = $this->paylike_client->transactions()->fetch( $transaction_id );
-							$this->handle_authorize_result( $result, $order );
-						} catch ( \Paylike\Exception\ApiException $exception ) {
-							WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Capture Failed!' );
+
+					if ( $order->get_total() > 0 ) {
+						if ( false == $this->capture ) {
+							WC_Paylike::log( "Info: Starting to authorize {$transaction_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+							try {
+								$result = $this->paylike_client->transactions()->fetch( $transaction_id );
+								$this->handle_authorize_result( $result, $order );
+							} catch ( \Paylike\Exception\ApiException $exception ) {
+								WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Capture Failed!' );
+							}
+						} else {
+							$data = array(
+								'amount'   => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
+								'currency' => dk_get_order_currency( $order ),
+							);
+							WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+							try {
+								$result = $this->paylike_client->transactions()->capture( $transaction_id, $data );
+								$this->handle_capture_result( $result, $order, $amount );
+							} catch ( \Paylike\Exception\ApiException $exception ) {
+								WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Capture Failed!' );
+							}
 						}
+						$transaction_id = $_POST['paylike_token'];
+						if ( empty( $transaction_id ) ) {
+							wc_add_notice( __( 'The transaction id is missing, it seems that the authorization failed or the reference was not sent. Please try the payment again. The previous payment will not be captured.', 'woocommerce-gateway-paylike' ), 'error' );
+
+							return;
+						}
+						update_post_meta( get_woo_id( $order ), '_transaction_id', $transaction_id );
+						$this->handle_payment( $transaction_id, $order );
 					} else {
-						$data = array(
-							'amount'   => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
-							'currency' => dk_get_order_currency( $order ),
-						);
-						WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-						try {
-							$result = $this->paylike_client->transactions()->capture( $transaction_id, $data );
-							$this->handle_capture_result( $result, $order, $amount );
-						} catch ( \Paylike\Exception\ApiException $exception ) {
-							WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Capture Failed!' );
+						// used for trials, and changing payment method.
+						$card_id = $_POST['paylike_card_id'];
+						if ( $card_id ) {
+							$this->save_card_id( $card_id, $order );
 						}
+						$order->payment_complete();
 					}
 					wp_redirect( $this->get_return_url( $order ) );
 					exit();
