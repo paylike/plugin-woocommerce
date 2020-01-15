@@ -410,7 +410,14 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$refund_value = $refund_value[0];
 		$this->type( '.refund .refund_line_total', $refund_value[0] );
 		$this->click( '.do-api-refund' );
-		$this->acceptAlert();
+
+		try {
+			$this->acceptAlert();
+		}catch ( NoAlertOpenException $exception ) {
+			$this->click( '.do-api-refund' );
+			$this->acceptAlert();
+		}
+
 		try {
 			$this->waitElementDisappear( '.blockUI.blockOverlay' );
 		} catch ( NoSuchElementException $e ) {
