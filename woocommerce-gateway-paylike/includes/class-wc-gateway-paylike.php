@@ -91,10 +91,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->id                 = 'paylike';
-		$this->method_title       = __( 'Paylike', 'woocommerce-gateway-paylike' );
+		$this->id = 'paylike';
+		$this->method_title = __( 'Paylike', 'woocommerce-gateway-paylike' );
 		$this->method_description = __( 'Paylike enables you to accept credit and debit cards on your WooCommerce platform. If you don\'t already have an account with Paylike, you can create it <a href="https://paylike.io/">here</a>. Need help with the setup? Read our documentation <a href="https://paylike.io/plugins/woocommerce/">here</a>.', 'woocommerce-gateway-paylike' );
-		$this->supports           = array(
+		$this->supports = array(
 			'products',
 			'refunds',
 			'subscriptions',
@@ -113,19 +113,19 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		// Load the settings.
 		$this->init_settings();
 		// Get setting values.
-		$this->title              = $this->get_option( 'title' );
-		$this->popup_title        = $this->get_option( 'popup_title' );
-		$this->description        = $this->get_option( 'description' );
-		$this->enabled            = $this->get_option( 'enabled' );
-		$this->testmode           = 'yes' === $this->get_option( 'testmode' );
-		$this->capture            = 'instant' === $this->get_option( 'capture', 'instant' );
-		$this->checkout_mode      = 'before_order' === $this->get_option( 'checkout_mode', 'before_order' );
+		$this->title = $this->get_option( 'title' );
+		$this->popup_title = $this->get_option( 'popup_title' );
+		$this->description = $this->get_option( 'description' );
+		$this->enabled = $this->get_option( 'enabled' );
+		$this->testmode = 'yes' === $this->get_option( 'testmode' );
+		$this->capture = 'instant' === $this->get_option( 'capture', 'instant' );
+		$this->checkout_mode = 'before_order' === $this->get_option( 'checkout_mode', 'before_order' );
 		$this->compatibility_mode = 'yes' === $this->get_option( 'compatibility_mode', 'yes' );
-		$this->secret_key         = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
-		$this->public_key         = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
-		$this->logging            = 'yes' === $this->get_option( 'logging' );
-		$this->card_types         = $this->get_option( 'card_types' );
-		$this->order_button_text  = __( 'Continue to payment', 'woocommerce-gateway-paylike' );
+		$this->secret_key = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
+		$this->public_key = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
+		$this->logging = 'yes' === $this->get_option( 'logging' );
+		$this->card_types = $this->get_option( 'card_types' );
+		$this->order_button_text = __( 'Continue to payment', 'woocommerce-gateway-paylike' );
 		if ( $this->testmode ) {
 			/* translators: %s is replaced with the documentation link */
 			$this->description .= PHP_EOL . sprintf( __( 'TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 0000 with any CVC and a valid expiration date. "<a href="%s">See Documentation</a>".', 'woocommerce-gateway-paylike' ), 'https://github.com/paylike/sdk' );
@@ -261,7 +261,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		if ( ! $value ) {
 			return $value;
 		}
-		$api_exception  = null;
+		$api_exception = null;
 		$paylike_client = new \Paylike\Paylike( $value );
 		try {
 			$identity = $paylike_client->apps()->fetch();
@@ -328,7 +328,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function get_icon() {
 		$icon = '';
-		$url  = null;
+		$url = null;
 		if ( is_array( $this->card_types ) ) {
 			foreach ( $this->card_types as $card_type ) {
 				$url = $this->get_active_card_logo_url( $card_type );
@@ -368,7 +368,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				return false;
 			}
 			$current_currency = get_woocommerce_currency();
-			$supported        = get_paylike_currency( $current_currency );
+			$supported = get_paylike_currency( $current_currency );
 			if ( ! $supported ) {
 				return false;
 			}
@@ -484,7 +484,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	function handle_authorize_result( $result, $order, $amount = 0 ) {
 		$transaction = $result;
-		$result      = $this->parse_api_transaction_response( $result, $order, $amount );
+		$result = $this->parse_api_transaction_response( $result, $order, $amount );
 		if ( is_wp_error( $result ) ) {
 			WC_Paylike::log( 'Issue: Authorize has failed, the result from the verification threw an wp error:' . $result->get_error_message() . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 			$order->add_order_note(
@@ -571,7 +571,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$amount = $order->get_total();
 		}
 		$match_currency = dk_get_order_currency( $order ) == $transaction['currency'];
-		$match_amount   = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ) == $transaction['amount'];
+		$match_amount = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ) == $transaction['amount'];
 
 		return ( 1 == $transaction['successful'] && $match_currency && $match_amount );
 	}
@@ -589,7 +589,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$currency = get_woocommerce_currency();
 		}
 		$multiplier = get_paylike_currency_multiplier( $currency );
-		$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+		$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
 		if ( function_exists( 'bcmul' ) ) {
 			$amount = ceil( bcmul( $total, $multiplier ) );
 		}
@@ -631,9 +631,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	protected function get_transaction_authorization_details( $transaction ) {
 		return __( 'Paylike authorization complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
-		       __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
-		       __( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['amount'], $transaction['currency'] ) . PHP_EOL .
-		       __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
+			__( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
+			__( 'Payment Amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['amount'], $transaction['currency'] ) . PHP_EOL .
+			__( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
 	}
 
 	/**
@@ -671,10 +671,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	protected function get_transaction_capture_details( $transaction ) {
 		return __( 'Paylike capture complete.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
-		       __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
-		       __( 'Authorized amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['amount'], $transaction['currency'] ) . PHP_EOL .
-		       __( 'Captured amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['capturedAmount'], $transaction['currency'] ) . PHP_EOL .
-		       __( 'Charge authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
+			__( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
+			__( 'Authorized amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['amount'], $transaction['currency'] ) . PHP_EOL .
+			__( 'Captured amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $transaction['capturedAmount'], $transaction['currency'] ) . PHP_EOL .
+			__( 'Charge authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
 	}
 
 	/**
@@ -698,9 +698,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
-		$order          = wc_get_order( $order_id );
+		$order = wc_get_order( $order_id );
 		$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
-		$captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
+		$captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
 		if ( ! $order || ! $transaction_id ) {
 			return false;
 		}
@@ -762,9 +762,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			}
 
 			$refund_message = __( 'Paylike transaction refunded.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
-			                  __( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
-			                  __( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $refunded_amount, $transaction['currency'] ) . PHP_EOL .
-			                  __( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
+				__( 'Transaction ID: ', 'woocommerce-gateway-paylike' ) . $transaction['id'] . PHP_EOL .
+				__( 'Refund amount: ', 'woocommerce-gateway-paylike' ) . $this->real_amount( $refunded_amount, $transaction['currency'] ) . PHP_EOL .
+				__( 'Transaction authorized at: ', 'woocommerce-gateway-paylike' ) . $transaction['created'];
 			$order->add_order_note( $refund_message );
 			WC_Paylike::log( 'Info: Refund was successful' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
@@ -793,10 +793,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			} else {
 				$user_email = '';
 			}
-			$user_name    = '';
+			$user_name = '';
 			$user_address = '';
-			$user_phone   = '';
-			$token        = '';
+			$user_phone = '';
+			$token = '';
 			/* This may be in ajax, so we need to check if the total has changed */
 			if ( isset( $_POST['post_data'] ) ) {
 				$post_data = array();
@@ -808,12 +808,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 					} catch ( \Paylike\Exception\ApiException $exception ) {
 						// we are handling this later
 					}
-					$amount   = WC()->cart->total;
+					$amount = WC()->cart->total;
 					$currency = get_woocommerce_currency();
 
 					if ( ! ( $transaction && $transaction['successful'] &&
-					         $currency == $transaction['currency'] &&
-					         $this->get_paylike_amount( $amount, $currency ) == $transaction['amount']
+						$currency == $transaction['currency'] &&
+						$this->get_paylike_amount( $amount, $currency ) == $transaction['amount']
 					) ) {
 						$data = array(
 							'amount' => $transaction['amount'],
@@ -836,22 +836,22 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			 *
 			 */
 			if ( ! isset( $_GET['pay_for_order'] ) ) {
-				$order_id        = 'Could not be determined at this point';
-				$amount          = WC()->cart->total;
-				$amount_tax      = WC()->cart->tax_total;
+				$order_id = 'Could not be determined at this point';
+				$amount = WC()->cart->total;
+				$amount_tax = WC()->cart->tax_total;
 				$amount_shipping = WC()->cart->shipping_total;
-				$currency        = get_woocommerce_currency();
+				$currency = get_woocommerce_currency();
 			} else {
-				$order_id        = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
-				$order           = wc_get_order( $order_id );
-				$currency        = dk_get_order_currency( $order );
-				$amount          = $order->get_total();
-				$amount_tax      = $order->get_total_tax();
+				$order_id = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
+				$order = wc_get_order( $order_id );
+				$currency = dk_get_order_currency( $order );
+				$amount = $order->get_total();
+				$amount_tax = $order->get_total_tax();
 				$amount_shipping = dk_get_order_shipping_total( $order );
-				$user_email      = dk_get_order_data( $order, 'get_billing_email' );
-				$user_name       = dk_get_order_data( $order, 'get_billing_first_name' ) . ' ' . dk_get_order_data( $order, 'get_billing_last_name' );
-				$user_address    = dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' );
-				$user_phone      = dk_get_order_data( $order, 'get_billing_phone' );
+				$user_email = dk_get_order_data( $order, 'get_billing_email' );
+				$user_name = dk_get_order_data( $order, 'get_billing_first_name' ) . ' ' . dk_get_order_data( $order, 'get_billing_last_name' );
+				$user_address = dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' );
+				$user_phone = dk_get_order_data( $order, 'get_billing_phone' );
 			}
 
 			echo '<div
@@ -931,8 +931,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$items = WC()->cart->get_cart();
 
 			foreach ( $items as $item => $values ) {
-				$_product   = $values['data'];
-				$product    = array(
+				$_product = $values['data'];
+				$product = array(
 					'ID'       => $values['product_id'],
 					'name'     => $_product->get_title(),
 					'quantity' => $values['quantity'],
@@ -941,13 +941,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			}
 		} else {
 			$order_id = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
-			$order    = wc_get_order( $order_id );
+			$order = wc_get_order( $order_id );
 			$products = array();
-			$items    = $order->get_items();
-			$pf       = new WC_Product_Factory();
+			$items = $order->get_items();
+			$pf = new WC_Product_Factory();
 			foreach ( $items as $item => $values ) {
-				$_product   = $pf->get_product( $values['product_id'] );
-				$product    = array(
+				$_product = $pf->get_product( $values['product_id'] );
+				$product = array(
 					'ID'       => $values['product_id'],
 					'name'     => $_product->get_title(),
 					'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
@@ -997,14 +997,14 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function receipt_page( $order_id ) {
 		global $wp_version;
-		$order    = wc_get_order( $order_id );
-		$amount   = $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) );
+		$order = wc_get_order( $order_id );
+		$amount = $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) );
 		$products = array();
-		$items    = $order->get_items();
-		$pf       = new WC_Product_Factory();
+		$items = $order->get_items();
+		$pf = new WC_Product_Factory();
 		foreach ( $items as $item => $values ) {
-			$_product   = $pf->get_product( $values['product_id'] );
-			$product    = array(
+			$_product = $pf->get_product( $values['product_id'] );
+			$product = array(
 				'ID'       => $values['product_id'],
 				'name'     => $_product->get_title(),
 				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
@@ -1017,53 +1017,53 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				onclick="pay(event);"><?php _e( 'Pay Now', 'woocommerce-gateway-paylike' ); ?></button>
 		<script src="https://sdk.paylike.io/3.js"></script>
 		<script>
-            var paylike = Paylike('<?php echo $this->public_key;?>');
+		var paylike = Paylike( '<?php echo $this->public_key;?>' );
 
-            function pay(e) {
-                e.preventDefault();
+		function pay( e ) {
+			e.preventDefault();
 
-                paylike.popup({
-                    title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount!=0) { ?>
-	                currency: '<?php echo get_woocommerce_currency() ?>',
-                    amount:  <?php echo $amount; ?>, <?php } ?>
-                    locale: '<?php echo get_locale(); ?>',
-                    custom: {
-                        orderId: '<?php echo $order->get_order_number(); ?>',
-                        products: [<?php echo json_encode( $products ); ?>],
-                        customer: {
-                            name: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_first_name' ) ) . ' ' . addslashes( dk_get_order_data( $order, 'get_billing_last_name' ) ); ?>',
-                            email: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_email' ) ); ?>',
-                            phoneNo: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_phone' ) ); ?>',
-                            address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) ); ?>',
-                            IP: '<?php echo $this->get_client_ip(); ?>'
-                        },
-                        platform: {
-                            name: 'WordPress',
-                            version: '<?php echo $wp_version; ?>'
-                        },
-                        ecommerce: {
-                            name: 'WooCommerce',
-                            version: '<?php echo WC()->version; ?>'
-                        },
-                        paylikePluginVersion: '<?php echo WC_PAYLIKE_VERSION; ?>'
-                    }
-                }, function (err, res) {
-                    if (err)
-                        return console.warn(err);
-	                var $form=jQuery("#complete_order");
-	                if (res.transaction) {
-		                var trxid = res.transaction.id;
-		                $form.find('input.paylike_token').remove();
-		                $form.append('<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>');
-	                } else {
-		                var cardid = res.card.id;
-		                $form.find('input.paylike_card_id').remove();
-		                $form.append('<input type="hidden" class="paylike_card_id" name="paylike_card_id" value="' + cardid + '"/>');
-	                }
-                    jQuery('#paylike-payment-button').attr('disabled', 'disabled');
-                    document.getElementById("complete_order").submit();
-                });
-            }
+			paylike.popup( {
+				title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount != 0) { ?>
+				currency: '<?php echo get_woocommerce_currency() ?>',
+				amount:  <?php echo $amount; ?>, <?php } ?>
+				locale: '<?php echo get_locale(); ?>',
+				custom: {
+					orderId: '<?php echo $order->get_order_number(); ?>',
+					products: [<?php echo json_encode( $products ); ?>],
+					customer: {
+						name: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_first_name' ) ) . ' ' . addslashes( dk_get_order_data( $order, 'get_billing_last_name' ) ); ?>',
+						email: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_email' ) ); ?>',
+						phoneNo: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_phone' ) ); ?>',
+						address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) ); ?>',
+						IP: '<?php echo $this->get_client_ip(); ?>'
+					},
+					platform: {
+						name: 'WordPress',
+						version: '<?php echo $wp_version; ?>'
+					},
+					ecommerce: {
+						name: 'WooCommerce',
+						version: '<?php echo WC()->version; ?>'
+					},
+					paylikePluginVersion: '<?php echo WC_PAYLIKE_VERSION; ?>'
+				}
+			}, function( err, res ) {
+				if ( err )
+					return console.warn( err );
+				var $form = jQuery( "#complete_order" );
+				if ( res.transaction ) {
+					var trxid = res.transaction.id;
+					$form.find( 'input.paylike_token' ).remove();
+					$form.append( '<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>' );
+				} else {
+					var cardid = res.card.id;
+					$form.find( 'input.paylike_card_id' ).remove();
+					$form.append( '<input type="hidden" class="paylike_card_id" name="paylike_card_id" value="' + cardid + '"/>' );
+				}
+				jQuery( '#paylike-payment-button' ).attr( 'disabled', 'disabled' );
+				document.getElementById( "complete_order" ).submit();
+			} );
+		}
 		</script>
 		<form id="complete_order" method="POST" action="<?php echo WC()->api_request_url( get_class( $this ) ) ?>">
 			<input type="hidden" name="reference" value="<?php echo $order_id; ?>"/>
@@ -1094,39 +1094,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		try {
 			if ( isset( $_REQUEST['reference'] ) && isset( $_REQUEST['signature'] ) && isset( $_REQUEST['amount'] ) ) {
 				$signature = strtoupper( md5( $_REQUEST['amount'] . $_REQUEST['reference'] . $this->public_key ) );
-				$order_id  = absint( $_REQUEST['reference'] );
-				$order     = wc_get_order( $order_id );
+				$order_id = absint( $_REQUEST['reference'] );
+				$order = wc_get_order( $order_id );
+				$transaction_id = $_POST['paylike_token'];
 				if ( $signature === $_REQUEST['signature'] ) {
 
 					if ( $order->get_total() > 0 ) {
-						if ( false == $this->capture ) {
-							WC_Paylike::log( "Info: Starting to authorize {$transaction_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-							try {
-								$result = $this->paylike_client->transactions()->fetch( $transaction_id );
-								$this->handle_authorize_result( $result, $order );
-							} catch ( \Paylike\Exception\ApiException $exception ) {
-								WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Capture Failed!' );
-							}
-						} else {
-							$data = array(
-								'amount'   => $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) ),
-								'currency' => dk_get_order_currency( $order ),
-							);
-							WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-							try {
-								$result = $this->paylike_client->transactions()->capture( $transaction_id, $data );
-								$this->handle_capture_result( $result, $order, $amount );
-							} catch ( \Paylike\Exception\ApiException $exception ) {
-								WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Capture Failed!' );
-							}
-						}
-						$transaction_id = $_POST['paylike_token'];
-						if ( empty( $transaction_id ) ) {
-							wc_add_notice( __( 'The transaction id is missing, it seems that the authorization failed or the reference was not sent. Please try the payment again. The previous payment will not be captured.', 'woocommerce-gateway-paylike' ), 'error' );
-
-							return;
-						}
-						update_post_meta( get_woo_id( $order ), '_transaction_id', $transaction_id );
 						$this->handle_payment( $transaction_id, $order );
 					} else {
 						// used for trials, and changing payment method.
