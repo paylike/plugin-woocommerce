@@ -444,6 +444,9 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->selectValue( '#order_status', 'wc-completed' );
 		$this->saveOrder();
 		$text = $this->pluckElement( '.note_content p', 1 )->getText();
+		if ( $text == 'Order status changed from On hold to Completed.' ) {
+			$text = $this->pluckElement( '.note_content p', 0 )->getText();
+		}
 		$messages = explode( "\n", $text );
 		$this->main_test->assertEquals( 'Paylike capture complete.', $messages[0], "Delayed capture" );
 	}
@@ -457,7 +460,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->moveOrderToStatus( 'Completed' );
 		$this->click( '.save_order' );
 		$this->waitForElement( '#message' );
-		$text = $this->pluckElement( '.note_content p', 1 )->getText();
+		$text = $this->pluckElement( '.note_content p', 0 )->getText();
 		$messages = explode( "\n", $text );
 		$this->main_test->assertEquals( 'Warning: Order has not been captured!', $messages[0], "Not captured warning" );
 	}
