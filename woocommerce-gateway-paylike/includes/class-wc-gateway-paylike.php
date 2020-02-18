@@ -860,7 +860,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			data-name="' . esc_attr( $user_name ) . '"
 			data-phone="' . esc_attr( $user_phone ) . '"
 			data-address="' . esc_attr( $user_address ) . '"
-			data-locale="' . esc_attr( get_locale() ) . '"
+			data-locale="' . esc_attr( dk_get_locale() ) . '"
 			data-order_id="' . esc_attr( $order_id ) . '"
 			data-amount="' . esc_attr( $this->get_paylike_amount( $amount, $currency ) ) . '"
 			data-totalTax="' . esc_attr( $this->get_paylike_amount( $amount_tax, $currency ) ) . '"
@@ -1026,7 +1026,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount != 0) { ?>
 				currency: '<?php echo get_woocommerce_currency() ?>',
 				amount:  <?php echo $amount; ?>, <?php } ?>
-				locale: '<?php echo get_locale(); ?>',
+				locale: '<?php echo dk_get_locale(); ?>',
 				custom: {
 					orderId: '<?php echo $order->get_order_number(); ?>',
 					products: [<?php echo json_encode( $products ); ?>],
