@@ -218,7 +218,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 */
 	public function maybe_render_subscription_payment_method( $payment_method_to_display, $subscription ) {
 		// bail for other payment methods.
-		if ( $this->id !== $subscription->payment_method || ! $subscription->customer_user ) {
+		if ( $this->id !== $subscription->get_payment_method() || ! $subscription->get_user() ) {
 			return $payment_method_to_display;
 		}
 		$transaction_id = get_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', true );
@@ -228,8 +228,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		} catch ( \Paylike\Exception\ApiException $exception ) {
 			WC_Paylike::handle_exceptions( null, $exception, 'Fetching transaction entity failed' );
 		}
-		if ( 1 == $transaction['successful'] && $result['transaction']['card'] ) {
-			$card = $result['transaction']['card'];
+		if ( 1 == $transaction['successful'] && $transaction['card'] ) {
+			$card = $transaction['card'];
 			/* translators: %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id */
 			$payment_method_to_display = sprintf( __( 'Via %s card ending in %s (%s)', 'woocommerce-gateway-paylike' ), ucfirst( $card['scheme'] ), $card['last4'], ucfirst( $this->id ) );
 		}
