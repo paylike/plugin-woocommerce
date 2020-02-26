@@ -404,7 +404,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 					return;
 				}
-				update_post_meta( get_woo_id( $order ), '_transaction_id', $transaction_id );
 				$this->handle_payment( $transaction_id, $order );
 			} else {
 				// used for trials, and changing payment method.
@@ -658,6 +657,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @param WC_Order $order The order object related to the transaction.
 	 */
 	protected function save_transaction_id( $transaction, $order ) {
+		update_post_meta( get_woo_id( $order ), '_transaction_id', $transaction['id'] );
 		update_post_meta( get_woo_id( $order ), '_paylike_transaction_id', $transaction['id'] );
 	}
 

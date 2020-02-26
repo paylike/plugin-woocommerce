@@ -122,7 +122,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $renewal_order ) ),
 			'currency' => dk_get_order_currency( $renewal_order ),
 			'custom'   => array(
-				'email' => $renewal_order->billing_email,
+				'email' => $renewal_order->get_billing_email(),
 			),
 		);
 		if ( 'card' === $type ) {
@@ -194,8 +194,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * @return void
 	 */
 	public function update_failing_payment_method( $subscription, $renewal_order ) {
-		update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', $renewal_order->paylike_transaction_id );
-		update_post_meta( get_woo_id( $subscription ), '_paylike_card_id', $renewal_order->paylike_card_id );
+		update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', get_post_meta( $renewal_order->get_id(), '_paylike_transaction_id', true ));
+		update_post_meta( get_woo_id( $subscription ), '_paylike_card_id', get_post_meta( $renewal_order->get_id(), '_paylike_card_id', true ));
 	}
 
 	/**
