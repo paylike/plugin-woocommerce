@@ -1,2 +1,2 @@
 #!/bin/bash
-./vendor/bin/steward run staging firefox --group="woocommerce_quick_test" -vv
+./vendor/bin/steward run staging chrome --group="woocommerce_quick_test" -vv
