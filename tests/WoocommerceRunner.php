@@ -413,7 +413,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 
 		try {
 			$this->acceptAlert();
-		}catch ( NoAlertOpenException $exception ) {
+		} catch ( NoAlertOpenException $exception ) {
 			$this->click( '.do-api-refund' );
 			$this->acceptAlert();
 		}
@@ -459,7 +459,6 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	public function checkNoCaptureWarning() {
 		$this->moveOrderToStatus( 'Completed' );
 		$this->click( '.save_order' );
-		$this->waitForElement( '#message' );
 		$text = $this->pluckElement( '.note_content p', 0 )->getText();
 		$messages = explode( "\n", $text );
 		$this->main_test->assertEquals( 'Warning: Order has not been captured!', $messages[0], "Not captured warning" );
@@ -709,7 +708,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 *
 	 */
 	private function changeWindow() {
-		$this->wd->manage()->window()->setSize( new WebDriverDimension( 1600, 996 ) );
+		$this->wd->manage()->window()->setSize( new WebDriverDimension( 1600, 1200 ) );
 	}
 
 
