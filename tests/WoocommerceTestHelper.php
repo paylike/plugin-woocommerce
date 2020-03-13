@@ -211,7 +211,6 @@ class WoocommerceTestHelper {
 	 */
 	public function moveToElement( $query ) {
 		$parent = $this->find( $this->getElement( $query ) );
-
 		return $this->wd->getMouse()->mouseMove( $parent->getCoordinates() );
 	}
 
@@ -238,7 +237,7 @@ class WoocommerceTestHelper {
 	 */
 	public function waitForElement( $query ) {
 		$element = $this->getElement( $query );
-		$this->wd->wait( 10, 1000 )->until(
+		$this->wd->wait( 20, 1000 )->until(
 			WebDriverExpectedCondition::visibilityOfElementLocated( $element )
 		);
 
