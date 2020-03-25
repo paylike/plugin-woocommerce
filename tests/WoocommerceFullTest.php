@@ -25,6 +25,7 @@ class WoocommerceFullTest extends AbstractTestCase {
 		$this->runner = new WoocommerceRunner( $this );
 		$this->runner->ready( array(
 				'settings_check' => true,
+				'stop_emails'            => true,
 			)
 		);
 	}
@@ -55,7 +56,6 @@ class WoocommerceFullTest extends AbstractTestCase {
 		$this->runner->ready( array(
 				'first_test'             => true,
 				'currency'               => 'USD',
-				'stop_emails'            => true,
 				'capture_mode'           => 'instant',
 				'checkout_mode'          => 'before_order',
 				'exclude_manual_payment' => false,
@@ -122,7 +122,6 @@ class WoocommerceFullTest extends AbstractTestCase {
 				'currency'               => 'JPY',
 				'capture_mode'           => 'delayed',
 				'checkout_mode'          => 'before_order',
-				'stop_emails'            => true,
 				'exclude_manual_payment' => false,
 			)
 		);

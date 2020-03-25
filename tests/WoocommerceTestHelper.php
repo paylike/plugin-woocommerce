@@ -21,7 +21,7 @@ class WoocommerceTestHelper {
 	public $exclude_manual_payment = false;
 	public $exclude_subscription = false;
 	public $settings_check = false;
-	public $stop_email = true;
+	public $stop_email = false;
 	public $log_version = false;
 	public $main_test;
 
@@ -32,10 +32,10 @@ class WoocommerceTestHelper {
 	 */
 	public function __construct( $woocommerce_test ) {
 		$this->main_test = $woocommerce_test;
-		$this->wd        = $woocommerce_test->wd;
-		$this->base_url  = getenv( 'ENVIRONMENT_URL' );
-		$this->user      = getenv( 'ENVIRONMENT_USER' );
-		$this->pass      = getenv( 'ENVIRONMENT_PASS' );
+		$this->wd = $woocommerce_test->wd;
+		$this->base_url = getenv( 'ENVIRONMENT_URL' );
+		$this->user = getenv( 'ENVIRONMENT_USER' );
+		$this->pass = getenv( 'ENVIRONMENT_PASS' );
 	}
 
 
@@ -70,8 +70,17 @@ class WoocommerceTestHelper {
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 */
 	public function waitForPage( $pagePath ) {
+		$url = $this->helperGetUrl( $pagePath );
+		$url = explode( '@', $url );
+		if ( count( $url ) > 0 ) {
+			$left = explode( '://', $url[0] );
+			$url = $left[0] . '://' . $url[1];
+		} else {
+			$url = $url[0];
+		}
+
 		$this->wd->wait( 5, 500 )->until(
-			WebDriverExpectedCondition::urlIs( $this->helperGetUrl( $pagePath ) )
+			WebDriverExpectedCondition::urlIs( $url )
 		);
 
 		return $this;
@@ -211,6 +220,7 @@ class WoocommerceTestHelper {
 	 */
 	public function moveToElement( $query ) {
 		$parent = $this->find( $this->getElement( $query ) );
+
 		return $this->wd->getMouse()->mouseMove( $parent->getCoordinates() );
 	}
 
@@ -290,7 +300,7 @@ class WoocommerceTestHelper {
 	 */
 	public function waitForPageReload( $navigate_f, $timeout ) {
 		$driver = $this->wd;
-		$id     = $this->wd->findElement( WebDriverBy::cssSelector( 'html' ) )->getID();
+		$id = $this->wd->findElement( WebDriverBy::cssSelector( 'html' ) )->getID();
 		call_user_func( $navigate_f );
 		$driver->wait( $timeout )->until(
 			( function () use ( $id ) {
@@ -361,9 +371,10 @@ class WoocommerceTestHelper {
 		return $this->base_url . '/' . $page;
 	}
 
-	public function get_slug($str, $delimiter = '-'){
+	public function get_slug( $str, $delimiter = '-' ) {
 
-		$slug = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
+		$slug = strtolower( trim( preg_replace( '/[\s-]+/', $delimiter, preg_replace( '/[^A-Za-z0-9-]+/', $delimiter, preg_replace( '/[&]/', 'and', preg_replace( '/[\']/', '', iconv( 'UTF-8', 'ASCII//TRANSLIT', $str ) ) ) ) ), $delimiter ) );
+
 		return $slug;
 
 	}
