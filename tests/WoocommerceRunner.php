@@ -3,6 +3,7 @@
 
 namespace Woocommerce;
 
+use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\NoAlertOpenException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\StaleElementReferenceException;
@@ -336,7 +337,11 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 
 		$this->click( ".single_add_to_cart_button" );
 		$this->waitForElement( ".button.wc-forward" );
-		$this->click( ".button.wc-forward" );
+		try {
+			$this->click( ".button.wc-forward" );
+		}catch (ElementNotVisibleException $e){
+			$this->goToPage( 'checkout' );
+		}
 
 	}
 
@@ -547,7 +552,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
 	 */
 	private function directPayment() {
-		$this->goToPage( '/product/sunglasses/', '.single_add_to_cart_button' );
+		$this->goToPage( 'product/sunglasses/', '.single_add_to_cart_button' );
 		$this->clearCartItem();
 		$this->addToCart();
 		$this->proceedToCheckout();
@@ -646,17 +651,21 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	private function orderCleanup() {
 		$this->goToPage( 'wp-admin/edit.php?post_type=shop_order' );
 		$this->click( '#cb-select-all-1' );
-		$this->selectValue( '#bulk-action-selector-top', 'trash' );
-		$this->click( '#doaction2' );
 		try {
-			$this->wd->switchTo()->alert()->accept();
-			$this->acceptAlert();
-			$this->waitForElement( '#message' );
-			$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
-			$this->click( '#delete_all' );
-			$this->waitForElement( '#message' );
-		} catch ( NoAlertOpenException $exception ) {
-			// we may not have the alert so just move on
+			$this->selectValue( '#bulk-action-selector-top', 'trash' );
+			$this->click( '#doaction2' );
+			try {
+				$this->wd->switchTo()->alert()->accept();
+				$this->acceptAlert();
+				$this->waitForElement( '#message' );
+				$this->goToPage( 'wp-admin/edit.php?post_status=trash&post_type=shop_order', '#delete_all' );
+				$this->click( '#delete_all' );
+				$this->waitForElement( '#message' );
+			} catch ( NoAlertOpenException $exception ) {
+				// we may not have the alert so just move on
+			}
+		}catch (NoSuchElementException $e){
+			// no orders
 		}
 	}
 
