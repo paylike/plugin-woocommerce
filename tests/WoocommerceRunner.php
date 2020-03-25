@@ -547,7 +547,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
 	 */
 	private function directPayment() {
-		$this->goToPage( '/product/sunglasses/', '.single_add_to_cart_button' );
+		$this->goToPage( 'product/sunglasses/', '.single_add_to_cart_button' );
 		$this->clearCartItem();
 		$this->addToCart();
 		$this->proceedToCheckout();
