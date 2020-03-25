@@ -72,7 +72,7 @@ class WoocommerceTestHelper {
 	public function waitForPage( $pagePath ) {
 		$url = $this->helperGetUrl( $pagePath );
 		$url = explode( '@', $url );
-		if ( count( $url ) > 0 ) {
+		if ( count( $url ) > 1 ) {
 			$left = explode( '://', $url[0] );
 			$url = $left[0] . '://' . $url[1];
 		} else {
