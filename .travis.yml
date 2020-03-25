@@ -49,5 +49,3 @@ deploy:
   bucket: paylike-travis-logs
   local-dir: logs
   acl: private
-  on:
-    repo: ionutcalara/plugin-woocommerce
