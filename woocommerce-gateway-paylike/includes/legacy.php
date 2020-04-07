@@ -31,6 +31,21 @@ if ( ! function_exists( 'dk_get_order_currency' ) ) {
 	}
 }
 
+if ( ! function_exists( 'dk_get_product_name' ) ) {
+	/**
+	 * @param WC_Product $product
+	 *
+	 * @return mixed
+	 */
+	function dk_get_product_name( $product ) {
+		if ( method_exists( $product, 'get_name' ) ) {
+			return $product->get_name();
+		} else {
+			return $product->get_title();
+		}
+	}
+}
+
 if ( ! function_exists( 'dk_get_order_data' ) ) {
 	/**
 	 * @param WC_Order $order
