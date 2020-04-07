@@ -206,6 +206,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 */
 	public function choosePaylike() {
 		$this->waitElementDisappear( '.blockUI.blockOverlay' );
+
 		try {
 			$this->click( '.payment_method_paylike label' );
 		} catch ( \Exception $exception ) {

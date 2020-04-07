@@ -927,33 +927,29 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
 		wp_enqueue_script( 'woocommerce_paylike', plugins_url( 'assets/js/paylike_checkout.js', WC_PAYLIKE_MAIN_FILE ), array( 'paylike' ), WC_PAYLIKE_VERSION, true );
 		$products = array();
+
+		$pf = new WC_Product_Factory();
 		if ( ! isset( $_GET['pay_for_order'] ) ) {
 			$items = WC()->cart->get_cart();
-
-			foreach ( $items as $item => $values ) {
-				$_product = $values['data'];
-				$product = array(
-					'ID'       => $values['product_id'],
-					'name'     => $_product->get_title(),
-					'quantity' => $values['quantity'],
-				);
-				$products[] = $product;
-			}
 		} else {
 			$order_id = wc_get_order_id_by_order_key( urldecode( $_GET['key'] ) );
 			$order = wc_get_order( $order_id );
-			$products = array();
 			$items = $order->get_items();
-			$pf = new WC_Product_Factory();
-			foreach ( $items as $item => $values ) {
+		}
+
+		$products = array();
+		foreach ( $items as $item => $values ) {
+			if ( $values['variation_id'] ) {
+				$_product = $pf->get_product( $values['variation_id'] );
+			} else {
 				$_product = $pf->get_product( $values['product_id'] );
-				$product = array(
-					'ID'       => $values['product_id'],
-					'name'     => $_product->get_title(),
-					'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
-				);
-				$products[] = $product;
 			}
+			$product = array(
+				'ID'       => $_product->get_id(),
+				'name'     => dk_get_product_name( $_product ),
+				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
+			);
+			$products[] = $product;
 		}
 		$paylike_params = array(
 			'key'               => $this->public_key,
@@ -1005,7 +1001,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		foreach ( $items as $item => $values ) {
 			$_product = $pf->get_product( $values['product_id'] );
 			$product = array(
-				'ID'       => $values['product_id'],
+				'ID'       => $_product->get_id(),
 				'name'     => $_product->get_title(),
 				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 			);
@@ -1034,7 +1030,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 						name: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_first_name' ) ) . ' ' . addslashes( dk_get_order_data( $order, 'get_billing_last_name' ) ); ?>',
 						email: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_email' ) ); ?>',
 						phoneNo: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_phone' ) ); ?>',
-						address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) ); ?>',
+						address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) . ' ' . dk_get_order_data( $order, 'get_billing_city' ) . dk_get_order_data( $order, 'get_billing_state' ) . ' ' . dk_get_order_data( $order, 'get_billing_postcode' ) ); ?>',
 						IP: '<?php echo $this->get_client_ip(); ?>'
 					},
 					platform: {
