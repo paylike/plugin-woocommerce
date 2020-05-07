@@ -2,8 +2,8 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 5.4.0
-Stable tag: 1.8.3
+Tested up to: 5.4.1
+Stable tag: 1.8.4
 WC requires at least: 3.0
 WC tested up to: 4.0.1
 License: GPLv3
@@ -104,6 +104,10 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 3. Payment screen
 
 == Changelog ==
+
+= 1.8.4 =
+* Update default checkout mode
+* Add automated popup show when the payment page is displayed
 
 = 1.8.3 =
 * Added germanized support

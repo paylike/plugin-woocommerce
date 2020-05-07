@@ -5,11 +5,11 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.8.3
+ * Version: 1.8.4
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
- * WC tested up to: 4.0.0
+ * WC tested up to: 4.0.1
  *
  * Copyright (c) 2016 Derikon Development
  *
@@ -32,11 +32,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.8.3' );
+define( 'WC_PAYLIKE_VERSION', '1.8.4' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
 define( 'WC_PAYLIKE_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+define( 'WC_PAYLIKE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'WC_PAYLIKE_PLUGIN_TEMPLATE_DIR', plugin_dir_path( __FILE__ ) . '/templates' );
 if ( ! class_exists( 'WC_Paylike' ) ) {
 	class WC_Paylike {
 
@@ -351,7 +353,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 */
 		public function db_update() {
 			$current_db_version = get_option( 'paylike_db_version', 1 );
-			$options            = get_option( 'woocommerce_paylike_settings' );
+			$options = get_option( 'woocommerce_paylike_settings' );
 			if ( 1 == $current_db_version ) {
 
 				if ( 'yes' === $options['capture'] ) {
@@ -412,7 +414,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
-			$captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
+			$captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
 			if ( ! ( $transaction_id && 'no' === $captured ) ) {
 				return false;
 			}
@@ -468,11 +470,11 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 */
 		public function maybe_capture_warning( $order_id ) {
 			$order = wc_get_order( $order_id );
-			if ( 'paylike' != $order->payment_method ) {
+			if ( 'paylike' != dk_get_order_data( 'payment_method' ) ) {
 				return false;
 			}
 			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
-			$captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
+			$captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
 			if ( ! ( $transaction_id && 'no' === $captured ) ) {
 				return false;
 			}
@@ -500,7 +502,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				$currency = get_woocommerce_currency();
 			}
 			$multiplier = get_paylike_currency_multiplier( $currency );
-			$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+			$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
 			if ( function_exists( 'bcmul' ) ) {
 				$amount = ceil( bcmul( $total, $multiplier ) );
 			}
@@ -530,15 +532,15 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 */
 		public function cancel_payment( $order_id ) {
 			$order = wc_get_order( $order_id );
-			if ( 'paylike' != $order->payment_method ) {
+			if ( 'paylike' != dk_get_order_data('payment_method')) {
 				return false;
 			}
 			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
-			$captured       = get_post_meta( $order_id, '_paylike_transaction_captured', true );
+			$captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
 			if ( ! $transaction_id ) {
 				return false;
 			}
-			$data     = array(
+			$data = array(
 				'amount' => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 			);
 			$currency = dk_get_order_currency( $order );
@@ -631,7 +633,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$exception_type = get_class( $exception );
-			$message        = '';
+			$message = '';
 			switch ( $exception_type ) {
 				case 'Paylike\\Exception\\NotFound':
 					$message = __( 'Transaction not found! Check the transaction key used for the operation.', 'woocommerce-gateway-paylike' );
@@ -655,7 +657,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 					$message = __( 'There has been a server issue! If this problem persists contact the developer.', 'woocommerce-gateway-paylike' );
 					break;
 			}
-			$message       = __( 'Error: ', 'woocommerce-gateway-paylike' ) . $message;
+			$message = __( 'Error: ', 'woocommerce-gateway-paylike' ) . $message;
 			$error_message = WC_Gateway_Paylike::get_response_error( $exception->getJsonBody() );
 			if ( $context ) {
 				$message = $context . PHP_EOL . $message;

@@ -88,7 +88,7 @@ return apply_filters( 'wc_paylike_settings',
 				'after_order'  => __( 'Redirect to payment page after order created', 'woocommerce-gateway-paylike' ),
 
 			),
-			'default'  => 'before_order',
+			'default'  => 'after_order',
 			'desc_tip' => true,
 		),
 		'capture'            => array(
