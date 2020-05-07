@@ -236,7 +236,6 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 */
 	public function confirmOrder() {
 		$this->waitForElement( '#paylike-payment-button' );
-		$this->click( '#paylike-payment-button' );
 	}
 
 	/**

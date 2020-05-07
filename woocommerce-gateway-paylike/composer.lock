@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "21a2c33a4083ddbf76741bbe641f050f",
+    "content-hash": "75d0271dbd6b5fb761ece2901b68d946",
     "packages": [
         {
             "name": "paylike/php-api",

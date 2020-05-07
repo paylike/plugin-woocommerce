@@ -705,8 +705,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			return false;
 		}
 		$data = array();
+		$currency = dk_get_order_currency( $order );
 		if ( ! is_null( $amount ) ) {
-			$data['amount'] = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) );
+			$data['amount'] = $this->get_paylike_amount( $amount, $currency );
 		}
 
 		if ( 'yes' == $captured ) {
@@ -1007,17 +1008,28 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			);
 			$products[] = $product;
 		}
-		echo '<p>' . __( 'Thank you for your order, please click below to pay and complete your order.', 'woocommerce-gateway-paylike' ) . '</p>';
+		if ( $theme_template = locate_template( 'paylike/receipt.php' ) ) {
+			require_once $theme_template;
+		} else {
+			$plugin_template = WC_PAYLIKE_PLUGIN_TEMPLATE_DIR . '/receipt.php';
+			if ( file_exists( $plugin_template ) ) {
+				require_once $plugin_template;
+			}
+		}
+
 		?>
-		<button id="paylike-payment-button"
-				onclick="pay(event);"><?php _e( 'Pay Now', 'woocommerce-gateway-paylike' ); ?></button>
 		<script src="https://sdk.paylike.io/3.js"></script>
 		<script>
 		var paylike = Paylike( '<?php echo $this->public_key;?>' );
+		var $button = document.getElementById( "paylike-payment-button" );
+		$button.addEventListener( 'click', startPaymentPopup );
 
-		function pay( e ) {
+		function startPaymentPopup(e){
 			e.preventDefault();
+			pay();
+		}
 
+		function pay() {
 			paylike.popup( {
 				title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount != 0) { ?>
 				currency: '<?php echo get_woocommerce_currency() ?>',
@@ -1060,6 +1072,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				document.getElementById( "complete_order" ).submit();
 			} );
 		}
+
+		// start automatically on page load
+		pay();
 		</script>
 		<form id="complete_order" method="POST" action="<?php echo WC()->api_request_url( get_class( $this ) ) ?>">
 			<input type="hidden" name="reference" value="<?php echo $order_id; ?>"/>

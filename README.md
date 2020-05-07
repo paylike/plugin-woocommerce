@@ -25,6 +25,7 @@ Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
   1. Insert the app key and your public key in the Checkout settings for the Paylike payment plugin
   
 
+
 ## Updating settings
 
 Under the WooCommerce Paylike settings, you can:
@@ -44,6 +45,11 @@ Under the WooCommerce Paylike settings, you can:
    * To refund an order you can use the refund action in woocommerce, type the amount and use the refund via paylike button.
  3. Void
    * To void an order you can use the refund action in woocommerce, type the amount and use the refund via paylike button. You can only do this if the order is not captured, if you have captured already use the refund. 
+   
+## Updating the receipt payment template
+   
+For the payment page in the "Redirect to payment page after order created" Checkout mode, you can overwrite the template by creating a file in your theme under `paylike/receipt.php`.
+Make sure to include an element with the id of `paylike-payment-button` so that the user is able to make the payment.
 
 
 ## Advanced
