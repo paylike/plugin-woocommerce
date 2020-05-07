@@ -9,7 +9,7 @@
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
- * WC tested up to: 4.0.1
+ * WC tested up to: 4.1.0
  *
  * Copyright (c) 2016 Derikon Development
  *
@@ -470,7 +470,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 */
 		public function maybe_capture_warning( $order_id ) {
 			$order = wc_get_order( $order_id );
-			if ( 'paylike' != dk_get_order_data( 'payment_method' ) ) {
+			if ( 'paylike' != $order->get_payment_method() ) {
 				return false;
 			}
 			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
@@ -532,7 +532,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 */
 		public function cancel_payment( $order_id ) {
 			$order = wc_get_order( $order_id );
-			if ( 'paylike' != dk_get_order_data('payment_method')) {
+			if ( 'paylike' != dk_get_order_data( $order, 'payment_method' ) ) {
 				return false;
 			}
 			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );

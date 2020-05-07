@@ -705,8 +705,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			return false;
 		}
 		$data = array();
+		$currency = dk_get_order_currency( $order );
 		if ( ! is_null( $amount ) ) {
-			$data['amount'] = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) );
+			$data['amount'] = $this->get_paylike_amount( $amount, $currency );
 		}
 
 		if ( 'yes' == $captured ) {
