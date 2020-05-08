@@ -15,9 +15,8 @@ Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 ## Installation
 
-Once you have installed WooCommerce on your Wordpress setup, follow these simple steps:
-  Signup at [paylike.io](https://paylike.io) (it’s free)
-  
+  Once you have installed WooCommerce on your Wordpress setup, follow these simple steps:
+  1. Signup at [paylike.io](https://paylike.io) (it’s free)
   1. Create a live account
   1. Create an app key for your WooCommerce website
   1. Upload the plugin files to the `/wp-content/plugins/woocommerce-gateway-paylike` directory, or install the plugin through the WordPress plugins screen directly.
