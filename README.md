@@ -15,7 +15,7 @@ Released under the GPL V3 license: https://opensource.org/licenses/GPL-3.0
 
 ## Installation
 
-1.Once you have installed WooCommerce on your Wordpress setup, follow these simple steps:
+Once you have installed WooCommerce on your Wordpress setup, follow these simple steps:
   Signup at [paylike.io](https://paylike.io) (it’s free)
   
   1. Create a live account
