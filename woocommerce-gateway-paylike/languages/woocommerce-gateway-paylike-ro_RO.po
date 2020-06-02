@@ -1,0 +1,438 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2018-04-17 15:23+0000\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 :(((n%100>19)||(( n%100==0)&&(n!"
+"=0)))? 2 : 1));\n"
+"PO-Revision-Date: 2020-06-02 12:42+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"Project-Id-Version: WooCommerce Paylike Gateway\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Version: 2.4.0; wp-5.4.1"
+
+#: woocommerce-gateway-paylike.php:189
+#, php-format
+msgid ""
+"Paylike will not work until you <a href=\"%s\">configure your Paylike api "
+"keys</a>."
+msgstr ""
+"Paylike nu va funcționa până când nu <a href=\"%s\">configurați cheile API "
+"Paylike</a> ."
+
+#: woocommerce-gateway-paylike.php:243
+#, php-format
+msgid ""
+"WooCommerce Paylike - The minimum PHP version required for this plugin is "
+"%1$s. You are running %2$s."
+msgstr ""
+"WooCommerce Paylike - Versiunea PHP minimă necesară pentru acest plugin este "
+"%1$s. Rulează %2$s."
+
+#: woocommerce-gateway-paylike.php:248
+msgid "WooCommerce Paylike requires WooCommerce to be activated to work."
+msgstr "WooCommerce Paylike necesită activarea WooCommerce pentru a funcționa."
+
+#: woocommerce-gateway-paylike.php:252
+#, php-format
+msgid ""
+"WooCommerce Paylike - The minimum WooCommerce version required for this "
+"plugin is %1$s. You are running %2$s."
+msgstr ""
+"WooCommerce Paylike - Versiunea minimă necesară pentru acest plugin este "
+"%1$s. Rulează %2$s."
+
+#: woocommerce-gateway-paylike.php:257
+msgid "WooCommerce Paylike - cURL is not installed."
+msgstr "WooCommerce Paylike - cURL nu este instalat."
+
+#: woocommerce-gateway-paylike.php:271
+msgid "Settings"
+msgstr "Setări"
+
+#: woocommerce-gateway-paylike.php:407 woocommerce-gateway-paylike.php:430
+#: includes/class-wc-gateway-paylike.php:575
+msgid "Unable to capture transaction!"
+msgstr "Nu se poate captura tranzacția!"
+
+#: woocommerce-gateway-paylike.php:408 woocommerce-gateway-paylike.php:506
+#: woocommerce-gateway-paylike.php:543
+#: includes/class-wc-gateway-paylike-addons.php:139
+#: includes/class-wc-gateway-paylike.php:453
+#: includes/class-wc-gateway-paylike.php:1026
+msgid "cURL request failed."
+msgstr "Cererea cURL a eșuat."
+
+#: woocommerce-gateway-paylike.php:413
+msgid "Paylike capture complete."
+msgstr "Captura Paylike finalizată."
+
+#: woocommerce-gateway-paylike.php:414 woocommerce-gateway-paylike.php:512
+#: woocommerce-gateway-paylike.php:549
+#: includes/class-wc-gateway-paylike.php:533
+#: includes/class-wc-gateway-paylike.php:597
+#: includes/class-wc-gateway-paylike.php:664
+msgid "Transaction ID: "
+msgstr "ID-ul de tranzacție:"
+
+#: woocommerce-gateway-paylike.php:415
+#: includes/class-wc-gateway-paylike.php:534
+msgid "Payment Amount: "
+msgstr "Suma de plată:"
+
+#: woocommerce-gateway-paylike.php:416 woocommerce-gateway-paylike.php:514
+#: woocommerce-gateway-paylike.php:551
+#: includes/class-wc-gateway-paylike.php:535
+#: includes/class-wc-gateway-paylike.php:666
+msgid "Transaction authorized at: "
+msgstr "Tranzacție autorizată la:"
+
+#: woocommerce-gateway-paylike.php:431 woocommerce-gateway-paylike.php:527
+#: woocommerce-gateway-paylike.php:564
+msgid "Error :"
+msgstr "Eroare:"
+
+#: woocommerce-gateway-paylike.php:505 woocommerce-gateway-paylike.php:526
+#: includes/class-wc-gateway-paylike.php:674
+msgid "Unable to refund transaction!"
+msgstr "Nu se poate rambursa tranzacția!"
+
+#: woocommerce-gateway-paylike.php:511
+msgid "Paylike refund complete."
+msgstr "Rambursare Paylike finalizată."
+
+#: woocommerce-gateway-paylike.php:513
+#: includes/class-wc-gateway-paylike.php:665
+msgid "Refund amount: "
+msgstr "Suma rambursată:"
+
+#: woocommerce-gateway-paylike.php:542 woocommerce-gateway-paylike.php:563
+msgid "Unable to void transaction!"
+msgstr "Nu se poate anula tranzacția!"
+
+#: woocommerce-gateway-paylike.php:548
+msgid "Paylike void complete."
+msgstr "Anulare Paylike finalizată."
+
+#: woocommerce-gateway-paylike.php:550
+msgid "Voided amount: "
+msgstr "Suma anulată:"
+
+#: includes/class-wc-gateway-paylike-addons.php:57
+#, php-format
+msgid "Paylike Transaction Failed (%s)"
+msgstr "Tranzacție paylike eșuată (%s)"
+
+#: includes/class-wc-gateway-paylike-addons.php:84
+msgid "Neither Transaction ID nor Card ID was found"
+msgstr "Nici ID-ul tranzacției și nici ID-ul cardului nu au fost găsite"
+
+#: includes/class-wc-gateway-paylike-addons.php:143
+#: includes/class-wc-gateway-paylike.php:458
+#: includes/class-wc-gateway-paylike.php:675
+#: includes/class-wc-gateway-paylike.php:1028
+msgid "Error: "
+msgstr "Eroare:"
+
+#: includes/class-wc-gateway-paylike-addons.php:163
+#: includes/class-wc-gateway-paylike.php:167
+msgid "The private key doesn't seem to be valid"
+msgstr "Cheia privată nu pare să fie valabilă"
+
+#: includes/class-wc-gateway-paylike-addons.php:179
+msgid "No valid merchant id was found"
+msgstr "Nu a fost găsit niciun ID de comerciant valid"
+
+#: includes/class-wc-gateway-paylike-addons.php:221
+msgid "Merchant ID not found"
+msgstr "ID de comerciant (Merchand ID) nu a fost găsit"
+
+#: includes/class-wc-gateway-paylike-addons.php:275
+#, php-format
+msgid "Via %s card ending in %s (%s)"
+msgstr "Prin cardul %s  care se încheie în %s (%s)"
+
+#: includes/class-wc-gateway-paylike.php:88
+msgid "Paylike"
+msgstr "Paylike"
+
+#: includes/class-wc-gateway-paylike.php:89
+msgid ""
+"Paylike enables you to accept credit and debit cards on your WooCommerce "
+"platform. If you don't already have an account with Paylike, you can create "
+"it <a href=\"https://paylike.io/\">here</a>. Need help with the setup? Read "
+"our documentation <a href=\"https://paylike.io/plugins/woocommerce/\">"
+"here</a>."
+msgstr ""
+"Paylike vă permite să acceptați carduri de credit și debit pe platforma "
+"WooCommerce. Dacă nu aveți deja un cont cu Paylike, îl puteți crea <a "
+"href=\"https://paylike.io/\">aici</a> . Aveți nevoie de ajutor pentru "
+"configurare? Citiți documentația noastră <a href=\"https://paylike."
+"io/plugins/woocommerce/\">aici</a> ."
+
+#: includes/class-wc-gateway-paylike.php:120
+msgid "Continue to payment"
+msgstr "Continuați la plată"
+
+#: includes/class-wc-gateway-paylike.php:123
+#, php-format
+msgid ""
+"TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 "
+"0000 with any CVC and a valid expiration date. \"<a href=\"%s\">See "
+"Documentation</a>\"."
+msgstr ""
+"MOD DE TEST ACTIV. În modul de testare, puteți utiliza cardul 4100 0000 0000 "
+"0000 cu orice CVC și o dată valabilă de expirare. &quot; <a href=\"%s\">Vezi "
+"documentație</a> &quot;."
+
+#: includes/class-wc-gateway-paylike.php:181
+msgid "The test private key is not valid or set to live mode."
+msgstr "Cheia privată de test nu este validă sau este setată în modul live."
+
+#: includes/class-wc-gateway-paylike.php:205
+msgid "The test public key doesn't seem to be valid"
+msgstr "Cheia publică de test nu pare să fie validă"
+
+#: includes/class-wc-gateway-paylike.php:232
+msgid "The live private key doesn't seem to be valid"
+msgstr "Cheia privată live nu pare să fie validă"
+
+#: includes/class-wc-gateway-paylike.php:246
+msgid "The live private key is not valid or set to test mode."
+msgstr "Cheia privată live nu este validă sau este setată în modul de testare."
+
+#: includes/class-wc-gateway-paylike.php:269
+msgid "The live public key doesn't seem to be valid"
+msgstr "Cheia publică live nu pare să fie validă"
+
+#: includes/class-wc-gateway-paylike.php:359
+msgid ""
+"The transaction id is missing, it seems that the authorization failed or the "
+"reference was not sent. Please try the payment again. The previous payment "
+"will not be captured."
+msgstr ""
+"ID-ul tranzacției lipsește, se pare că autorizarea a eșuat sau referința nu "
+"a fost trimisă. Încercați din nou plata. Plata anterioară nu va fi capturată."
+
+#: includes/class-wc-gateway-paylike.php:427
+msgid "Unable to verify transaction!"
+msgstr "Nu se poate verifica tranzacția!"
+
+#: includes/class-wc-gateway-paylike.php:532
+msgid "Paylike authorization complete."
+msgstr "Autorizație Paylike finalizată."
+
+#: includes/class-wc-gateway-paylike.php:598
+msgid "Authorized amount: "
+msgstr "Suma autorizată:"
+
+#: includes/class-wc-gateway-paylike.php:599
+msgid "Captured amount: "
+msgstr "Suma capturată:"
+
+#: includes/class-wc-gateway-paylike.php:600
+msgid "Charge authorized at: "
+msgstr "Plată autorizată la:"
+
+#: includes/class-wc-gateway-paylike.php:663
+msgid "Paylike transaction refunded."
+msgstr "Tranzacție Paylike rambursată."
+
+#: includes/class-wc-gateway-paylike.php:798
+#, php-format
+msgid ""
+"Paylike: <a href=\"%s\">Force SSL</a> is disabled; your checkout page may "
+"not be secure! Unless you have a valid SSL certificate and force the "
+"checkout pages to be secure, only test mode will be allowed."
+msgstr ""
+"Paylike: <a href=\"%s\">Force SSL</a> este dezactivat; este posibil ca "
+"pagina dvs. de checkout să nu fie sigură! Cu excepția cazului în care aveți "
+"un certificat SSL valid și forțați ca paginile de verificare să fie sigure, "
+"numai modul de testare va fi permis."
+
+#: includes/class-wc-gateway-paylike.php:897
+msgid ""
+"Thank you for your order, please click below to pay and complete your order."
+msgstr ""
+"Vă mulțumim pentru comanda dvs., vă rugăm să faceți clic mai jos pentru a "
+"plăti și finaliza comanda."
+
+#: includes/class-wc-gateway-paylike.php:899
+msgid "Pay Now"
+msgstr "Plătește acum"
+
+#: includes/settings-paylike.php:8
+msgid "Enable/Disable"
+msgstr "Activare/Dezactivare"
+
+#: includes/settings-paylike.php:9
+msgid "Enable Paylike"
+msgstr "Activați Paylike"
+
+#: includes/settings-paylike.php:15
+msgid "Payment method title"
+msgstr "Titlul metodei de plată"
+
+#: includes/settings-paylike.php:17
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+"Aceasta controlează titlul pe care utilizatorul îl vede în timpul plății."
+
+#: includes/settings-paylike.php:18
+msgid "Credit card (Paylike)"
+msgstr "Card de credit (Paylike)"
+
+#: includes/settings-paylike.php:22
+msgid "Payment method description"
+msgstr "Descrierea metodei de plată"
+
+#: includes/settings-paylike.php:24
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+"Aceasta controlează descrierea pe care utilizatorul o vede în timpul plății."
+
+#: includes/settings-paylike.php:25
+msgid ""
+"Secure payment with credit card via &copy; <a href=\"https://paylike.io\" "
+"target=\"_blank\">Paylike</a>"
+msgstr ""
+"Plata sigură cu cardul de credit prin © <a href=\"https://paylike.io\" "
+"target=\"_blank\">Paylike</a>"
+
+#: includes/settings-paylike.php:29
+msgid "Payment popup title"
+msgstr "Titlu popup de plată"
+
+#: includes/settings-paylike.php:31
+msgid ""
+"The text shown in the popup where the customer inserts the card details."
+msgstr ""
+"Textul afișat în fereastra pop-up unde clientul introduce detaliile cardului."
+
+#: includes/settings-paylike.php:36
+msgid "Transaction mode"
+msgstr "Mod de tranzacție"
+
+#: includes/settings-paylike.php:38
+msgid ""
+"In test mode, you can create a successful transaction with the card number "
+"4100 0000 0000 0000 with any CVC and a valid expiration date."
+msgstr ""
+"În modul de testare, puteți crea o tranzacție reușită cu numărul cardului "
+"4100 0000 0000 0000 cu orice CVC și o dată valabilă de expirare."
+
+#: includes/settings-paylike.php:40
+msgid "Test"
+msgstr "Test"
+
+#: includes/settings-paylike.php:41
+msgid "Live"
+msgstr "Live"
+
+#: includes/settings-paylike.php:47
+msgid "Live mode App Key"
+msgstr "Cheia aplicației în modul live"
+
+#: includes/settings-paylike.php:49 includes/settings-paylike.php:56
+#: includes/settings-paylike.php:63 includes/settings-paylike.php:70
+msgid "Get it from your Paylike dashboard"
+msgstr "Ia-l din tabloul de bord Paylike"
+
+#: includes/settings-paylike.php:54
+msgid "Live mode Public Key"
+msgstr "Cheie publică în modul live"
+
+#: includes/settings-paylike.php:61
+msgid "Test mode App Key"
+msgstr "Cheie de aplicație test"
+
+#: includes/settings-paylike.php:68
+msgid "Test mode Public key"
+msgstr "Cheie publică test"
+
+#: includes/settings-paylike.php:75
+msgid "Compatibility Mode"
+msgstr "Mod de compatibilitate"
+
+#: includes/settings-paylike.php:76
+msgid "Don't capture from processing to completed"
+msgstr "Nu captura de la În procesare la Finalizată"
+
+#: includes/settings-paylike.php:78
+msgid ""
+"When this is checked you can capture payment by moving an order to On Hold "
+"and then to complete or processing status, when its not checked you can also "
+"complete them from processing to complete as well as the other 2 options"
+msgstr ""
+"Când acest checkbox este bifat, puteți capta o plată mutând o comandă în În "
+"așteptare și apoi la starea de Finalizată sau În procesare, atunci când nu "
+"este bifat, puteți captura și de la În procesare la Finalizată, precum și "
+"celelalte 2 opțiuni"
+
+#: includes/settings-paylike.php:92
+msgid "Checkout mode"
+msgstr "Mod checkout"
+
+#: includes/settings-paylike.php:95
+msgid "Payment before order created"
+msgstr "Plata înainte de crearea comenzii"
+
+#: includes/settings-paylike.php:96
+msgid "Redirect to payment page after order created"
+msgstr "Redirecționați la pagina de plată după crearea comenzii"
+
+#: includes/settings-paylike.php:103
+msgid "Capture mode"
+msgstr "Mod de capturare"
+
+#: includes/settings-paylike.php:109
+msgid ""
+"If you deliver your product instantly (e.g. a digital product), choose "
+"Instant mode. If not, use Delayed. In Delayed mode, you can capture the "
+"order when moving from on hold to complete or from on hold to processing."
+msgstr ""
+"Dacă livrați produsul instantaneu (de exemplu, un produs digital), alegeți "
+"modul instant. Dacă nu, folosiți Întârziat. În modul Întârziat, puteți "
+"captura comanda când treceți de la În așteptare la Finalizată sau de la În "
+"așteptare la În procesare."
+
+#: includes/settings-paylike.php:128
+msgid "Logging"
+msgstr "Logare"
+
+#: includes/settings-paylike.php:129
+msgid "Log debug messages"
+msgstr "Jurnalizează mesajele de depanare"
+
+#: includes/settings-paylike.php:131
+msgid "Save debug messages to the WooCommerce System Status log."
+msgstr ""
+"Salvați mesajele de depanare în jurnalul de stare a sistemului WooCommerce."
+
+#. Name of the plugin
+msgid "WooCommerce Paylike Gateway"
+msgstr "WooCommerce Paylike Gateway"
+
+#. Description of the plugin
+msgid ""
+"Allow customers to pay with credit cards via the Paylike gateway in your "
+"WooCommerce store."
+msgstr ""
+"Permiteți clienților să plătească cu carduri de credit prin intermediul "
+"gateway-ului Paylike din magazinul dvs. WooCommerce."
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
+msgstr "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
+
+#. Author of the plugin
+msgid "Derikon Development"
+msgstr "Derikon Development"
+
+#. Author URI of the plugin
+msgid "https://derikon.com/"
+msgstr "https://derikon.com/"

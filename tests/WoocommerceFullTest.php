@@ -16,19 +16,6 @@ class WoocommerceFullTest extends AbstractTestCase {
 
 	public $runner;
 
-//	/**
-//	 * @throws NoSuchElementException
-//	 * @throws \Facebook\WebDriver\Exception\TimeOutException
-//	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
-//	 */
-//	public function testGeneralFunctions() {
-//		$this->runner = new WoocommerceRunner( $this );
-//		$this->runner->ready( array(
-//				'settings_check' => true,
-//				'stop_emails'            => true,
-//			)
-//		);
-//	}
 
 	/**
 	 * @throws NoSuchElementException
