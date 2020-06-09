@@ -31,17 +31,18 @@ class WoocommerceQuickTest extends AbstractTestCase {
 	}
 
 	/**
+	 *
 	 * @throws NoSuchElementException
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
 	 */
-	public function testUsdPaymentBeforeOrderInstant() {
+	public function testDkkPaymentBeforeOrderInstant() {
 		$this->runner = new WoocommerceRunner( $this );
 		$this->runner->ready( array(
+				'currency'               => 'DKK',
 				'capture_mode'           => 'instant',
 				'checkout_mode'          => 'before_order',
 				'exclude_manual_payment' => false,
-				'exclude_subscription'   => true,
 			)
 		);
 	}
