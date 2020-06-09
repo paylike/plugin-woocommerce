@@ -939,7 +939,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 		$products = array();
+		$i=0;
 		foreach ( $items as $item => $values ) {
+
 			if ( $values['variation_id'] ) {
 				$_product = $pf->get_product( $values['variation_id'] );
 			} else {
@@ -951,6 +953,11 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 			);
 			$products[] = $product;
+			$i++;
+			// custom popup allows at most 100 keys in all. Custom has 15 keys and each product has 3+1. 85/3 is 20
+			if($i>=20){
+				break;
+			}
 		}
 		$paylike_params = array(
 			'key'               => $this->public_key,
@@ -999,6 +1006,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$products = array();
 		$items = $order->get_items();
 		$pf = new WC_Product_Factory();
+
+		$i=0;
 		foreach ( $items as $item => $values ) {
 			$_product = $pf->get_product( $values['product_id'] );
 			$product = array(
@@ -1007,6 +1016,11 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 			);
 			$products[] = $product;
+			$i++;
+			// custom popup allows at most 100 keys in all. Custom has 15 keys and each product has 3+1. 85/3 is 20
+			if($i>=20){
+				break;
+			}
 		}
 		if ( $theme_template = locate_template( 'paylike/receipt.php' ) ) {
 			require_once $theme_template;
