@@ -1,7 +1,7 @@
 {
   "name": "paylike/plugin-woocommerce",
   "description": "WooCommerce plugin for paylike",
-  "version": "1.8.6",
+  "version": "1.8.7",
   "license": "MIT",
   "authors": [
     {
@@ -11,6 +11,6 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "paylike/php-api": "^1.0.5"
+    "paylike/php-api": "^1.0.7"
   }
 }

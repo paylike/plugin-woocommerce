@@ -122,6 +122,7 @@ class CurlClient implements HttpClientInterface
         $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
+        //
         $json         = $this->parseResponse($response_body, $response_code,
             $response_headers);
         $api_response = new ApiResponse($response_body, $response_code,

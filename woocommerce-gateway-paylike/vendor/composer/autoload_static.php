@@ -9,16 +9,11 @@ class ComposerStaticInit28984aee82bf633b6e8313d91a246b8e
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
-            'Paylike\\Tests\\' => 14,
             'Paylike\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Paylike\\Tests\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/paylike/php-api/tests',
-        ),
         'Paylike\\' => 
         array (
             0 => __DIR__ . '/..' . '/paylike/php-api/src',

@@ -33,24 +33,6 @@ class WoocommerceFullTest extends AbstractTestCase {
 	}
 
 	/**
-	 *
-	 * @throws NoSuchElementException
-	 * @throws \Facebook\WebDriver\Exception\TimeOutException
-	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
-	 */
-	public function testUsdPaymentBeforeOrderInstant() {
-		$this->runner = new WoocommerceRunner( $this );
-		$this->runner->ready( array(
-				'first_test'             => true,
-				'currency'               => 'USD',
-				'capture_mode'           => 'instant',
-				'checkout_mode'          => 'before_order',
-				'exclude_manual_payment' => false,
-			)
-		);
-	}
-
-	/**
 	 * @throws NoSuchElementException
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 * @throws \Facebook\WebDriver\Exception\UnexpectedTagNameException
@@ -75,7 +57,7 @@ class WoocommerceFullTest extends AbstractTestCase {
 		$this->runner->ready( array(
 				'capture_mode'           => 'delayed',
 				'checkout_mode'          => 'before_order',
-				'exclude_manual_payment' => false,
+				'exclude_manual_payment' => true,
 			)
 		);
 	}

@@ -502,7 +502,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 	}
 
-
 	/**
 	 *  Handle capture event.
 	 *
