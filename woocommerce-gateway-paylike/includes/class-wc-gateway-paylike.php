@@ -921,7 +921,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function payment_scripts() {
 		global $wp_version;
-		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() ) {
+		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && !is_order_received_page() ) {
 			return;
 		}
 		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
@@ -1031,7 +1031,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 		?>
-		<script src="https://sdk.paylike.io/3.js"></script>
+		<script data-no-optimize="1" src="https://sdk.paylike.io/3.js"></script>
 		<script>
 		var paylike = Paylike( '<?php echo $this->public_key;?>' );
 		var $button = document.getElementById( "paylike-payment-button" );

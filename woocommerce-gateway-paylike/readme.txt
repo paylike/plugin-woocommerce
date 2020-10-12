@@ -3,9 +3,9 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
 Tested up to: 5.5.1
-Stable tag: 1.8.7
+Stable tag: 1.8.8
 WC requires at least: 3.0
-WC tested up to: 4.4.1
+WC tested up to: 4.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
