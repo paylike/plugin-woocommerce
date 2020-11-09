@@ -353,7 +353,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	public function get_active_card_logo_url( $type ) {
 		$image_type = strtolower( $type );
 
-		return WC_HTTPS::force_https_url( plugins_url( '../assets/images/' . $image_type . '.svg', __FILE__ ) );
+		$url = WC_HTTPS::force_https_url( plugins_url( '../assets/images/' . $image_type . '.svg', __FILE__ ) );
+
+		return apply_filters( 'woocommerce_paylike_card_icon', $url, $type );
 	}
 
 	/**
@@ -921,7 +923,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function payment_scripts() {
 		global $wp_version;
-		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && !is_order_received_page() ) {
+		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! is_order_received_page() ) {
 			return;
 		}
 		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
@@ -938,7 +940,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 		$products = array();
-		$i=0;
+		$i = 0;
 		foreach ( $items as $item => $values ) {
 
 			if ( $values['variation_id'] ) {
@@ -952,9 +954,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 			);
 			$products[] = $product;
-			$i++;
+			$i ++;
 			// custom popup allows at most 100 keys in all. Custom has 15 keys and each product has 3+1. 85/3 is 20
-			if($i>=20){
+			if ( $i >= 20 ) {
 				break;
 			}
 		}
@@ -1006,7 +1008,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$items = $order->get_items();
 		$pf = new WC_Product_Factory();
 
-		$i=0;
+		$i = 0;
 		foreach ( $items as $item => $values ) {
 			$_product = $pf->get_product( $values['product_id'] );
 			$product = array(
@@ -1015,9 +1017,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				'quantity' => isset( $values['quantity'] ) ? $values['quantity'] : $values['qty'],
 			);
 			$products[] = $product;
-			$i++;
+			$i ++;
 			// custom popup allows at most 100 keys in all. Custom has 15 keys and each product has 3+1. 85/3 is 20
-			if($i>=20){
+			if ( $i >= 20 ) {
 				break;
 			}
 		}
@@ -1037,7 +1039,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		var $button = document.getElementById( "paylike-payment-button" );
 		$button.addEventListener( 'click', startPaymentPopup );
 
-		function startPaymentPopup(e){
+		function startPaymentPopup( e ) {
 			e.preventDefault();
 			pay();
 		}

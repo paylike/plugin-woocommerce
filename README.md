@@ -54,3 +54,22 @@ Make sure to include an element with the id of `paylike-payment-button` so that 
 ## Advanced
 
 Due to the floating point precision issue with some numbers, it is recommended to have the bcmath extension installed. 
+
+
+### Filters
+
+#### Change card icons
+
+`woocommerce_paylike_card_icon`
+
+```php
+function your_prefix_change_visa( $url, $type ) {
+	if ( $type == 'visa' ) {
+		return 'https://your-url.com/path-to-new-visa-logo.png';
+	}
+
+	return $url;
+}
+
+add_filter( 'woocommerce_paylike_card_icon', 'your_prefix_change_visa', 10, 2 );
+```
