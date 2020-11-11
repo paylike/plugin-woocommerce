@@ -96,6 +96,9 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 You can find more information on the [Paylike website](https://paylike.io/plugins/woocommerce) and on [GitHub](https://github.com/paylike/plugin-woocommerce)
 
+= Is upsell supported? =
+
+Yes, we currently support integration with [WooCommerce One Click Upsell plugin](https://buildwoofunnels.com/woocommerce-one-click-upsells-upstroke/)
 
 == Screenshots ==
 

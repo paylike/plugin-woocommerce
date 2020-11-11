@@ -73,3 +73,8 @@ function your_prefix_change_visa( $url, $type ) {
 
 add_filter( 'woocommerce_paylike_card_icon', 'your_prefix_change_visa', 10, 2 );
 ```
+
+
+### Third Party Compatibilities
+
+- Upsell [WooCommerce One Click Upsell plugin](https://buildwoofunnels.com/woocommerce-one-click-upsells-upstroke/)
