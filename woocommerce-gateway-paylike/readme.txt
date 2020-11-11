@@ -2,10 +2,10 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 5.5.1
-Stable tag: 1.8.8
+Tested up to: 5.5.3
+Stable tag: 1.8.9
 WC requires at least: 3.0
-WC tested up to: 4.5.2
+WC tested up to: 4.7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,6 +96,9 @@ In order to capture a payment you can do so by moving the order into the on hold
 
 You can find more information on the [Paylike website](https://paylike.io/plugins/woocommerce) and on [GitHub](https://github.com/paylike/plugin-woocommerce)
 
+= Is upsell supported? =
+
+Yes, we currently support integration with [WooCommerce One Click Upsell plugin](https://buildwoofunnels.com/woocommerce-one-click-upsells-upstroke/)
 
 == Screenshots ==
 
@@ -104,6 +107,15 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 3. Payment screen
 
 == Changelog ==
+
+= 1.8.9 =
+* Add support for upstroke one click upsell plugin
+* Update tested up to wordpress and woocommerce
+* Add filter for individual credit card icons url
+
+= 1.8.8 =
+* Add no optimize flag to avoid caching
+* Add additional payment checks
 
 = 1.8.7 =
 * Update php api
