@@ -5,35 +5,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return apply_filters( 'wc_paylike_settings',
 	array(
-		'enabled'            => array(
+		'enabled'              => array(
 			'title'       => __( 'Enable/Disable', 'woocommerce-gateway-paylike' ),
 			'label'       => __( 'Enable Paylike', 'woocommerce-gateway-paylike' ),
 			'type'        => 'checkbox',
 			'description' => '',
 			'default'     => 'no',
 		),
-		'title'              => array(
+		'title'                => array(
 			'title'       => __( 'Payment method title', 'woocommerce-gateway-paylike' ),
 			'type'        => 'text',
 			'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce-gateway-paylike' ),
 			'default'     => __( 'Credit card (Paylike)', 'woocommerce-gateway-paylike' ),
 			'desc_tip'    => true,
 		),
-		'description'        => array(
+		'description'          => array(
 			'title'       => __( 'Payment method description', 'woocommerce-gateway-paylike' ),
 			'type'        => 'textarea',
 			'description' => __( 'This controls the description which the user sees during checkout.', 'woocommerce-gateway-paylike' ),
 			'default'     => __( 'Secure payment with credit card via &copy; <a href="https://paylike.io" target="_blank">Paylike</a>', 'woocommerce-gateway-paylike' ),
 			'desc_tip'    => true,
 		),
-		'popup_title'        => array(
+		'popup_title'          => array(
 			'title'       => __( 'Payment popup title', 'woocommerce-gateway-paylike' ),
 			'type'        => 'text',
 			'description' => __( 'The text shown in the popup where the customer inserts the card details.', 'woocommerce-gateway-paylike' ),
 			'default'     => get_bloginfo( 'name' ),
 			'desc_tip'    => true,
 		),
-		'testmode'           => array(
+		'testmode'             => array(
 			'title'       => __( 'Transaction mode', 'woocommerce-gateway-paylike' ),
 			'type'        => 'select',
 			'description' => __( 'In test mode, you can create a successful transaction with the card number 4100 0000 0000 0000 with any CVC and a valid expiration date.', 'woocommerce-gateway-paylike' ),
@@ -44,35 +44,35 @@ return apply_filters( 'wc_paylike_settings',
 			'default'     => 'yes',
 			'desc_tip'    => true,
 		),
-		'secret_key'         => array(
+		'secret_key'           => array(
 			'title'       => __( 'Live mode App Key', 'woocommerce-gateway-paylike' ),
 			'type'        => 'text',
 			'description' => __( 'Get it from your Paylike dashboard', 'woocommerce-gateway-paylike' ),
 			'default'     => '',
 			'desc_tip'    => true,
 		),
-		'public_key'         => array(
+		'public_key'           => array(
 			'title'       => __( 'Live mode Public Key', 'woocommerce-gateway-paylike' ),
 			'type'        => 'text',
 			'description' => __( 'Get it from your Paylike dashboard', 'woocommerce-gateway-paylike' ),
 			'default'     => '',
 			'desc_tip'    => true,
 		),
-		'test_secret_key'    => array(
+		'test_secret_key'      => array(
 			'title'       => __( 'Test mode App Key', 'woocommerce-gateway-paylike' ),
 			'type'        => 'text',
 			'description' => __( 'Get it from your Paylike dashboard', 'woocommerce-gateway-paylike' ),
 			'default'     => '',
 			'desc_tip'    => true,
 		),
-		'test_public_key'    => array(
+		'test_public_key'      => array(
 			'title'       => __( 'Test mode Public key', 'woocommerce-gateway-paylike' ),
 			'type'        => 'text',
 			'description' => __( 'Get it from your Paylike dashboard', 'woocommerce-gateway-paylike' ),
 			'default'     => '',
 			'desc_tip'    => true,
 		),
-		'compatibility_mode' => array(
+		'compatibility_mode'   => array(
 			'title'       => __( 'Compatibility Mode', 'woocommerce-gateway-paylike' ),
 			'label'       => __( 'Don\'t capture from processing to completed', 'woocommerce-gateway-paylike' ),
 			'type'        => 'checkbox',
@@ -80,7 +80,7 @@ return apply_filters( 'wc_paylike_settings',
 			'default'     => 'yes',
 			'desc_tip'    => true,
 		),
-		'checkout_mode'      => array(
+		'checkout_mode'        => array(
 			'title'    => __( 'Checkout mode', 'woocommerce-gateway-paylike' ),
 			'type'     => 'select',
 			'options'  => array(
@@ -91,7 +91,7 @@ return apply_filters( 'wc_paylike_settings',
 			'default'  => 'after_order',
 			'desc_tip' => true,
 		),
-		'capture'            => array(
+		'capture'              => array(
 			'title'       => __( 'Capture mode', 'woocommerce-gateway-paylike' ),
 			'type'        => 'select',
 			'options'     => array(
@@ -102,7 +102,15 @@ return apply_filters( 'wc_paylike_settings',
 			'default'     => 'instant',
 			'desc_tip'    => true,
 		),
-		'card_types'         => array(
+		'store_payment_method' => array(
+			'title'       => __( 'Store Payment Method', 'woocommerce-gateway-paylike' ),
+			'label'       => __( 'Allow users to reuse payments via Paylike', 'woocommerce-gateway-paylike' ),
+			'type'        => 'checkbox',
+			'description' => __( 'When this is checked users are allowed to save their payment to be used as a source for future payments without the need to go trough the payment process again', 'woocommerce-gateway-paylike' ),
+			'default'     => 'no', // has to be yes/no to work
+			'desc_tip'    => true,
+		),
+		'card_types'           => array(
 			'title'    => __( 'Accepted Cards', 'woocommerce-gateway-paylike' ),
 			'type'     => 'multiselect',
 			'class'    => 'chosen_select',
@@ -115,6 +123,6 @@ return apply_filters( 'wc_paylike_settings',
 				'visaelectron' => 'Visa Electron',
 			),
 			'default'  => array( 'mastercard', 'maestro', 'visa', 'visaelectron' ),
-		)
+		),
 	)
 );

@@ -228,7 +228,6 @@ jQuery( function( $ ) {
 								return err
 							}
 
-							console.log( res );
 							if ( res.transaction ) {
 								var trxid = res.transaction.id;
 								$form.find( 'input.paylike_token' ).remove();

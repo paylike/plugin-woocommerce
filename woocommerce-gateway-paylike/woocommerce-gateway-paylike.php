@@ -339,6 +339,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			include_once( plugin_basename( 'includes/helpers.php' ) );
 			include_once( plugin_basename( 'includes/legacy.php' ) );
 			include_once( plugin_basename( 'includes/currencies.php' ) );
+			include_once( plugin_basename( 'includes/class-wc-paylike-payment-tokens.php' ) );
+			include_once( plugin_basename( 'includes/class-wc-paylike-payment-token.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-gateway-paylike.php' ) );
 
 			/** Third Party */

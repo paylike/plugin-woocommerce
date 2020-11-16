@@ -88,6 +88,14 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	public $paylike_client;
 
 	/**
+	 * Store payment method
+	 *
+	 * @var bool
+	 */
+	public $store_payment_method;
+
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -97,6 +105,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->supports = array(
 			'products',
 			'refunds',
+			'tokenization',
 			'subscriptions',
 			'subscription_cancellation',
 			'subscription_suspension',
@@ -121,6 +130,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->capture = 'instant' === $this->get_option( 'capture', 'instant' );
 		$this->checkout_mode = 'before_order' === $this->get_option( 'checkout_mode', 'before_order' );
 		$this->compatibility_mode = 'yes' === $this->get_option( 'compatibility_mode', 'yes' );
+		$this->store_payment_method = 'yes' === $this->get_option( 'store_payment_method' );
+
 		$this->secret_key = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
 		$this->public_key = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
 		$this->logging = 'yes' === $this->get_option( 'logging' );
@@ -362,6 +373,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * Check if this gateway is enabled
 	 */
 	public function is_available() {
+		if ( is_add_payment_method_page() && ! $this->store_payment_method ) {
+			return false;
+		}
+
 		if ( 'yes' === $this->enabled ) {
 			if ( ! $this->testmode && is_checkout() && ! is_ssl() ) {
 				return false;
@@ -856,6 +871,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				$user_phone = dk_get_order_data( $order, 'get_billing_phone' );
 			}
 
+			if ( is_add_payment_method_page() ) {
+				$amount = 0;
+			}
+
 			echo '<div
 			id="paylike-payment-data"' . '"
 			data-email="' . esc_attr( $user_email ) . '"
@@ -1295,5 +1314,78 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 
+	}
+
+	/**
+	 * @return WP_Error
+	 */
+	protected function can_user_save_card() {
+
+		$merchant_id = $this->get_global_merchant_id();
+		if ( is_wp_error( $merchant_id ) ) {
+			return $merchant_id;
+		}
+		WC_Paylike::log( 'Info: Attempting to fetch the merchant data' . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		try {
+			$merchant = $this->paylike_client->merchants()->fetch( $merchant_id );
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			$error = __( "The merchant couldn't be found", 'woocommerce-gateway-paylike' );
+
+			return new WP_Error( 'paylike_error', $error );
+		}
+
+		if ( true == $merchant['claim']['canSaveCard'] ) {
+			return true;
+		}
+
+		$error = __( "The merchant is not allowed to save cards", 'woocommerce-gateway-paylike' );
+
+		return new WP_Error( 'paylike_error', $error );
+	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function validate_store_payment_method_field( $key, $value ) {
+		if ( ! $value ) {
+			return "no";
+		}
+		// value is yes so we need to check if the user is allowed to save cards
+		$can_save_card = $this->can_user_save_card();
+		if ( is_wp_error( $can_save_card ) ) {
+			$error = __( 'The Paylike account used is not allowed to save cards. Storing the payment method is not available.', 'woocommerce-gateway-paylike' );
+			WC_Admin_Settings::add_error( $error );
+			throw new Exception( $error );
+		}
+
+		return "yes";
+	}
+
+	/**
+	 * Add payment method via account screen
+	 */
+	public function add_payment_method() {
+
+		$token = new WC_Payment_Token_Paylike();
+		$token->set_gateway_id( $this->id );
+		$token->set_user_id( get_current_user_id() );
+		$token->set_token( 'card-' . $_POST['paylike_card_id'] );
+		$token->set_last4( substr( $_POST['paylike_card_id'], - 4 ) );
+		$saved = $token->save();
+
+		if ( ! $saved ) {
+			wc_add_notice( __( 'There was a problem adding the payment method.', 'woocommerce-gateway-paylike' ), 'error' );
+
+			return;
+		}
+
+		return array(
+			'result'   => 'success',
+			'redirect' => wc_get_endpoint_url( 'payment-methods' ),
+		);
 	}
 }
