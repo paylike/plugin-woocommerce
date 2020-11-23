@@ -40,7 +40,7 @@ class WC_Paylike_Payment_Tokens {
 	public function get_account_saved_payment_methods_list_item( $item, $payment_token ) {
 		if ( 'paylike' === strtolower( $payment_token->get_type() ) ) {
 			$item['method']['last4'] = $payment_token->get_last4();
-			$item['method']['brand'] = esc_html__( 'PAYLIKE TOKEN', 'woocommerce-gateway-paylike' );
+			$item['method']['brand'] = $payment_token->get_brand();
 		}
 
 		return $item;

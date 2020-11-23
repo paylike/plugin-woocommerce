@@ -24,8 +24,15 @@ jQuery( function( $ ) {
 
 			isPaylikeModalNeeded: function() {
 				var token = wc_paylike_form.form.find( 'input.paylike_token' ).length,
+					savedToken = wc_paylike_form.form.find( 'input#wc-paylike-payment-token-new' ).length,
 					card = wc_paylike_form.form.find( 'input.paylike_card_id' ).length,
 					$required_inputs;
+
+				// token is used
+				if ( savedToken ) {
+					if ( ! wc_paylike_form.form.find( 'input#wc-paylike-payment-token-new' ).is( ':checked' ) )
+						return false;
+				}
 
 				// If this is a paylike submission (after modal) and token exists, allow submit.
 				if ( wc_paylike_form.paylike_submit && token ) {
@@ -145,7 +152,7 @@ jQuery( function( $ ) {
 					}
 					var $billing_state = $( "[name='billing_state']" );
 					if ( $billing_state.length > 0 ) {
-						address += ' ' + $billing_state.find(':selected').text();
+						address += ' ' + $billing_state.find( ':selected' ).text();
 					}
 					var $billing_postcode = $( "[name='billing_postcode']" )
 					if ( $billing_postcode.length > 0 ) {

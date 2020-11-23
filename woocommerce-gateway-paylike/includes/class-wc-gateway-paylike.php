@@ -414,22 +414,14 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				'redirect' => $order->get_checkout_payment_url( true ),
 			);
 		} else {
-			if ( $order->get_total() > 0 ) {
-				$transaction_id = $_POST['paylike_token'];
-				if ( empty( $transaction_id ) ) {
-					wc_add_notice( __( 'The transaction id is missing, it seems that the authorization failed or the reference was not sent. Please try the payment again. The previous payment will not be captured.', 'woocommerce-gateway-paylike' ), 'error' );
 
-					return;
-				}
-				$this->handle_payment( $transaction_id, $order );
+			if ( isset( $_POST['wc-paylike-payment-token'] ) && 'new' !== $_POST['wc-paylike-payment-token'] ) {
+				$order = $this->process_token_payment( $order );
 			} else {
-				// used for trials, and changing payment method.
-				$card_id = $_POST['paylike_card_id'];
-				if ( $card_id ) {
-					$this->save_card_id( $card_id, $order );
-				}
-				$order->payment_complete();
+				$order = $this->process_default_payment( $order );
 			}
+
+
 			// Remove cart.
 			WC()->cart->empty_cart();
 
@@ -440,6 +432,101 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			);
 
 		}
+	}
+
+	/**
+	 * Process payment with transaction id/card id supplied by user directly
+	 *
+	 * @param $order
+	 */
+	public function process_default_payment( $order ) {
+		if ( $order->get_total() > 0 ) {
+			$transaction_id = $_POST['paylike_token'];
+			if ( empty( $transaction_id ) ) {
+				wc_add_notice( __( 'The transaction id is missing, it seems that the authorization failed or the reference was not sent. Please try the payment again. The previous payment will not be captured.', 'woocommerce-gateway-paylike' ), 'error' );
+
+				return;
+			}
+			$save_transaction = isset( $_POST['wc-paylike-new-payment-method'] ) && ! empty( $_POST['wc-paylike-new-payment-method'] );
+			if ( $save_transaction ) {
+				$token = new WC_Payment_Token_Paylike();
+				$token->set_gateway_id( $this->id );
+				$token->set_user_id( get_current_user_id() );
+				$token->set_token( 'transaction-' . $transaction_id );
+				$transaction = $this->paylike_client->transactions()->fetch( $transaction_id );
+				$token->set_last4( $transaction['card']['last4'] );
+				$token->set_brand( ucfirst($transaction['card']['scheme']) );
+				$saved = $token->save();
+			}
+
+			$this->handle_payment( $transaction_id, $order );
+		} else {
+			// used for trials, and changing payment method.
+			$card_id = $_POST['paylike_card_id'];
+			if ( $card_id ) {
+				$this->save_card_id( $card_id, $order );
+			}
+			$order->payment_complete();
+		}
+
+		return $order;
+	}
+
+	/**
+	 * Process payment with saved payment token
+	 *
+	 * @param WC_Order $order
+	 */
+	public function process_token_payment( $order ) {
+		$token_id = wc_clean( $_POST['wc-paylike-payment-token'] );
+		$token = WC_Payment_Tokens::get( $token_id );
+		$transaction_id = $this->create_new_transaction( $token->get_token_id(), $order, $order->get_total( 'edit' ), $token->get_token_source() );
+
+		$this->handle_payment( $transaction_id, $order );
+
+		return $order;
+	}
+
+	/**
+	 * Creates a new transaction based on a previous one
+	 * used to simulate recurring payments
+	 * see @https://github.com/paylike/api-docs#recurring-payments
+	 *
+	 * @param int      $entity_id The reference id.
+	 * @param WC_Order $order The order that is used for billing details and amount.
+	 * @param int      $amount The amount for which the transaction is created.
+	 * @param string   $type The type for which the transaction needs to be created.
+	 *
+	 * @return int|mixed|null
+	 */
+	public function create_new_transaction( $entity_id, $order, $amount, $type = 'transaction' ) {
+		$merchant_id = $this->get_global_merchant_id();
+		if ( is_wp_error( $merchant_id ) ) {
+			return $merchant_id;
+		}
+		// create a new transaction by card or transaction.
+		$data = array(
+			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ),
+			'currency' => dk_get_order_currency( $order ),
+			'custom'   => array(
+				'email' => $order->get_billing_email(),
+			),
+		);
+		if ( 'card' === $type ) {
+			$data['cardId'] = $entity_id;
+		} else {
+			$data['transactionId'] = $entity_id;
+		}
+		WC_Paylike::log( "Info: Starting to create a transaction {$data['amount']} in {$data['currency']} for {$merchant_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+		try {
+			$new_transaction = $this->paylike_client->transactions()->create( $merchant_id, $data );
+		} catch ( \Paylike\Exception\ApiException $exception ) {
+			WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Creating the transaction failed!' );
+
+			return new WP_Error( 'paylike_error', __( 'There was a problem creating the transaction!.', 'woocommerce-gateway-paylike' ) );
+		}
+
+		return $new_transaction;
 	}
 
 	/**
@@ -893,9 +980,33 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			echo $token; // WPCS: XSS ok.
 			echo '</div>';
 		}
+
 		if ( $this->description ) {
 			echo wpautop( wp_kses_post( apply_filters( 'wc_paylike_description', $this->description ) ) );
 		}
+
+		if ( $this->store_payment_method && ! is_add_payment_method_page() ) {
+			$this->saved_payment_methods();
+		}
+
+		if ( apply_filters( 'wc_paylike_display_save_payment_method_checkbox', $this->store_payment_method ) && ! is_add_payment_method_page() && ! isset( $_GET['change_payment_method'] ) ) {
+			$this->save_payment_method_checkbox();
+		}
+	}
+
+	/**
+	 * Displays the save to account checkbox.
+	 *
+	 */
+	public function save_payment_method_checkbox() {
+		printf(
+			'<p class="form-row woocommerce-SavedPaymentMethods-saveNew">
+				<input id="wc-%1$s-new-payment-method" name="wc-%1$s-new-payment-method" type="checkbox" value="true" style="width:auto;" />
+				<label for="wc-%1$s-new-payment-method" style="display:inline;">%2$s</label>
+			</p>',
+			esc_attr( $this->id ),
+			esc_html( apply_filters( 'wc_paylike_save_to_account_text', __( 'Save payment information to my account for future purchases.', 'woocommerce-gateway-paylike' ) ) )
+		);
 	}
 
 	/**
@@ -1374,7 +1485,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$token->set_gateway_id( $this->id );
 		$token->set_user_id( get_current_user_id() );
 		$token->set_token( 'card-' . $_POST['paylike_card_id'] );
-		$token->set_last4( substr( $_POST['paylike_card_id'], - 4 ) );
+		$card = $this->paylike_client->cards()->fetch( $_POST['paylike_card_id'] );
+		$token->set_last4( $card['last4']);
+		$token->set_brand( ucfirst($card['scheme']));
 		$saved = $token->save();
 
 		if ( ! $saved ) {

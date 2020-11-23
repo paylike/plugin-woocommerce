@@ -100,47 +100,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		return $this->handle_payment( $new_transaction, $order, $amount );
 	}
 
-	/**
-	 * Creates a new transaction based on a previous one
-	 * used to simulate recurring payments
-	 * see @https://github.com/paylike/api-docs#recurring-payments
-	 *
-	 * @param int      $entity_id The reference id.
-	 * @param WC_Order $renewal_order The order that is used for renewal.
-	 * @param int      $amount The amount for which the transaction is created.
-	 * @param string   $type The type for which the transaction needs to be created.
-	 *
-	 * @return int|mixed|null
-	 */
-	protected function create_new_transaction( $entity_id, $renewal_order, $amount, $type = 'transaction' ) {
-		$merchant_id = $this->get_global_merchant_id();
-		if ( is_wp_error( $merchant_id ) ) {
-			return $merchant_id;
-		}
-		// create a new transaction by card or transaction.
-		$data = array(
-			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $renewal_order ) ),
-			'currency' => dk_get_order_currency( $renewal_order ),
-			'custom'   => array(
-				'email' => $renewal_order->get_billing_email(),
-			),
-		);
-		if ( 'card' === $type ) {
-			$data['cardId'] = $entity_id;
-		} else {
-			$data['transactionId'] = $entity_id;
-		}
-		WC_Paylike::log( "Info: Starting to create a transaction {$data['amount']} in {$data['currency']} for {$merchant_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
-		try {
-			$new_transaction = $this->paylike_client->transactions()->create( $merchant_id, $data );
-		} catch ( \Paylike\Exception\ApiException $exception ) {
-			WC_Paylike::handle_exceptions( $renewal_order, $exception, 'Issue: Creating the transaction failed!' );
 
-			return new WP_Error( 'paylike_error', __( 'There was a problem creating the transaction!.', 'woocommerce-gateway-paylike' ) );
-		}
-
-		return $new_transaction;
-	}
 
 
 	/**
