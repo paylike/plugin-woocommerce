@@ -43,6 +43,8 @@ class WoocommerceQuickTest extends AbstractTestCase {
 				'capture_mode'           => 'instant',
 				'checkout_mode'          => 'before_order',
 				'exclude_manual_payment' => false,
+				'store_payment_method'   => true,
+				'use_existing_token'     => true,
 			)
 		);
 	}

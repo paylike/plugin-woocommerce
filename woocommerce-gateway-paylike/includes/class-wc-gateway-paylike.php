@@ -441,7 +441,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public function process_default_payment( $order ) {
 		if ( $order->get_total() > 0 ) {
-			$transaction_id = $_POST['paylike_token'];
+			$transaction_id = isset( $_POST['paylike_token'] ) ? $_POST['paylike_token'] : '';
 			if ( empty( $transaction_id ) ) {
 				wc_add_notice( __( 'The transaction id is missing, it seems that the authorization failed or the reference was not sent. Please try the payment again. The previous payment will not be captured.', 'woocommerce-gateway-paylike' ), 'error' );
 
@@ -455,7 +455,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				$token->set_token( 'transaction-' . $transaction_id );
 				$transaction = $this->paylike_client->transactions()->fetch( $transaction_id );
 				$token->set_last4( $transaction['card']['last4'] );
-				$token->set_brand( ucfirst($transaction['card']['scheme']) );
+				$token->set_brand( ucfirst( $transaction['card']['scheme'] ) );
 				$saved = $token->save();
 			}
 
@@ -1431,7 +1431,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 * @return WP_Error
 	 */
 	protected function can_user_save_card() {
-
 		$merchant_id = $this->get_global_merchant_id();
 		if ( is_wp_error( $merchant_id ) ) {
 			return $merchant_id;
@@ -1465,6 +1464,14 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		if ( ! $value ) {
 			return "no";
 		}
+
+		if ( wc_clean( $_POST['woocommerce_paylike_checkout_mode'] ) === 'after_order' ) {
+			$error = __( "Tokenization is only compatible with the before order payment mode.", 'woocommerce-gateway-paylike' );
+
+			WC_Admin_Settings::add_error( $error );
+			throw new Exception( $error );
+		}
+
 		// value is yes so we need to check if the user is allowed to save cards
 		$can_save_card = $this->can_user_save_card();
 		if ( is_wp_error( $can_save_card ) ) {
@@ -1486,8 +1493,8 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$token->set_user_id( get_current_user_id() );
 		$token->set_token( 'card-' . $_POST['paylike_card_id'] );
 		$card = $this->paylike_client->cards()->fetch( $_POST['paylike_card_id'] );
-		$token->set_last4( $card['last4']);
-		$token->set_brand( ucfirst($card['scheme']));
+		$token->set_last4( $card['last4'] );
+		$token->set_brand( ucfirst( $card['scheme'] ) );
 		$saved = $token->save();
 
 		if ( ! $saved ) {

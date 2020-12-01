@@ -20,6 +20,8 @@ class WoocommerceTestHelper {
 	public $manual_payment = false;
 	public $exclude_manual_payment = false;
 	public $exclude_subscription = false;
+	public $store_payment_method = false;
+	public $use_existing_token = false;
 	public $settings_check = false;
 	public $stop_email = false;
 	public $log_version = false;
@@ -168,6 +170,23 @@ class WoocommerceTestHelper {
 		if ( $checkbox->isSelected() ) {
 		} else {
 			$checkbox->click();
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param $selector
+	 * @param $keys
+	 *
+	 * @return WoocommerceTestHelper
+	 */
+	public function uncheck( $selector ) {
+		$checkbox = $this->find( $selector );
+		if ( $checkbox->isSelected() ) {
+			$checkbox->click();
+		} else {
+
 		}
 
 		return $this;
