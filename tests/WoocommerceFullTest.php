@@ -43,6 +43,7 @@ class WoocommerceFullTest extends AbstractTestCase {
 				'capture_mode'           => 'delayed',
 				'checkout_mode'          => 'before_order',
 				'exclude_manual_payment' => true,
+				'store_payment_method'   => true,
 			)
 		);
 	}
@@ -57,6 +58,8 @@ class WoocommerceFullTest extends AbstractTestCase {
 		$this->runner->ready( array(
 				'capture_mode'           => 'delayed',
 				'checkout_mode'          => 'before_order',
+				'store_payment_method'   => true,
+				'use_existing_token'     => true,
 				'exclude_manual_payment' => true,
 			)
 		);

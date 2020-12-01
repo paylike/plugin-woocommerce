@@ -114,6 +114,21 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	}
 
 	/**
+	 * @throws \Facebook\WebDriver\Exception\NoSuchElementException
+	 * @throws \Facebook\WebDriver\Exception\TimeOutException
+	 */
+	public function setPaymentMethod() {
+		$this->goToPage( 'wp-admin/admin.php?page=wc-settings&tab=checkout&section=paylike', '#woocommerce_paylike_store_payment_method' );
+		if ( $this->store_payment_method ) {
+			$this->checkbox( 'woocommerce_paylike_store_payment_method' );
+		} else {
+			$this->uncheck( 'woocommerce_paylike_store_payment_method' );
+		}
+
+		$this->submitAdmin();
+	}
+
+	/**
 	 *
 	 */
 	public function submitAdmin() {
@@ -243,7 +258,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 * @throws \Facebook\WebDriver\Exception\TimeOutException
 	 */
 	public function finalPaylike() {
-		if ( $this->checkout_mode == 'before_order' && ! $this->manual_payment ) {
+		if ( $this->checkout_mode == 'before_order' && ! $this->manual_payment && ! $this->store_payment_method ) {
 			$amount = (int) $this->getElementData( '#paylike-payment-data', 'amount' );
 			$expectedAmount = $this->getText( '.order-total span.amount' );
 			$expectedAmount = preg_replace( "/[^0-9.]/", "", $expectedAmount );
@@ -251,7 +266,14 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$expectedAmount = ceil( round( $expectedAmount, 3 ) * get_paylike_currency_multiplier( $this->currency ) );
 			$this->main_test->assertEquals( $expectedAmount, $amount, "Checking minor amount for " . $this->currency );
 		}
-		$this->popupPaylike();
+
+		if ( ! $this->use_existing_token && $this->store_payment_method ) {
+			$this->checkbox( 'wc-paylike-payment-token' );
+		}
+
+		if ( ! $this->store_payment_method && ! $this->use_existing_token ) {
+			$this->popupPaylike();
+		}
 		$this->waitForElement( '.woocommerce-order' );
 		// because the title of the page matches the checkout title, we need to use the order received class on body
 		$this->main_test->assertEquals( 'Order received', $this->getText( '.entry-title' ), "USD" );
@@ -339,7 +361,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->waitForElement( ".button.wc-forward" );
 		try {
 			$this->click( ".button.wc-forward" );
-		}catch (ElementNotVisibleException $e){
+		} catch ( ElementNotVisibleException $e ) {
 			$this->goToPage( 'checkout' );
 		}
 
@@ -544,6 +566,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->submitAdmin();
 		$this->disableEmail();
 		$this->changeMode();
+		$this->setPaymentMethod();
 	}
 
 	/**
@@ -591,7 +614,9 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		if ( $this->checkout_mode == 'after_order' ) {
 			$this->confirmOrder();
 		}
-		$this->popupPaylike();
+		if ( ! $this->store_payment_method ) {
+			$this->popupPaylike();
+		}
 		$this->selectOrder();
 		$this->runSubscription();
 		$this->verifyOrder();
@@ -664,9 +689,29 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			} catch ( NoAlertOpenException $exception ) {
 				// we may not have the alert so just move on
 			}
-		}catch (NoSuchElementException $e){
+		} catch ( NoSuchElementException $e ) {
 			// no orders
 		}
+	}
+
+	private function addNewToken() {
+		$this->goToPage( 'my-account/payment-methods' );
+		// delete existing tokens
+		try {
+			$elements = $this->findElements( '.button.delete' );
+			foreach ( $elements as $element ) {
+				$element->click();
+			}
+		} catch ( NoSuchElementException $e ) {
+			// no previous tokens
+		}
+
+		$this->goToPage( 'my-account/add-payment-method/' );
+		$this->choosePaylike();
+		$this->popupPaylike();
+		$this->waitForElement( '.woocommerce-message' );
+		$messages = $this->getText( '.woocommerce-message' );
+		$this->main_test->assertEquals( 'Payment method successfully added.', $messages, "Token Not Added" );
 	}
 
 	/**
@@ -704,6 +749,10 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		}
 
 		$this->settings();
+		if ( $this->store_payment_method && $this->use_existing_token ) {
+			$this->addNewToken();
+		}
+
 		$this->directPayment();
 		if ( ! $this->exclude_manual_payment ) {
 			$this->manualPayment();

@@ -5,11 +5,11 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.8.9
+ * Version: 1.9.0
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
- * WC tested up to: 4.7.0
+ * WC tested up to: 4.7.1
  *
  * Copyright (c) 2016 Derikon Development
  *
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.8.9' );
+define( 'WC_PAYLIKE_VERSION', '1.9.0' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
@@ -339,6 +339,8 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			include_once( plugin_basename( 'includes/helpers.php' ) );
 			include_once( plugin_basename( 'includes/legacy.php' ) );
 			include_once( plugin_basename( 'includes/currencies.php' ) );
+			include_once( plugin_basename( 'includes/class-wc-paylike-payment-tokens.php' ) );
+			include_once( plugin_basename( 'includes/class-wc-paylike-payment-token.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-gateway-paylike.php' ) );
 
 			/** Third Party */
