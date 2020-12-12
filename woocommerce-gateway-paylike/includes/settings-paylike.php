@@ -124,5 +124,13 @@ return apply_filters( 'wc_paylike_settings',
 			),
 			'default'  => array( 'mastercard', 'maestro', 'visa', 'visaelectron' ),
 		),
+		'use_beta_sdk'         => array(
+			'title'       => __( 'Use Beta', 'woocommerce-gateway-paylike' ),
+			'label'       => __( 'Use the Beta SDK(only use if instructed)', 'woocommerce-gateway-paylike' ),
+			'type'        => 'checkbox',
+			'description' => __( 'When this is checked the beta version of the sdk is being used', 'woocommerce-gateway-paylike' ),
+			'default'     => 'no', // has to be yes/no to work
+			'desc_tip'    => true,
+		),
 	)
 );

@@ -2,8 +2,8 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 5.5.3
-Stable tag: 1.9.0
+Tested up to: 5.6.0
+Stable tag: 2.0.0
 WC requires at least: 3.0
 WC tested up to: 4.7.0
 License: GPLv3
@@ -107,6 +107,10 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 3. Payment screen
 
 == Changelog ==
+
+= 2.0.0 =
+* Update SDK version
+* Add option to opt in to the beta version of the sdk
 
 = 1.9.0 =
 * Add support for upstroke one click upsell plugin
