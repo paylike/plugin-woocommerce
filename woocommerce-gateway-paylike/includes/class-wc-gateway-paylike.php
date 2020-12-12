@@ -94,6 +94,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	 */
 	public $store_payment_method;
 
+	/**
+	 * Use Beta SDK
+	 *
+	 * @var bool
+	 */
+	public $use_beta_sdk;
+
 
 	/**
 	 * Constructor
@@ -131,6 +138,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->checkout_mode = 'before_order' === $this->get_option( 'checkout_mode', 'before_order' );
 		$this->compatibility_mode = 'yes' === $this->get_option( 'compatibility_mode', 'yes' );
 		$this->store_payment_method = 'yes' === $this->get_option( 'store_payment_method' );
+		$this->use_beta_sdk = 'yes' === $this->get_option( 'use_beta_sdk' );
 
 		$this->secret_key = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
 		$this->public_key = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
@@ -1056,7 +1064,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! is_order_received_page() ) {
 			return;
 		}
-		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/3.js', '', '3.0', true );
+		$version = get_option( 'paylike_sdk_version', WC_PAYLIKE_CURRENT_SDK );
+		$beta_sdk_version = get_option( 'paylike_beta_version', WC_PAYLIKE_BETA_SDK );
+		if ( $this->use_beta_sdk ) {
+			$version = $beta_sdk_version;
+		}
+		wp_enqueue_script( 'paylike', 'https://sdk.paylike.io/' . $version . '.js', '', $version . '.0', true );
 		wp_enqueue_script( 'woocommerce_paylike', plugins_url( 'assets/js/paylike_checkout.js', WC_PAYLIKE_MAIN_FILE ), array( 'paylike' ), WC_PAYLIKE_VERSION, true );
 		$products = array();
 
@@ -1161,9 +1174,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				require_once $plugin_template;
 			}
 		}
-
+		$version = get_option( 'paylike_sdk_version', WC_PAYLIKE_CURRENT_SDK );
+		$beta_sdk_version = get_option( 'paylike_beta_version', WC_PAYLIKE_BETA_SDK );
+		if ( $this->use_beta_sdk ) {
+			$version = $beta_sdk_version;
+		}
 		?>
-		<script data-no-optimize="1" src="https://sdk.paylike.io/3.js"></script>
+		<script data-no-optimize="1" src="https://sdk.paylike.io/<?php echo $version; ?>.js"></script>
 		<script>
 		var paylike = Paylike( '<?php echo $this->public_key;?>' );
 		var $button = document.getElementById( "paylike-payment-button" );
