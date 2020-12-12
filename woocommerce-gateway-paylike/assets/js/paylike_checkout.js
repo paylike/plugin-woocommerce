@@ -175,6 +175,41 @@ jQuery( function( $ ) {
 				return wc_paylike_form.escapeQoutes( phone );
 			},
 			onSubmit: function( e ) {
+
+				//Get checkout form data
+				var formData = wc_paylike_form.form.serializeArray();
+
+				//Modify form to sure its just a validation check
+				formData.push({name: "woocommerce_checkout_update_totals", value: true});
+
+				//Show loading indicator
+				wc_paylike_form.form.addClass( 'processing' );
+				wc_paylike_form.block();
+
+				//Make request to validate checkout form
+				$.ajax({
+					type: 'POST',
+					url: wc_checkout_params.checkout_url,
+					data: $.param(formData),
+					dataType: 'json',
+					success: function( result ) {
+						if(result.messages) {
+							wc_paylike_form.submit_error( result.messages );
+							return false;
+						} else {
+							wc_paylike_form.form.removeClass( 'processing' ).unblock();
+							wc_paylike_form.showPopup(e);
+							return true;
+						}
+					},
+					error:	function( jqXHR, textStatus, errorThrown ) {
+						wc_paylike_form.submit_error( '<div class="woocommerce-error">' + errorThrown + '</div>' );
+					}
+				});
+
+				return false;
+			},
+			showPopup: function(e) {
 				if ( wc_paylike_form.isPaylikeModalNeeded() ) {
 					e.preventDefault();
 
@@ -250,11 +285,8 @@ jQuery( function( $ ) {
 						}
 					);
 
-
 					return false;
 				}
-
-				return true;
 			},
 			escapeQoutes: function( str ) {
 				return str.toString().replace( /"/g, '\\"' );
@@ -295,7 +327,22 @@ jQuery( function( $ ) {
 				}
 				return true;
 
-			}
+			},
+			submit_error: function( error_message ) {
+				$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
+				wc_paylike_form.form.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + error_message + '</div>' ); // eslint-disable-line max-len
+				wc_paylike_form.form.removeClass( 'processing' ).unblock();
+				wc_paylike_form.form.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
+				wc_paylike_form.scroll_to_notices();
+				$( document.body ).trigger( 'checkout_error' , [ error_message ] );
+			},
+			scroll_to_notices: function() {
+				var scrollElement = $( '.woocommerce-NoticeGroup-updateOrderReview, .woocommerce-NoticeGroup-checkout' );
+				if ( ! scrollElement.length ) {
+					scrollElement = $( '.form.checkout' );
+				}
+				$.scroll_to_notices( scrollElement );
+			},
 		}
 	;
 
