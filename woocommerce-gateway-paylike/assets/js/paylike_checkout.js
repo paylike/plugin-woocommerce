@@ -176,17 +176,17 @@ jQuery( function( $ ) {
 			},
 			onSubmit: function( e ) {
 
-				//Get checkout form data
+				// Get checkout form data
 				var formData = wc_paylike_form.form.serializeArray();
 
-				//Modify form to sure its just a validation check
+				// Modify form to make sure its just a validation check
 				formData.push({name: "woocommerce_checkout_update_totals", value: true});
 
-				//Show loading indicator
+				// Show loading indicator
 				wc_paylike_form.form.addClass( 'processing' );
 				wc_paylike_form.block();
 
-				//Make request to validate checkout form
+				// Make request to validate checkout form
 				$.ajax({
 					type: 'POST',
 					url: wc_checkout_params.checkout_url,
