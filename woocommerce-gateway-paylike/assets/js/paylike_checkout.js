@@ -56,49 +56,6 @@ jQuery( function( $ ) {
 					return false;
 				}
 
-				// germanized version
-
-				if ( $( 'input#legal' ).length === 1 && $( 'input#legal:checked' ).length === 0 ) {
-					return false;
-				}
-
-				if ( $( 'input#data-download' ).length === 1 && $( 'input#data-download:checked' ).length === 0 ) {
-					return false;
-				}
-
-				// Don't open modal if required fields are not complete
-				if ( $( 'input#terms' ).length === 1 && $( 'input#terms:checked' ).length === 0 ) {
-					return false;
-				}
-
-				var $account_password = $( '#account_password' );
-				if ( $( '#createaccount' ).is( ':checked' ) && $account_password.length && $account_password.val() === '' ) {
-					return false;
-				}
-
-				// check to see if we need to validate shipping address
-				if ( $( '#ship-to-different-address-checkbox' ).is( ':checked' ) ) {
-					$required_inputs = $( '.woocommerce-billing-fields .validate-required, .woocommerce-shipping-fields .validate-required' );
-				} else {
-					$required_inputs = $( '.woocommerce-billing-fields .validate-required' );
-				}
-
-				if ( $required_inputs.length ) {
-					var required_error = false;
-
-					$required_inputs.each( function() {
-						if ( $( this ).find( 'input.input-text, select' ).not( $( '#account_password, #account_username' ) ).val() === '' ) {
-							required_error = true;
-						}
-					} );
-
-					if ( required_error ) {
-						return false;
-					}
-				}
-
-				if ( ! wc_paylike_form.validateShipmondo() ) return false;
-
 				return true;
 			},
 
@@ -290,43 +247,6 @@ jQuery( function( $ ) {
 			},
 			escapeQoutes: function( str ) {
 				return str.toString().replace( /"/g, '\\"' );
-			},
-			validateShipmondo: function() {
-				var selectedShipping = $( '#shipping_method input:checked' ).val();
-				if ( ! selectedShipping ) {
-					return true;
-				}
-				// Check if Shipmondo (Pakkelabels.dk) shipping option is selected
-				if ( selectedShipping.indexOf( "pakkelabels" ) >= 0 ) {
-					// Business shipping, but no business name
-					var shipmondoBusinessTypes = [
-						"pakkelabels_shipping_gls_business",
-						"pakkelabels_shipping_postnord_business",
-						"pakkelabels_shipping_bring_business"
-					];
-
-					if ( shipmondoBusinessTypes.includes( $( '#shipping_method input:checked' ).val() ) && $( "#billing_company" ).val() == '' ) {
-						return false;
-					}
-
-					// Pickup point shipping, but no pickup point selected
-					var shipmondoPickupPointTypes = [
-						"pakkelabels_shipping_gls",
-						"pakkelabels_shipping_pdk",
-						"pakkelabels_shipping_dao",
-						"pakkelabels_shipping_bring"
-					];
-
-					// Check if pickup point shipping is selected
-					if ( shipmondoPickupPointTypes.includes( $( '#shipping_method input:checked' ).val() ) ) {
-						// Check if a shopID exists
-						if ( $( "#hidden_chosen_shop input[name='shop_ID']" ).val() == '' ) {
-							return false;
-						}
-					}
-				}
-				return true;
-
 			},
 			submit_error: function( error_message ) {
 				$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
