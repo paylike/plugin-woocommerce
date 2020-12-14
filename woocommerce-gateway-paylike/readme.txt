@@ -2,8 +2,8 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 5.5.3
-Stable tag: 1.9.0
+Tested up to: 5.6.0
+Stable tag: 2.1.0
 WC requires at least: 3.0
 WC tested up to: 4.7.0
 License: GPLv3
@@ -108,6 +108,13 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 
 == Changelog ==
 
+= 2.1.0 =
+* Update payment before order with validation call to server to avoid any errors related to validation
+
+= 2.0.0 =
+* Update SDK version
+* Add option to opt in to the beta version of the sdk
+
 = 1.9.0 =
 * Add support for upstroke one click upsell plugin
 * Update tested up to wordpress and woocommerce
@@ -144,53 +151,3 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 
 = 1.8.0 =
 * Updated legacy code regarding subscriptions
-
-= 1.7.7 =
-* Added norwegian compatibility flag
-
-= 1.7.6 =
-* Fix pay after order bug
-
-= 1.7.5 =
-* Fix 0 amount payment after order bug
-
-= 1.7.4 =
-* Svn fix
-
-= 1.7.3 =
-* Update php lib
-* Increment tested up to
-
-= 1.7.2 =
-* Fix capture bug o order status change
-* Add Shipmondo validation support
-
-= 1.7.1 =
-* Update translation files
-* Increment tested up to
-* Move payment complete after transaction data has been saved
-
-= 1.7.0 =
-* Update amount calculation to include previous refunds and voids
-
-= 1.6.6 =
-* Update amount calculation to use the bc math extension for better floating point precision
-
-= 1.6.5 =
-* Minor IE fix
-
-= 1.6.4 =
-* Minor fix
-
-= 1.6.3 =
-* Fix message not properly decoded from some paylike errors
-* Tested up increment, fully supporting WP 5.0
-
-= 1.6.2 =
-* Fix deprecation notice cause
-
-= 1.6.1 =
-* Minor log update
-
-= 1.6.0 =
-* Update last tested version for WooCommerce

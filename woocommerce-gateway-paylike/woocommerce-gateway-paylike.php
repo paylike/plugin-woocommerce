@@ -5,11 +5,11 @@
  * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 1.9.0
+ * Version: 2.1.0
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
- * WC tested up to: 4.7.1
+ * WC tested up to: 4.8.0
  *
  * Copyright (c) 2016 Derikon Development
  *
@@ -32,9 +32,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '1.9.0' );
+define( 'WC_PAYLIKE_VERSION', '2.1.0' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
+define( 'WC_PAYLIKE_CURRENT_SDK', 4 );
+define( 'WC_PAYLIKE_BETA_SDK', 5 );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
 define( 'WC_PAYLIKE_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'WC_PAYLIKE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -358,6 +360,9 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		 */
 		public function db_update() {
 			$current_db_version = get_option( 'paylike_db_version', 1 );
+			$current_sdk_version = get_option( 'paylike_sdk_version', 0 );
+			$beta_sdk_version = get_option( 'paylike_beta_version', 0 );
+
 			$options = get_option( 'woocommerce_paylike_settings' );
 			if ( 1 == $current_db_version ) {
 
@@ -376,6 +381,15 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 					$options['checkout_mode'] = 'after_order';
 				}
 				$current_db_version ++;
+			}
+
+
+			if ( $current_sdk_version < WC_PAYLIKE_CURRENT_SDK ) {
+				//reset beta checkbox
+				$options['use_beta_sdk'] = 'no';
+
+				update_option( 'paylike_sdk_version', WC_PAYLIKE_CURRENT_SDK );
+				update_option( 'paylike_beta_version', WC_PAYLIKE_BETA_SDK );
 			}
 
 			update_option( 'woocommerce_paylike_settings', apply_filters( 'woocommerce_settings_api_sanitized_fields_paylike', $options ) );
