@@ -46,11 +46,6 @@ jQuery( function( $ ) {
 						return false;
 				}
 
-				// Don't affect submission if modal is not needed.
-				if ( ! wc_paylike_form.isPaylikeChosen() ) {
-					return false;
-				}
-
 				// Don't open modal if required fields are not complete
 				if ( $( 'input#terms' ).length === 1 && $( 'input#terms:checked' ).length === 0 ) {
 					return false;
@@ -132,9 +127,22 @@ jQuery( function( $ ) {
 				return wc_paylike_form.escapeQoutes( phone );
 			},
 			onSubmit: function( e ) {
-				
+
 				// Don't affect submission if modal is not needed.
 				if ( ! wc_paylike_form.isPaylikeChosen() ) {
+					return true;
+				}
+
+				// Don't open modal if required fields are not complete
+				if ( $( 'input#legal' ).length === 1 && $( 'input#legal:checked' ).length === 0 ) {
+					return true;
+				}
+
+				if ( $( 'input#data-download' ).length === 1 && $( 'input#data-download:checked' ).length === 0 ) {
+					return true;
+				}
+
+				if ( $( 'input#terms' ).length === 1 && $( 'input#terms:checked' ).length === 0 ) {
 					return true;
 				}
 
