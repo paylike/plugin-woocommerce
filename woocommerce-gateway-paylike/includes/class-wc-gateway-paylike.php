@@ -1064,6 +1064,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! is_order_received_page() ) {
 			return;
 		}
+		
+		// If Paylike is not enabled bail.
+		if ( 'no' === $this->enabled ) {
+			return;
+		}
+		
 		$version = get_option( 'paylike_sdk_version', WC_PAYLIKE_CURRENT_SDK );
 		$beta_sdk_version = get_option( 'paylike_beta_version', WC_PAYLIKE_BETA_SDK );
 		if ( $this->use_beta_sdk ) {

@@ -133,6 +133,11 @@ jQuery( function( $ ) {
 			},
 			onSubmit: function( e ) {
 
+				// Don't affect submission if modal is not needed.
+				if ( !wc_paylike_form.isPaylikeModalNeeded() ) {
+					return true;
+				}
+
 				// Get checkout form data
 				var formData = wc_paylike_form.form.serializeArray();
 
