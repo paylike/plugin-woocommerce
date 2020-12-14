@@ -132,6 +132,11 @@ jQuery( function( $ ) {
 				return wc_paylike_form.escapeQoutes( phone );
 			},
 			onSubmit: function( e ) {
+				
+				// Don't affect submission if modal is not needed.
+				if ( ! wc_paylike_form.isPaylikeChosen() ) {
+					return true;
+				}
 
 				// Get checkout form data
 				var formData = wc_paylike_form.form.serializeArray();
