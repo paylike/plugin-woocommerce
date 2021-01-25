@@ -241,8 +241,6 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->click( '.payment_method_paylike' );
 		$this->waitForElement( '#place_order' );
 		$this->click( '#place_order' );
-
-
 	}
 
 	/**

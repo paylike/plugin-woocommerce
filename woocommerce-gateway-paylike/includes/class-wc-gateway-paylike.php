@@ -1064,12 +1064,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! is_order_received_page() ) {
 			return;
 		}
-		
+
 		// If Paylike is not enabled bail.
 		if ( 'no' === $this->enabled ) {
 			return;
 		}
-		
+
 		$version = get_option( 'paylike_sdk_version', WC_PAYLIKE_CURRENT_SDK );
 		$beta_sdk_version = get_option( 'paylike_beta_version', WC_PAYLIKE_BETA_SDK );
 		if ( $this->use_beta_sdk ) {
@@ -1115,6 +1115,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			'products'          => $products,
 			'platform_version'  => $wp_version,
 			'ecommerce_version' => WC()->version,
+			'is_recurring'      => dk_cart_contains_subscription(),
 			'version'           => WC_PAYLIKE_VERSION,
 			'ajax_url'          => admin_url( 'admin-ajax.php' ),
 		);
@@ -1185,6 +1186,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		if ( $this->use_beta_sdk ) {
 			$version = $beta_sdk_version;
 		}
+
+		$is_recurring = dk_order_contains_subscription( $order );
+
 		?>
 		<script data-no-optimize="1" src="https://sdk.paylike.io/<?php echo $version; ?>.js"></script>
 		<script>
@@ -1192,53 +1196,63 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		var $button = document.getElementById( "paylike-payment-button" );
 		$button.addEventListener( 'click', startPaymentPopup );
 
+		var args = {
+			title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount != 0) { ?>
+			currency: '<?php echo get_woocommerce_currency() ?>',
+			amount:  <?php echo $amount; ?>, <?php } ?>
+			locale: '<?php echo dk_get_locale(); ?>',
+			custom: {
+				orderId: '<?php echo $order->get_order_number(); ?>',
+				products: [<?php echo json_encode( $products ); ?>],
+				customer: {
+					name: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_first_name' ) ) . ' ' . addslashes( dk_get_order_data( $order, 'get_billing_last_name' ) ); ?>',
+					email: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_email' ) ); ?>',
+					phoneNo: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_phone' ) ); ?>',
+					address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) . ' ' . dk_get_order_data( $order, 'get_billing_city' ) . dk_get_order_data( $order, 'get_billing_state' ) . ' ' . dk_get_order_data( $order, 'get_billing_postcode' ) ); ?>',
+					IP: '<?php echo $this->get_client_ip(); ?>'
+				},
+				platform: {
+					name: 'WordPress',
+					version: '<?php echo $wp_version; ?>'
+				},
+				ecommerce: {
+					name: 'WooCommerce',
+					version: '<?php echo WC()->version; ?>'
+				},
+				paylikePluginVersion: '<?php echo WC_PAYLIKE_VERSION; ?>'
+			}
+		}
+
+		<?php
+		if ( $is_recurring ) {
+			echo 'args.recurring=true;' . PHP_EOL;
+		}
+		?>
+
 		function startPaymentPopup( e ) {
 			e.preventDefault();
 			pay();
 		}
 
 		function pay() {
-			paylike.popup( {
-				title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount != 0) { ?>
-				currency: '<?php echo get_woocommerce_currency() ?>',
-				amount:  <?php echo $amount; ?>, <?php } ?>
-				locale: '<?php echo dk_get_locale(); ?>',
-				custom: {
-					orderId: '<?php echo $order->get_order_number(); ?>',
-					products: [<?php echo json_encode( $products ); ?>],
-					customer: {
-						name: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_first_name' ) ) . ' ' . addslashes( dk_get_order_data( $order, 'get_billing_last_name' ) ); ?>',
-						email: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_email' ) ); ?>',
-						phoneNo: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_phone' ) ); ?>',
-						address: '<?php echo addslashes( dk_get_order_data( $order, 'get_billing_address_1' ) . ' ' . dk_get_order_data( $order, 'get_billing_address_2' ) . ' ' . dk_get_order_data( $order, 'get_billing_city' ) . dk_get_order_data( $order, 'get_billing_state' ) . ' ' . dk_get_order_data( $order, 'get_billing_postcode' ) ); ?>',
-						IP: '<?php echo $this->get_client_ip(); ?>'
-					},
-					platform: {
-						name: 'WordPress',
-						version: '<?php echo $wp_version; ?>'
-					},
-					ecommerce: {
-						name: 'WooCommerce',
-						version: '<?php echo WC()->version; ?>'
-					},
-					paylikePluginVersion: '<?php echo WC_PAYLIKE_VERSION; ?>'
+			paylike.popup( args,
+				function( err, res ) {
+					if ( err )
+						return console.warn( err );
+					var $form = jQuery( "#complete_order" );
+					if ( res.transaction ) {
+						var trxid = res.transaction.id;
+						$form.find( 'input.paylike_token' ).remove();
+						$form.append( '<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>' );
+					} else {
+						var cardid = res.card.id;
+						$form.find( 'input.paylike_card_id' ).remove();
+						$form.append( '<input type="hidden" class="paylike_card_id" name="paylike_card_id" value="' + cardid + '"/>' );
+					}
+					jQuery( '#paylike-payment-button' ).attr( 'disabled', 'disabled' );
+					document.getElementById( "complete_order" ).submit();
 				}
-			}, function( err, res ) {
-				if ( err )
-					return console.warn( err );
-				var $form = jQuery( "#complete_order" );
-				if ( res.transaction ) {
-					var trxid = res.transaction.id;
-					$form.find( 'input.paylike_token' ).remove();
-					$form.append( '<input type="hidden" class="paylike_token" name="paylike_token" value="' + trxid + '"/>' );
-				} else {
-					var cardid = res.card.id;
-					$form.find( 'input.paylike_card_id' ).remove();
-					$form.append( '<input type="hidden" class="paylike_card_id" name="paylike_card_id" value="' + cardid + '"/>' );
-				}
-				jQuery( '#paylike-payment-button' ).attr( 'disabled', 'disabled' );
-				document.getElementById( "complete_order" ).submit();
-			} );
+			);
 		}
 
 		// start automatically on page load

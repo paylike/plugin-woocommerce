@@ -189,7 +189,7 @@ class CurlClient implements HttpClientInterface
             default:
                 $msg = "Unexpected error communicating with Paylike.";
         }
-
+        
         $msg .= "\n\n(Network error [errno $errno]: $message)";
         throw new ApiConnection($msg);
     }

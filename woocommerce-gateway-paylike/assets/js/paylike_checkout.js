@@ -23,6 +23,12 @@ jQuery( function( $ ) {
 			},
 
 			isPaylikeModalNeeded: function() {
+
+				// Don't affect submission if modal is not needed.
+				if ( ! wc_paylike_form.isPaylikeChosen() ) {
+					return false;
+				}
+
 				var token = wc_paylike_form.form.find( 'input.paylike_token' ).length,
 					savedToken = wc_paylike_form.form.find( 'input#wc-paylike-payment-token-new' ).length,
 					card = wc_paylike_form.form.find( 'input.paylike_card_id' ).length,
@@ -46,15 +52,21 @@ jQuery( function( $ ) {
 						return false;
 				}
 
-				// Don't affect submission if modal is not needed.
-				if ( ! wc_paylike_form.isPaylikeChosen() ) {
+				// Don't open modal if required fields are not complete
+				if ( $( 'input#legal' ).length === 1 && $( 'input#legal:checked' ).length === 0 ) {
 					return false;
 				}
 
-				// Don't open modal if required fields are not complete
+				if ( $( 'input#data-download' ).length === 1 && $( 'input#data-download:checked' ).length === 0 ) {
+					return false;
+				}
+
 				if ( $( 'input#terms' ).length === 1 && $( 'input#terms:checked' ).length === 0 ) {
 					return false;
 				}
+
+
+				if ( ! wc_paylike_form.validateShipmondo() ) return false;
 
 				return true;
 			},
@@ -134,7 +146,7 @@ jQuery( function( $ ) {
 			onSubmit: function( e ) {
 
 				// Don't affect submission if modal is not needed.
-				if ( !wc_paylike_form.isPaylikeModalNeeded() ) {
+				if ( ! wc_paylike_form.isPaylikeModalNeeded() ) {
 					return true;
 				}
 
@@ -142,36 +154,36 @@ jQuery( function( $ ) {
 				var formData = wc_paylike_form.form.serializeArray();
 
 				// Modify form to make sure its just a validation check
-				formData.push({name: "woocommerce_checkout_update_totals", value: true});
+				formData.push( { name: "woocommerce_checkout_update_totals", value: true } );
 
 				// Show loading indicator
 				wc_paylike_form.form.addClass( 'processing' );
 				wc_paylike_form.block();
 
 				// Make request to validate checkout form
-				$.ajax({
+				$.ajax( {
 					type: 'POST',
 					url: wc_checkout_params.checkout_url,
-					data: $.param(formData),
+					data: $.param( formData ),
 					dataType: 'json',
 					success: function( result ) {
-						if(result.messages) {
+						if ( result.messages ) {
 							wc_paylike_form.submit_error( result.messages );
 							return false;
 						} else {
 							wc_paylike_form.form.removeClass( 'processing' ).unblock();
-							wc_paylike_form.showPopup(e);
+							wc_paylike_form.showPopup( e );
 							return true;
 						}
 					},
-					error:	function( jqXHR, textStatus, errorThrown ) {
+					error: function( jqXHR, textStatus, errorThrown ) {
 						wc_paylike_form.submit_error( '<div class="woocommerce-error">' + errorThrown + '</div>' );
 					}
-				});
+				} );
 
 				return false;
 			},
-			showPopup: function(e) {
+			showPopup: function( e ) {
 				if ( wc_paylike_form.isPaylikeModalNeeded() ) {
 					e.preventDefault();
 
@@ -216,6 +228,10 @@ jQuery( function( $ ) {
 						}
 					};
 
+					if ( wc_paylike_params.is_recurring ) {
+						args.recurring = true;
+					}
+
 					// used for cases like trial,
 					// change payment method
 					// see @https://github.com/paylike/sdk#popup-to-save-tokenize-a-card-for-later-use
@@ -253,21 +269,64 @@ jQuery( function( $ ) {
 			escapeQoutes: function( str ) {
 				return str.toString().replace( /"/g, '\\"' );
 			},
-			submit_error: function( error_message ) {
-				$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
-				wc_paylike_form.form.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + error_message + '</div>' ); // eslint-disable-line max-len
-				wc_paylike_form.form.removeClass( 'processing' ).unblock();
-				wc_paylike_form.form.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
-				wc_paylike_form.scroll_to_notices();
-				$( document.body ).trigger( 'checkout_error' , [ error_message ] );
+
+			validateShipmondo: function() {
+				var selectedShipping = $( '#shipping_method input:checked' ).val();
+				if ( ! selectedShipping ) {
+					return true;
+				}
+				// Check if Shipmondo (Pakkelabels.dk) shipping option is selected
+				if ( selectedShipping.indexOf( "pakkelabels" ) >= 0 ) {
+					// Business shipping, but no business name
+					var shipmondoBusinessTypes = [
+						"pakkelabels_shipping_gls_business",
+						"pakkelabels_shipping_postnord_business",
+						"pakkelabels_shipping_bring_business"
+					];
+
+					if ( shipmondoBusinessTypes.includes( $( '#shipping_method input:checked' ).val() ) && $( "#billing_company" ).val() == '' ) {
+						return false;
+					}
+
+					// Pickup point shipping, but no pickup point selected
+					var shipmondoPickupPointTypes = [
+						"pakkelabels_shipping_gls",
+						"pakkelabels_shipping_pdk",
+						"pakkelabels_shipping_dao",
+						"pakkelabels_shipping_bring"
+					];
+
+					// Check if pickup point shipping is selected
+					if ( shipmondoPickupPointTypes.includes( $( '#shipping_method input:checked' ).val() ) ) {
+						// Check if a shopID exists
+						if ( $( "#hidden_chosen_shop input[name='shop_ID']" ).val() == '' ) {
+							return false;
+						}
+					}
+				}
+				return true;
+
 			},
+			submit_error:
+
+				function( error_message ) {
+					$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
+					wc_paylike_form.form.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + error_message + '</div>' ); // eslint-disable-line max-len
+					wc_paylike_form.form.removeClass( 'processing' ).unblock();
+					wc_paylike_form.form.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
+					wc_paylike_form.scroll_to_notices();
+					$( document.body ).trigger( 'checkout_error', [ error_message ] );
+				}
+
+			,
 			scroll_to_notices: function() {
 				var scrollElement = $( '.woocommerce-NoticeGroup-updateOrderReview, .woocommerce-NoticeGroup-checkout' );
 				if ( ! scrollElement.length ) {
 					scrollElement = $( '.form.checkout' );
 				}
 				$.scroll_to_notices( scrollElement );
-			},
+			}
+			,
 		}
 	;
 
