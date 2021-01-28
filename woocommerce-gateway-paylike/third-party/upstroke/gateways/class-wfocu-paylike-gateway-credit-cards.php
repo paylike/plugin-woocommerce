@@ -42,6 +42,7 @@ class WFOCU_Paylike_Gateway_Credit_Cards extends WFOCU_Gateway {
 		$secret_key       = isset( $options['secret_key'] ) ? $options['secret_key'] : '';
 		$test_secret_key  = isset( $options['test_secret_key'] ) ? $options['test_secret_key'] : '';
 		$this->secret_key = ( isset( $options['testmode'] ) && 'yes' === $options['testmode'] ) ? $test_secret_key : $secret_key;
+		$this->secret_key = apply_filters( 'paylike_secret_key', $this->secret_key );
 
 		if ( ! empty( $this->secret_key ) ) {
 			$this->paylike_client = new Paylike\Paylike( $this->secret_key );
