@@ -74,6 +74,46 @@ function your_prefix_change_visa( $url, $type ) {
 add_filter( 'woocommerce_paylike_card_icon', 'your_prefix_change_visa', 10, 2 );
 ```
 
+#### Change account keys based on currency
+
+`paylike_secret_key`
+```php 
+function paylike_secret_key( $secret_key ) {
+
+    $settings = WOOMULTI_CURRENCY_F_Data::get_ins();
+    $current_currency = $settings->get_current_currency();
+
+    if($current_currency == 'USD'){
+        return $secret_key;
+    }
+
+    switch ($current_currency){
+        case 'RON':
+            $secret_key = 'ron-secret-key';
+    }
+
+    return $secret_key;
+}
+add_filter( 'paylike_secret_key', 'paylike_secret_key' );
+
+function paylike_public_key( $public_key ) {
+
+    $settings = WOOMULTI_CURRENCY_F_Data::get_ins();
+    $current_currency = $settings->get_current_currency();
+
+    if($current_currency == 'USD'){
+        return $public_key;
+    }
+
+    switch ($current_currency){
+        case 'RON':
+            $public_key = 'ron-public-key';
+    }
+
+    return $public_key;
+}
+add_filter( 'paylike_public_key', 'paylike_public_key' );
+```
 
 ### Third Party Compatibilities
 

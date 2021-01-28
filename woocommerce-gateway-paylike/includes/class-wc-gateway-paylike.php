@@ -141,7 +141,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->use_beta_sdk = 'yes' === $this->get_option( 'use_beta_sdk' );
 
 		$this->secret_key = $this->testmode ? $this->get_option( 'test_secret_key' ) : $this->get_option( 'secret_key' );
+		$this->secret_key = apply_filters( 'paylike_secret_key', $this->secret_key );
 		$this->public_key = $this->testmode ? $this->get_option( 'test_public_key' ) : $this->get_option( 'public_key' );
+		$this->public_key = apply_filters( 'paylike_public_key', $this->public_key );
+
 		$this->logging = 'yes' === $this->get_option( 'logging' );
 		$this->card_types = $this->get_option( 'card_types' );
 		$this->order_button_text = __( 'Continue to payment', 'woocommerce-gateway-paylike' );

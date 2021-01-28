@@ -22,6 +22,14 @@ jQuery( function( $ ) {
 				return $( '#payment_method_paylike' ).is( ':checked' );
 			},
 
+			isAddPaymentMethod: function() {
+				return $( '#add_payment_method' ).length === 1;
+			},
+
+			isManualPaymentMethod: function() {
+				return $( '#order_review' ).length === 1;
+			},
+
 			isPaylikeModalNeeded: function() {
 
 				// Don't affect submission if modal is not needed.
@@ -148,6 +156,10 @@ jQuery( function( $ ) {
 				// Don't affect submission if modal is not needed.
 				if ( ! wc_paylike_form.isPaylikeModalNeeded() ) {
 					return true;
+				}
+				// on add card page skip validation
+				if ( wc_paylike_form.isAddPaymentMethod() || wc_paylike_form.isManualPaymentMethod() ) {
+					return wc_paylike_form.showPopup( e );
 				}
 
 				// Get checkout form data
