@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-return apply_filters( 'wc_paylike_settings',
+$settings =
 	array(
 		'enabled'              => array(
 			'title'       => __( 'Enable/Disable', 'woocommerce-gateway-paylike' ),
@@ -131,6 +131,11 @@ return apply_filters( 'wc_paylike_settings',
 			'description' => __( 'When this is checked the beta version of the sdk is being used', 'woocommerce-gateway-paylike' ),
 			'default'     => 'no', // has to be yes/no to work
 			'desc_tip'    => true,
-		),
-	)
-);
+		)
+	);
+
+if ( WC_PAYLIKE_BETA_SDK === WC_PAYLIKE_CURRENT_SDK ) {
+	unset( $settings['use_beta_sdk'] );
+}
+
+return apply_filters( 'wc_paylike_settings', $settings );

@@ -396,7 +396,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$this->type( '.paylike.overlay .payment form #card-code', '122' );
 			$this->click( '.paylike.overlay .payment form button' );
 		} catch ( NoSuchElementException $exception ) {
-			$this->confirmOrder();
+			$this->placeOrder();
 			$this->popupPaylike();
 		}
 
