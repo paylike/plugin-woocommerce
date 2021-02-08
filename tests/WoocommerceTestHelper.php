@@ -220,7 +220,7 @@ class WoocommerceTestHelper {
 	 */
 	public function elementExists( $query ) {
 		$element = $this->getElement( $query );
-		$this->wd->wait( 2, 100 )->until(
+		$this->wd->wait( 5, 100 )->until(
 			WebDriverExpectedCondition::presenceOfElementLocated( $element )
 		);
 	}
@@ -282,7 +282,7 @@ class WoocommerceTestHelper {
 	 */
 	public function waitElementDisappear( $query ) {
 		$element = $this->getElement( $query );
-		$this->wd->wait( 10, 1000 )->until(
+		$this->wd->wait( 15, 1000 )->until(
 			WebDriverExpectedCondition::invisibilityOfElementLocated( $element )
 		);
 
