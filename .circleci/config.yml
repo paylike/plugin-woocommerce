@@ -19,7 +19,7 @@ jobs:
           command: ./vendor/bin/steward install 3.8.1 --no-interaction
       - run:
           name: Download Chrome Driver
-          command: mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/78.0.3904.105/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; export CHROMEDRIVER_PATH=./chromedriver/chromedriver
+          command: mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/2.40/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; export CHROMEDRIVER_PATH=./chromedriver/chromedriver
       - run:
           name: Start Selenium
           command: java -jar ./vendor/bin/selenium-server-standalone-3.8.1.jar -enablePassThrough false -log test-reports/selenium.log
