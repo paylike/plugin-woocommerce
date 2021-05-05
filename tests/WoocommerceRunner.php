@@ -75,17 +75,14 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 	 *
 	 */
 	public function checkoutMode() {
-		$this->click( '#woocommerce_paylike_checkout_mode' );
-		$this->click( "//*[contains(@value, '" . $this->checkout_mode . "')]" );
+		$this->selectValue('#woocommerce_paylike_checkout_mode',$this->checkout_mode);
 	}
 
 	/**
 	 *
 	 */
 	public function captureMode() {
-		$this->click( '#woocommerce_paylike_capture' );
-		$this->click( "//*[contains(@value, '" . $this->capture_mode . "')]" );
-
+		$this->selectValue( '#woocommerce_paylike_capture',$this->capture_mode );
 	}
 
 	/**

@@ -1177,11 +1177,11 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			}
 		}
 		if ( $theme_template = locate_template( 'paylike/receipt.php' ) ) {
-			require_once $theme_template;
+			require $theme_template;
 		} else {
 			$plugin_template = WC_PAYLIKE_PLUGIN_TEMPLATE_DIR . '/receipt.php';
 			if ( file_exists( $plugin_template ) ) {
-				require_once $plugin_template;
+				require $plugin_template;
 			}
 		}
 		$version = get_option( 'paylike_sdk_version', WC_PAYLIKE_CURRENT_SDK );
