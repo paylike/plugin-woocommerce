@@ -1,0 +1,39 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.3-node-browsers
+        auth:
+          username: ionutderikon
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    environment:
+      BROWSER: chrome
+    steps:
+      - checkout
+      - run: mkdir test-reports
+      - run:
+          name: Install Composer
+          command: composer install --no-interaction
+      - run:
+          name: Install Selenium
+          command: ./vendor/bin/steward install 3.8.1 --no-interaction
+      - run:
+          name: Download Chrome Driver
+          command: mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; export CHROMEDRIVER_PATH=./chromedriver/chromedriver
+      - run:
+          name: Start Selenium
+          command: java -jar ./vendor/bin/selenium-server-standalone-3.8.1.jar -enablePassThrough false -log test-reports/selenium.log
+          background: true
+      - run: sleep 10
+      - run:
+          name: Run quick tests
+          command: ./vendor/bin/steward run staging $BROWSER --group="woocommerce_quick_test" -vv
+      - run:
+          name: Run full tests
+          command: ./vendor/bin/steward run staging $BROWSER --group="woocommerce_full_test" -vv
+      - run:
+          name: Log Results
+          command: ./vendor/bin/steward run staging $BROWSER --group="woocommerce_version_log" -vv
+      - run:
+          name: Check test results
+          command: ./vendor/bin/steward results -vvv

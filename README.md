@@ -1,4 +1,4 @@
-# WooCommerce plugin for Paylike [![Build Status](https://travis-ci.org/paylike/plugin-woocommerce.svg?branch=master)](https://travis-ci.org/paylike/plugin-woocommerce)
+# WooCommerce plugin for Paylike [![CircleCI](https://circleci.com/gh/paylike/plugin-woocommerce.svg?style=shield)](https://circleci.com/gh/paylike/plugin-woocommerce)
 
 This plugin is *not* developed or maintained by Paylike but kindly made
 available by a user.

@@ -27,7 +27,7 @@ jQuery( function( $ ) {
 			},
 
 			isManualPaymentMethod: function() {
-				return $( '#order_review' ).length === 1;
+				return $( 'body.woocommerce-order-pay' ).length === 1;
 			},
 
 			isPaylikeModalNeeded: function() {
@@ -45,7 +45,12 @@ jQuery( function( $ ) {
 				// token is used
 				if ( savedToken ) {
 					if ( ! wc_paylike_form.form.find( 'input#wc-paylike-payment-token-new' ).is( ':checked' ) )
-						return false;
+						if($('.wc-saved-payment-methods').length > 0) {
+							if($('.wc-saved-payment-methods').data('count')>0) {
+								if ( wc_paylike_form.form.find( 'input[name="wc-paylike-payment-token"]:checked' ).length>0 )
+								return false;
+							}
+						}
 				}
 
 				// If this is a paylike submission (after modal) and token exists, allow submit.
