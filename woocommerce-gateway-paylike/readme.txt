@@ -100,6 +100,10 @@ You can find more information on the [Paylike website](https://paylike.io/plugin
 
 Yes, we currently support integration with [WooCommerce One Click Upsell plugin](https://buildwoofunnels.com/woocommerce-one-click-upsells-upstroke/)
 
+= Is upsell supported? =
+
+Yes, we currently support integration with [WooCommerce One Click Upsell plugin](https://buildwoofunnels.com/woocommerce-one-click-upsells-upstroke/)
+
 == Screenshots ==
 
 1. The settings panel for the Paylike gateway

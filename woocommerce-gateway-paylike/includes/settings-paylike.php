@@ -104,7 +104,7 @@ $settings =
 		),
 		'store_payment_method' => array(
 			'title'       => __( 'Store Payment Method', 'woocommerce-gateway-paylike' ),
-			'label'       => __( 'Allow users to reuse payments via Paylike', 'woocommerce-gateway-paylike' ),
+			'label'       => __( 'Allow users to reuse their card via Paylike', 'woocommerce-gateway-paylike' ),
 			'type'        => 'checkbox',
 			'description' => __( 'When this is checked users are allowed to save their payment to be used as a source for future payments without the need to go trough the payment process again', 'woocommerce-gateway-paylike' ),
 			'default'     => 'no', // has to be yes/no to work
