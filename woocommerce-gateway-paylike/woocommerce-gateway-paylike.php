@@ -35,8 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WC_PAYLIKE_VERSION', '2.4.2' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
-define( 'WC_PAYLIKE_CURRENT_SDK', 6 );
-define( 'WC_PAYLIKE_BETA_SDK', 6 );
+define( 'WC_PAYLIKE_CURRENT_SDK', 10 );
+define( 'WC_PAYLIKE_BETA_SDK', 10 );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
 define( 'WC_PAYLIKE_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'WC_PAYLIKE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
