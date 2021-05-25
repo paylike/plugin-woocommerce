@@ -2,10 +2,10 @@
 /*
  * Plugin Name: WooCommerce Paylike Gateway
  * Plugin URI: https://wordpress.org/plugins/woocommerce-gateway-paylike/
- * Description: Allow customers to pay with credit cards via the Paylike gateway in your WooCommerce store.
+ * Description: Allow customers to pay with credit cards via Paylike in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 2.4.1
+ * Version: 2.4.2
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '2.4.1' );
+define( 'WC_PAYLIKE_VERSION', '2.4.2' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_CURRENT_SDK', 6 );
@@ -662,7 +662,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 					$message = __( 'The request is not valid! Check if there is any validation bellow this message and adjust if possible, if not, and the problem persists, contact the developer.', 'woocommerce-gateway-paylike' );
 					break;
 				case 'Paylike\\Exception\\Forbidden':
-					$message = __( 'The operation is not allowed! You do not have the rights to perform the operation, make sure you have all the grants required on your Paylike account.', 'woocommerce-gateway-paylike' );
+					$message = __( 'The action is not allowed! You do not have the rights to perform the action. Reach out to hello@paylike.io to get help.', 'woocommerce-gateway-paylike' );
 					break;
 				case 'Paylike\\Exception\\Unauthorized':
 					$message = __( 'The operation is not properly authorized! Check the credentials set in settings for Paylike.', 'woocommerce-gateway-paylike' );
@@ -671,7 +671,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 					$message = __( 'The operation leads to a conflict! The same transaction is being requested for modification at the same time. Try again later.', 'woocommerce-gateway-paylike' );
 					break;
 				case 'Paylike\\Exception\\ApiConnection':
-					$message = __( 'Network issues ! Check your connection and try again.', 'woocommerce-gateway-paylike' );
+					$message = __( 'Network issues! Check your connection and try again.', 'woocommerce-gateway-paylike' );
 					break;
 				case 'Paylike\\Exception\\ApiException':
 					$message = __( 'There has been a server issue! If this problem persists contact the developer.', 'woocommerce-gateway-paylike' );

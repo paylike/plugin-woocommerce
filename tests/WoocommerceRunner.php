@@ -496,7 +496,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->submitAdmin();
 		$this->waitForElement( '#message' );
 		$messages = $this->getText( '#message' );
-		$this->main_test->assertEquals( 'The private key doesn\'t seem to be valid Error: The request is not valid! Check if there is any validation bellow this message and adjust if possible, if not, and the problem persists, contact the developer.', $messages, "Private key not valid" );
+		$this->main_test->assertEquals( 'The app key doesn\'t seem to be valid Error: The request is not valid! Check if there is any validation bellow this message and adjust if possible, if not, and the problem persists, contact the developer.', $messages, "App key not valid" );
 		$this->type( '#woocommerce_paylike_test_public_key', 'test' );
 		$this->submitAdmin();
 		$this->waitForElement( '#message' );

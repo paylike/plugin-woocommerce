@@ -217,7 +217,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		try {
 			$identity = $paylike_client->apps()->fetch();
 		} catch ( \Paylike\Exception\ApiException $exception ) {
-			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+			$error = __( "The app key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 			$error = WC_Paylike::handle_exceptions( null, $exception, $error );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
@@ -235,7 +235,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			// we handle in the following statement
 		}
 		if ( empty( $this->validation_test_public_keys ) ) {
-			$error = __( 'The test private key is not valid or set to live mode.', 'woocommerce-gateway-paylike' );
+			$error = __( 'The test app key is not valid.', 'woocommerce-gateway-paylike' );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
 		}
@@ -288,7 +288,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		try {
 			$identity = $paylike_client->apps()->fetch();
 		} catch ( \Paylike\Exception\ApiException $exception ) {
-			$error = __( "The live private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+			$error = __( "The live app key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 			$error = WC_Paylike::handle_exceptions( null, $exception, $error );
 			WC_Admin_Settings::add_error( $error );
 			throw new Exception( $error );
@@ -307,7 +307,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$api_exception = $exception;
 		}
 		if ( empty( $this->validation_live_public_keys ) ) {
-			$error = __( 'The live private key is not valid or set to test mode.', 'woocommerce-gateway-paylike' );
+			$error = __( 'The live app key is not valid.', 'woocommerce-gateway-paylike' );
 			if ( $api_exception ) {
 				$error = WC_Paylike::handle_exceptions( null, $api_exception, $error );
 			}
@@ -1434,7 +1434,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			if ( '' !== $this->secret_key ) {
 				$this->paylike_client = new Paylike\Paylike( $this->secret_key );
 			} else {
-				$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+				$error = __( "The app key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 
 				return new WP_Error( 'paylike_error', $error );
 			}
@@ -1442,7 +1442,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		try {
 			$identity = $this->paylike_client->apps()->fetch();
 		} catch ( \Paylike\Exception\ApiException $exception ) {
-			$error = __( "The private key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
+			$error = __( "The app key doesn't seem to be valid", 'woocommerce-gateway-paylike' );
 
 			return new WP_Error( 'paylike_error', $error );
 		}
