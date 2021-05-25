@@ -235,7 +235,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	public function validate_subscription_payment_meta( $payment_method_id, $payment_meta ) {
 		if ( $this->id === $payment_method_id ) {
 			if ( ! isset( $payment_meta['post_meta']['_paylike_transaction_id']['value'] ) || empty( $payment_meta['post_meta']['_paylike_transaction_id']['value'] ) ) {
-				if ( ! isset( $payment_meta['post_meta']['_paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['_paylike_card_id']['value'] ) ) {
+				if ( (! isset( $payment_meta['post_meta']['_paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['_paylike_card_id']['value'] )) &&  (!isset( $payment_meta['post_meta']['paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['paylike_card_id']['value'] )) ) {
 					throw new Exception( 'A "_paylike_transaction_id" value is required.' );
 				}
 			}
