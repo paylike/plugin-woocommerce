@@ -517,7 +517,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		// create a new transaction by card or transaction.
 		$data = array(
-			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ),
+			'amount'   => convert_float_to_iso_paylike_amount( $amount, dk_get_order_currency( $order ) ),
 			'currency' => dk_get_order_currency( $order ),
 			'custom'   => array(
 				'email' => $order->get_billing_email(),
@@ -574,7 +574,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			}
 		} else {
 			$data = array(
-				'amount'   => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
+				'amount'   => convert_float_to_iso_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 				'currency' => dk_get_order_currency( $order ),
 			);
 			WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
@@ -684,30 +684,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$amount = $order->get_total();
 		}
 		$match_currency = dk_get_order_currency( $order ) == $transaction['currency'];
-		$match_amount = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ) == $transaction['amount'];
+		$match_amount = convert_float_to_iso_paylike_amount( $amount, dk_get_order_currency( $order ) ) == $transaction['amount'];
 
 		return ( 1 == $transaction['successful'] && $match_currency && $match_amount );
-	}
-
-	/**
-	 * Get Paylike amount to pay
-	 *
-	 * @param float  $total Amount due.
-	 * @param string $currency Accepted currency.
-	 *
-	 * @return float|int
-	 */
-	public function get_paylike_amount( $total, $currency = '' ) {
-		if ( '' == $currency ) {
-			$currency = get_woocommerce_currency();
-		}
-		$multiplier = get_paylike_currency_multiplier( $currency );
-		$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
-		if ( function_exists( 'bcmul' ) ) {
-			$amount = ceil( bcmul( $total, $multiplier ) );
-		}
-
-		return $amount;
 	}
 
 	/**
@@ -821,7 +800,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$data = array();
 		$currency = dk_get_order_currency( $order );
 		if ( ! is_null( $amount ) ) {
-			$data['amount'] = $this->get_paylike_amount( $amount, $currency );
+			$data['amount'] = convert_float_to_iso_paylike_amount( $amount, $currency );
 		}
 
 		if ( 'yes' == $captured ) {
@@ -928,12 +907,12 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 					if ( ! ( $transaction && $transaction['successful'] &&
 						$currency == $transaction['currency'] &&
-						$this->get_paylike_amount( $amount, $currency ) == $transaction['amount']
+						convert_float_to_iso_paylike_amount( $amount, $currency ) == $transaction['amount']
 					) ) {
 						$data = array(
 							'amount' => $transaction['amount'],
 						);
-						WC_Paylike::log( 'Voiding the transaction as it was not succesfull or it had different amount.' . json_encode( $result ) . '--' . $currency . '--' . $amount . '--' . $this->get_paylike_amount( $amount, $currency ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
+						WC_Paylike::log( 'Voiding the transaction as it was not succesfull or it had different amount.' . json_encode( $result ) . '--' . $currency . '--' . $amount . '--' . convert_float_to_iso_paylike_amount( $amount, $currency ) . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 						try {
 							$transaction = $this->paylike_client->transactions()->void( $transaction_id );
 						} catch ( \Paylike\Exception\ApiException $exception ) {
@@ -978,12 +957,14 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			data-email="' . esc_attr( $user_email ) . '"
 			data-name="' . esc_attr( $user_name ) . '"
 			data-phone="' . esc_attr( $user_phone ) . '"
+			data-test="' . esc_attr(  $this->testmode ) . '"
 			data-address="' . esc_attr( $user_address ) . '"
 			data-locale="' . esc_attr( dk_get_locale() ) . '"
 			data-order_id="' . esc_attr( $order_id ) . '"
-			data-amount="' . esc_attr( $this->get_paylike_amount( $amount, $currency ) ) . '"
-			data-totalTax="' . esc_attr( $this->get_paylike_amount( $amount_tax, $currency ) ) . '"
-			data-totalShipping="' . esc_attr( $this->get_paylike_amount( $amount_shipping, $currency ) ) . '"
+			data-amount="' . esc_attr( convert_wocoomerce_float_to_paylike_amount( $amount ) ) . '"
+			data-decimals="' . esc_attr( wc_get_price_decimals() ) . '"
+			data-totalTax="' . esc_attr( convert_wocoomerce_float_to_paylike_amount( $amount_tax ) ) . '"
+			data-totalShipping="' . esc_attr( convert_wocoomerce_float_to_paylike_amount( $amount_shipping ) ) . '"
 			data-customerIP="' . esc_attr( $this->get_client_ip() ) . '"
 			data-title="' . esc_attr( $this->popup_title ) . '"
 			data-currency="' . esc_attr( get_woocommerce_currency() ) . '"
@@ -1156,7 +1137,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	public function receipt_page( $order_id ) {
 		global $wp_version;
 		$order = wc_get_order( $order_id );
-		$amount = $this->get_paylike_amount( $order->get_total(), dk_get_order_currency( $order ) );
+		$currency = get_woocommerce_currency();
+		$decimals = wc_get_price_decimals();
+		$amount = convert_wocoomerce_float_to_paylike_amount( $order->get_total());
 		$products = array();
 		$items = $order->get_items();
 		$pf = new WC_Product_Factory();
@@ -1195,14 +1178,20 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		?>
 		<script data-no-optimize="1" src="https://sdk.paylike.io/<?php echo $version; ?>.js"></script>
 		<script>
-		var paylike = Paylike( '<?php echo $this->public_key;?>' );
+		var paylike = Paylike( {key:'<?php echo $this->public_key;?>'} );
 		var $button = document.getElementById( "paylike-payment-button" );
 		$button.addEventListener( 'click', startPaymentPopup );
 
 		var args = {
-			title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>', <?php if($amount != 0) { ?>
-			currency: '<?php echo get_woocommerce_currency() ?>',
-			amount:  <?php echo $amount; ?>, <?php } ?>
+			title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>',
+			test: <?php echo ( $this->testmode ) ? 'true':'false'; ?>,
+			<?php if($amount != 0) { ?>
+			amount: {
+				currency: '<?php echo $currency; ?>',
+				exponent: <?php echo $decimals; ?>,
+				value: <?php echo $amount; ?>,
+			},
+			<?php } ?>
 			locale: '<?php echo dk_get_locale(); ?>',
 			custom: {
 				orderId: '<?php echo $order->get_order_number(); ?>',
@@ -1228,7 +1217,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 		<?php
 		if ( $is_recurring ) {
-			echo 'args.recurring=true;' . PHP_EOL;
+//			echo 'args.recurring=true;' . PHP_EOL;
 		}
 		?>
 
@@ -1238,7 +1227,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 		function pay() {
-			paylike.popup( args,
+			paylike.pay( args,
 				function( err, res ) {
 					if ( err )
 						return console.warn( err );

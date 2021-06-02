@@ -214,12 +214,16 @@ jQuery( function( $ ) {
 					var name = wc_paylike_form.getName( $paylike_payment );
 					var phoneNo = wc_paylike_form.getPhoneNo( $paylike_payment );
 					var address = wc_paylike_form.getAddress( $paylike_payment );
-					var paylike = Paylike( wc_paylike_params.key );
+					var paylike = Paylike( {key: wc_paylike_params.key} );
 					var $billing_email = $( "[name='billing_email']" );
 					var args = {
 						title: $paylike_payment.data( 'title' ),
-						currency: $paylike_payment.data( 'currency' ),
-						amount: $paylike_payment.data( 'amount' ),
+						test: !!$paylike_payment.data( 'test' ),
+						amount: {
+							currency: $paylike_payment.data( 'currency' ),
+							exponent: $paylike_payment.data( 'decimals' ),
+							value: $paylike_payment.data( 'amount' ),
+						},
 						locale: $paylike_payment.data( 'locale' ),
 						custom: {
 							email: $billing_email.val(),
@@ -246,7 +250,7 @@ jQuery( function( $ ) {
 					};
 
 					if ( wc_paylike_params.is_recurring ) {
-						args.recurring = true;
+						// args.recurring = true;
 					}
 
 					// used for cases like trial,
@@ -257,7 +261,7 @@ jQuery( function( $ ) {
 						delete args.currency;
 					}
 
-					paylike.popup( args,
+					paylike.pay( args,
 						function( err, res ) {
 							// log this for debugging purposes
 							wc_paylike_form.logTransactionResponsePopup( err, res );

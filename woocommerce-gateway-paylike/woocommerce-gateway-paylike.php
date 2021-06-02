@@ -439,7 +439,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$data = array(
-				'amount'   => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
+				'amount'   => convert_float_to_iso_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 				'currency' => dk_get_order_currency( $order ),
 			);
 			WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
@@ -511,26 +511,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		}
 
 		/**
-		 * @param      $total
-		 * @param null $currency
-		 *  Format the amount based on the currency
-		 *
-		 * @return string
-		 */
-		public function get_paylike_amount( $total, $currency = null ) {
-			if ( '' == $currency ) {
-				$currency = get_woocommerce_currency();
-			}
-			$multiplier = get_paylike_currency_multiplier( $currency );
-			$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
-			if ( function_exists( 'bcmul' ) ) {
-				$amount = ceil( bcmul( $total, $multiplier ) );
-			}
-
-			return $amount;
-		}
-
-		/**
 		 * Convert the cents amount into the full readable amount
 		 *
 		 * @param        $amount_in_cents
@@ -561,7 +541,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$data = array(
-				'amount' => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
+				'amount' => convert_float_to_iso_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 			);
 			$currency = dk_get_order_currency( $order );
 			if ( 'yes' == $captured ) {
