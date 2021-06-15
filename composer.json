@@ -12,16 +12,19 @@
   "require": {
     "php": "^7.1",
     "lmc/steward": "dev-master",
-    "vlucas/phpdotenv": "^2.5"
+    "vlucas/phpdotenv": "^2.5",
+    "phpunit/phpunit": "^7.4.4"
   },
   "autoload": {
     "psr-4": {
-      "Woocommerce\\": "tests/",
+      "Woocommerce\\": "SeleniumTests/",
+      "PaylikePluginTests\\": "tests/",
       "Config\\": "config/"
     },
     "files": [
       "include/currencies.php",
-      "include/beforeLoad.php"
+      "include/beforeLoad.php",
+      "tests/bootstrap.php"
     ]
   },
   "config": {

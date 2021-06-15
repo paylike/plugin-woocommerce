@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        bootstrap="vendor/autoload.php"
+        backupGlobals="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+>
+    <testsuites>
+        <testsuite name="unit">
+            <directory prefix="test-" suffix=".php">./tests/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./woocommerce-gateway-paylike</directory>
+            <exclude>
+                <directory>woocommerce-gateway-paylike/templates</directory>
+                <directory>woocommerce-gateway-paylike/vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <php>
+        <env name="WP_TESTS_DIR" value="/Volumes/Projects/Repos/paylike/woocommerce/paylike-plugin-woocommerce-git/tmp/wordpress"/>
+    </php>
+</phpunit>

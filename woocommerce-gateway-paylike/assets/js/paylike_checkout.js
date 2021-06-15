@@ -249,18 +249,19 @@ jQuery( function( $ ) {
 						}
 					};
 
-					if ( wc_paylike_params.is_recurring ) {
-						// args.recurring = true;
+					if ( wc_paylike_params.plan_arguments ) {
+						for (var attrname in wc_paylike_params.plan_arguments) { args[attrname] = wc_paylike_params.plan_arguments[attrname]; }
 					}
-
+					console.log(args);
 					// used for cases like trial,
 					// change payment method
 					// see @https://github.com/paylike/sdk#popup-to-save-tokenize-a-card-for-later-use
-					if ( args.amount === 0 ) {
+					if ( args.amount.value === 0 ) {
 						delete args.amount;
-						delete args.currency;
 					}
 
+
+					console.log(args);
 					paylike.pay( args,
 						function( err, res ) {
 							// log this for debugging purposes

@@ -90,3 +90,4 @@ vendor
 !woocommerce-gateway-paylike/vendor
 .env
 .env.production
+tmp

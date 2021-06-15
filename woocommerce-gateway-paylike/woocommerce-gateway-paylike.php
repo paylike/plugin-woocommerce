@@ -342,6 +342,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			include_once( plugin_basename( 'includes/helpers.php' ) );
 			include_once( plugin_basename( 'includes/legacy.php' ) );
 			include_once( plugin_basename( 'includes/currencies.php' ) );
+			include_once( plugin_basename( 'includes/class-subscription-plan.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-paylike-payment-tokens.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-paylike-payment-token.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-gateway-paylike.php' ) );
@@ -364,7 +365,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			$current_sdk_version = get_option( 'paylike_sdk_version', 0 );
 			$beta_sdk_version = get_option( 'paylike_beta_version', 0 );
 
-			$options = get_option( 'woocommerce_paylike_settings' );
+			$options = get_option( 'woocommerce_paylike_settings',[] );
 			if ( 1 == $current_db_version ) {
 
 				if ( 'yes' === $options['capture'] ) {

@@ -473,9 +473,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$this->handle_payment( $transaction_id, $order );
 		} else {
 			// used for trials, and changing payment method.
-			$card_id = $_POST['paylike_card_id'];
-			if ( $card_id ) {
-				$this->save_card_id( $card_id, $order );
+			$transaction_id = isset( $_POST['paylike_token'] ) ? $_POST['paylike_token'] : '';
+			if ( $transaction_id ) {
+				$this->save_transaction_id( [ 'id' => $transaction_id ], $order );
 			}
 			$order->payment_complete();
 		}
@@ -957,7 +957,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			data-email="' . esc_attr( $user_email ) . '"
 			data-name="' . esc_attr( $user_name ) . '"
 			data-phone="' . esc_attr( $user_phone ) . '"
-			data-test="' . esc_attr(  $this->testmode ) . '"
+			data-test="' . esc_attr( $this->testmode ) . '"
 			data-address="' . esc_attr( $user_address ) . '"
 			data-locale="' . esc_attr( dk_get_locale() ) . '"
 			data-order_id="' . esc_attr( $order_id ) . '"
@@ -1064,6 +1064,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$products = array();
 
 		$pf = new WC_Product_Factory();
+		$order = null;
 		if ( ! isset( $_GET['pay_for_order'] ) ) {
 			$items = WC()->cart->get_cart();
 		} else {
@@ -1099,7 +1100,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			'products'          => $products,
 			'platform_version'  => $wp_version,
 			'ecommerce_version' => WC()->version,
-			'is_recurring'      => dk_cart_contains_subscription(),
+			'plan_arguments'    => PaylikeSubscriptionHelper::append_plan_argument( [], true, $order ),
 			'version'           => WC_PAYLIKE_VERSION,
 			'ajax_url'          => admin_url( 'admin-ajax.php' ),
 		);
@@ -1139,7 +1140,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$order = wc_get_order( $order_id );
 		$currency = get_woocommerce_currency();
 		$decimals = wc_get_price_decimals();
-		$amount = convert_wocoomerce_float_to_paylike_amount( $order->get_total());
+		$amount = convert_wocoomerce_float_to_paylike_amount( $order->get_total() );
 		$products = array();
 		$items = $order->get_items();
 		$pf = new WC_Product_Factory();
@@ -1173,18 +1174,18 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$version = $beta_sdk_version;
 		}
 
-		$is_recurring = dk_order_contains_subscription( $order );
+		$plan_arguments = PaylikeSubscriptionHelper::append_plan_argument([],true,$order)
 
 		?>
 		<script data-no-optimize="1" src="https://sdk.paylike.io/<?php echo $version; ?>.js"></script>
 		<script>
-		var paylike = Paylike( {key:'<?php echo $this->public_key;?>'} );
+		var paylike = Paylike( { key: '<?php echo $this->public_key;?>' } );
 		var $button = document.getElementById( "paylike-payment-button" );
 		$button.addEventListener( 'click', startPaymentPopup );
 
 		var args = {
 			title: '<?php echo addslashes( esc_attr( $this->popup_title ) ); ?>',
-			test: <?php echo ( $this->testmode ) ? 'true':'false'; ?>,
+			test: <?php echo ( $this->testmode ) ? 'true' : 'false'; ?>,
 			<?php if($amount != 0) { ?>
 			amount: {
 				currency: '<?php echo $currency; ?>',
@@ -1216,8 +1217,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 
 		<?php
-		if ( $is_recurring ) {
-//			echo 'args.recurring=true;' . PHP_EOL;
+		if ( $plan_arguments ) {
+			echo 'var plan_arguments=['.json_encode($plan_arguments).'];'.PHP_EOL;
+			?>
+		if ( plan_arguments ) {
+			for (var attrname in plan_arguments[0]) { args[attrname] = plan_arguments[0][attrname]; }
+		}
+			<?php
 		}
 		?>
 
