@@ -1,5 +1,6 @@
 <?php
 
+
 class WoocommerceGatewayPaylikeTest extends WP_UnitTestCase {
 
 	/** @test */
@@ -47,6 +48,15 @@ class WoocommerceGatewayPaylikeTest extends WP_UnitTestCase {
 		$this->assertEquals( [
 			'unplanned' => [ 'merchant' => true ]
 		], $args );
+	}
+
+	/** @test */
+	public function test_amount_conversion(){
+		$total = 1220.36;
+		$converted = convert_wocoomerce_float_to_paylike_amount($total);
+		$this->assertEquals(122036,$converted);
+		$converted = convert_float_to_iso_paylike_amount($total,'JPY');
+		$this->assertEquals(1221,$converted);
 	}
 
 	/**

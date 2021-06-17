@@ -492,8 +492,13 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$token_id = wc_clean( $_POST['wc-paylike-payment-token'] );
 		$token = WC_Payment_Tokens::get( $token_id );
 		$transaction_id = $this->create_new_transaction( $token->get_token_id(), $order, $order->get_total( 'edit' ), $token->get_token_source() );
-
-		$this->handle_payment( $transaction_id, $order );
+		$amount = $this->get_order_amount( $order );
+		if ( $amount != 0 ) {
+			$this->handle_payment( $transaction_id, $order );
+		} elseif ( $transaction_id ) {
+			$this->save_transaction_id( [ 'id' => $transaction_id ], $order );
+			$order->payment_complete();
+		}
 
 		return $order;
 	}
@@ -530,6 +535,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		}
 		WC_Paylike::log( "Info: Starting to create a transaction {$data['amount']} in {$data['currency']} for {$merchant_id}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 		try {
+			// when reusing a token for a trial subscription
+			if ( $data['amount'] == 0 ) {
+				return $data['transactionId'];
+			}
 			$new_transaction = $this->paylike_client->transactions()->create( $merchant_id, $data );
 		} catch ( \Paylike\Exception\ApiException $exception ) {
 			WC_Paylike::handle_exceptions( $order, $exception, 'Issue: Creating the transaction failed!' );
@@ -1174,7 +1183,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$version = $beta_sdk_version;
 		}
 
-		$plan_arguments = PaylikeSubscriptionHelper::append_plan_argument([],true,$order)
+		$plan_arguments = PaylikeSubscriptionHelper::append_plan_argument( [], true, $order )
 
 		?>
 		<script data-no-optimize="1" src="https://sdk.paylike.io/<?php echo $version; ?>.js"></script>
@@ -1218,12 +1227,14 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 		<?php
 		if ( $plan_arguments ) {
-			echo 'var plan_arguments=['.json_encode($plan_arguments).'];'.PHP_EOL;
-			?>
+		echo 'var plan_arguments=[' . json_encode( $plan_arguments ) . '];' . PHP_EOL;
+		?>
 		if ( plan_arguments ) {
-			for (var attrname in plan_arguments[0]) { args[attrname] = plan_arguments[0][attrname]; }
+			for ( var attrname in plan_arguments[ 0 ] ) {
+				args[ attrname ] = plan_arguments[ 0 ][ attrname ];
+			}
 		}
-			<?php
+		<?php
 		}
 		?>
 
@@ -1294,9 +1305,9 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 						$this->handle_payment( $transaction_id, $order );
 					} else {
 						// used for trials, and changing payment method.
-						$card_id = $_POST['paylike_card_id'];
-						if ( $card_id ) {
-							$this->save_card_id( $card_id, $order );
+						$transaction_id = isset( $_POST['paylike_token'] ) ? $_POST['paylike_token'] : '';
+						if ( $transaction_id ) {
+							$this->save_transaction_id( [ 'id' => $transaction_id ], $order );
 						}
 						$order->payment_complete();
 					}
@@ -1526,10 +1537,10 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$token = new WC_Payment_Token_Paylike();
 		$token->set_gateway_id( $this->id );
 		$token->set_user_id( get_current_user_id() );
-		$token->set_token( 'card-' . $_POST['paylike_card_id'] );
-		$card = $this->paylike_client->cards()->fetch( $_POST['paylike_card_id'] );
-		$token->set_last4( $card['last4'] );
-		$token->set_brand( ucfirst( $card['scheme'] ) );
+		$token->set_token( 'transaction-' . $_POST['paylike_token'] );
+		$transaction = $this->paylike_client->transactions()->fetch( $_POST['paylike_token'] );
+		$token->set_last4( $transaction['card']['last4'] );
+		$token->set_brand( ucfirst( $transaction['card']['scheme'] ) );
 		$saved = $token->save();
 
 		if ( ! $saved ) {

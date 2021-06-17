@@ -91,3 +91,4 @@ vendor
 .env
 .env.production
 tmp
+bin/install-wp-tests.sh

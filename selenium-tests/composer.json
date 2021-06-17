@@ -11,14 +11,18 @@
   "prefer-stable": true,
   "require": {
     "php": "^7.1",
+    "lmc/steward": "dev-master",
+    "vlucas/phpdotenv": "^2.5",
     "phpunit/phpunit": "^7.4.4"
   },
   "autoload": {
     "psr-4": {
-      "PaylikePluginTests\\": "tests/"
+      "Woocommerce\\": "tests/",
+      "Config\\": "config/"
     },
     "files": [
-      "tests/bootstrap.php"
+      "../include/currencies.php",
+      "../include/beforeLoad.php"
     ]
   },
   "config": {

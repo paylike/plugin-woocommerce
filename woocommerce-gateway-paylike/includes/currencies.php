@@ -1119,10 +1119,10 @@ if ( ! function_exists( 'convert_wocoomerce_float_to_paylike_amount' ) ) {
 	 *
 	 * @return int|number
 	 */
-	function convert_wocoomerce_float_to_paylike_amount( $total) {
+	function convert_wocoomerce_float_to_paylike_amount( $total ) {
 
-		$multiplier =  pow(10,wc_get_price_decimals());
-		$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+		$multiplier = pow( 10, wc_get_price_decimals() );
+		$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
 		if ( function_exists( 'bcmul' ) ) {
 			$amount = ceil( bcmul( $total, $multiplier ) );
 		}
@@ -1142,6 +1142,11 @@ if ( ! function_exists( 'convert_float_to_iso_paylike_amount' ) ) {
 			$currency = get_woocommerce_currency();
 		}
 		$multiplier = get_paylike_currency_multiplier( $currency );
+
+		if ( $multiplier === 1 ) {
+			return ceil( $total );
+		}
+
 		$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
 		if ( function_exists( 'bcmul' ) ) {
 			$amount = ceil( bcmul( $total, $multiplier ) );

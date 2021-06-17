@@ -1,246 +1,263 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2018-04-17 15:23+0000\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"PO-Revision-Date: 2021-02-01 12:05+0100\n"
-"X-Generator: Poedit 2.4.2\n"
-"Project-Id-Version: \n"
-"Language-Team: \n"
+"Project-Id-Version: WooCommerce Paylike Gateway\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-07 12:11+0000\n"
+"PO-Revision-Date: 2021-06-01 10:32+0000\n"
+"Last-Translator: \n"
+"Language-Team: Hungarian (Hungary)\n"
+"Language: hu-HU\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"Language: hu_HU\n"
+"X-Loco-Source-Locale: hu_HU\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.5.2; wp-5.7\n"
+"X-Loco-Parser: loco_parse_po"
 
-#: woocommerce-gateway-paylike.php:189
+#: includes/class-wc-paylike-payment-token.php:105
 #, php-format
+msgid "%s ending in %s"
+msgstr "%s végződik %s"
+
+#: woocommerce-gateway-paylike.php:506
+msgid "<b>Warning:</b> Order has not been captured!"
+msgstr "<b>Figyelmeztetés:</b> A rendelés nem került terhelésre!"
+
+#: includes/settings-paylike.php:114
+msgid "Accepted Cards"
+msgstr "Elfogadott kártyák"
+
+#. Description of the plugin
+#| msgid ""
+#| "Allow customers to pay with credit cards via the Paylike gateway in your "
+#| "WooCommerce store."
 msgid ""
-"Paylike will not work until you <a href=\"%s\">configure your Paylike api "
-"keys</a>."
+"Allow customers to pay with credit cards via Paylike in your WooCommerce "
+"store."
 msgstr ""
-"A Paylike nem működik addig, míg nem <a href=\"%s\">állítja be a Paylike api "
-"kulcsokat</a>."
+"A vásárlók bankkártyával fizethetnek WooCommerce webáruházában a Paylike "
+"fizetési megoldás segítségével."
 
-#: woocommerce-gateway-paylike.php:243
-#, php-format
+#: includes/settings-paylike.php:107
+msgid "Allow users to reuse their card via Paylike"
+msgstr "Engedélyezze a felhasználóknak egy korábbi kártya ismételt használatát"
+
+#: includes/class-wc-gateway-paylike.php:789
+msgid "Authorized amount: "
+msgstr "Engedélyezett összeg: "
+
+#: includes/settings-paylike.php:95
+msgid "Capture mode"
+msgstr "Elfogadási mód"
+
+#: includes/class-wc-gateway-paylike.php:790
+msgid "Captured amount: "
+msgstr "Rögzített összeg: "
+
+#: includes/class-wc-gateway-paylike.php:791
+msgid "Charge authorized at: "
+msgstr "Fizetés engedélyezési idő: "
+
+#: includes/settings-paylike.php:84
+msgid "Checkout mode"
+msgstr "Pénztár mód"
+
+#: includes/settings-paylike.php:76
+msgid "Compatibility Mode"
+msgstr "Kompatibilitási mód"
+
+#: woocommerce-gateway-paylike.php:507
 msgid ""
-"WooCommerce Paylike - The minimum PHP version required for this plugin is "
-"%1$s. You are running %2$s."
+"Compatibility mode is enabled. This means that moving the order from "
+"processing to completed does not actually capture the order."
 msgstr ""
-"WooCommerce Paylike - A minimális PHP verzió, mely a plugin működéséhez "
-"szükséges %1$s. Jelenlegi verzió %2$s."
+"Kompatibilitás mód engedélyezve. Ez azt jelenti, hogy a rendelés "
+"teljesítettre állításával a terhelés nem történik meg."
 
-#: woocommerce-gateway-paylike.php:248
-msgid "WooCommerce Paylike requires WooCommerce to be activated to work."
-msgstr "WooCommerce Paylike működéséhez szükséges az aktivált WooCommerce."
+#: includes/class-wc-gateway-paylike.php:150
+msgid "Continue to payment"
+msgstr "Tovább a fizetéshez"
 
-#: woocommerce-gateway-paylike.php:252
-#, php-format
-msgid ""
-"WooCommerce Paylike - The minimum WooCommerce version required for this "
-"plugin is %1$s. You are running %2$s."
+#: includes/settings-paylike.php:19
+msgid "Credit card (Paylike)"
+msgstr "Bankkártya (Paylike)"
+
+#: includes/settings-paylike.php:99
+msgid "Delayed"
+msgstr "Késleltetett"
+
+#. Author of the plugin
+msgid "Derikon Development"
+msgstr "Derikon Development"
+
+#: includes/settings-paylike.php:77
+msgid "Don't capture from processing to completed"
 msgstr ""
-"WooCommerce Paylike - A  minimális WooCommerce verzió mely a plugin mely a "
-"plugin működéséhez szükséges %1$s. Jelenlegi verzió %2$s."
+"Ne vonja le az összeget automatikusan, amikor a Feldolgozás alatt állapotról "
+"a Teljesítve állapotra vált"
 
-#: woocommerce-gateway-paylike.php:257
-msgid "WooCommerce Paylike - cURL is not installed."
-msgstr "WooCommerce Paylike - cURL nincs telepítve."
+#: includes/settings-paylike.php:10
+msgid "Enable Paylike"
+msgstr "Paylike bekapcsolása"
 
-#: woocommerce-gateway-paylike.php:271
-msgid "Settings"
-msgstr "Beállítások"
+#: includes/settings-paylike.php:9
+msgid "Enable/Disable"
+msgstr "Bekapcsol/Kikapcsol"
 
-#: woocommerce-gateway-paylike.php:407 woocommerce-gateway-paylike.php:430
-#: includes/class-wc-gateway-paylike.php:575
-msgid "Unable to capture transaction!"
-msgstr "Tranzakció elszámolása sikertelen!"
-
-#: woocommerce-gateway-paylike.php:408 woocommerce-gateway-paylike.php:506
-#: woocommerce-gateway-paylike.php:543
-#: includes/class-wc-gateway-paylike-addons.php:139
-#: includes/class-wc-gateway-paylike.php:453
-#: includes/class-wc-gateway-paylike.php:1026
-msgid "cURL request failed."
-msgstr "cURL kérés sikertelen."
-
-#: woocommerce-gateway-paylike.php:413
-msgid "Paylike capture complete."
-msgstr "Paylike elszámolás sikeres."
-
-#: woocommerce-gateway-paylike.php:414 woocommerce-gateway-paylike.php:512
-#: woocommerce-gateway-paylike.php:549
-#: includes/class-wc-gateway-paylike.php:533
-#: includes/class-wc-gateway-paylike.php:597
-#: includes/class-wc-gateway-paylike.php:664
-msgid "Transaction ID: "
-msgstr "Tranzakció azonosító: "
-
-#: woocommerce-gateway-paylike.php:415
-#: includes/class-wc-gateway-paylike.php:534
-msgid "Payment Amount: "
-msgstr "Összeg: "
-
-#: woocommerce-gateway-paylike.php:416 woocommerce-gateway-paylike.php:514
-#: woocommerce-gateway-paylike.php:551
-#: includes/class-wc-gateway-paylike.php:535
-#: includes/class-wc-gateway-paylike.php:666
-msgid "Transaction authorized at: "
-msgstr "Tranzakció engedélyezési idő: "
-
-#: woocommerce-gateway-paylike.php:431 woocommerce-gateway-paylike.php:527
-#: woocommerce-gateway-paylike.php:564
+#: woocommerce-gateway-paylike.php:479 woocommerce-gateway-paylike.php:610
+#: woocommerce-gateway-paylike.php:638
 msgid "Error :"
 msgstr "Hiba :"
 
-#: woocommerce-gateway-paylike.php:505 woocommerce-gateway-paylike.php:526
-#: includes/class-wc-gateway-paylike.php:674
-msgid "Unable to refund transaction!"
-msgstr "Tranzakció visszatérítése sikertelen!"
+#: woocommerce-gateway-paylike.php:680
+#: includes/class-wc-gateway-paylike.php:661
+#: includes/class-wc-gateway-paylike.php:839
+#: includes/class-wc-gateway-paylike.php:853
+#: includes/class-wc-gateway-paylike.php:891
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:223
+#:
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:303
+#:
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:334
+msgid "Error: "
+msgstr "Hiba: "
 
-#: woocommerce-gateway-paylike.php:511
+#: includes/settings-paylike.php:50 includes/settings-paylike.php:57
+#: includes/settings-paylike.php:64 includes/settings-paylike.php:71
+msgid "Get it from your Paylike dashboard"
+msgstr "Szerezze be a Paylike oldaláról"
+
+#. Author URI of the plugin
+msgid "https://derikon.com/"
+msgstr "https://derikon.com/"
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
+msgstr "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
+
+#: woocommerce-gateway-paylike.php:509
+msgid ""
+"If you choose the latter, then you can come back to the order move it back "
+"to processing, then move it again to completed."
+msgstr ""
+"Amennyiben az utóbbi opciót választja, a rendelést később visszateheti "
+"feldolgozás alattira majd ismét teljesítettre állíthatja."
+
+#: includes/settings-paylike.php:101
+msgid ""
+"If you deliver your product instantly (e.g. a digital product), choose "
+"Instant mode. If not, use Delayed. In Delayed mode, you can capture the "
+"order when moving from on hold to complete or from on hold to processing."
+msgstr ""
+"Ha a terméket azonnal szállítja (pl. digitális termék), akkor válassza az "
+"azonnali módot. Ha nem, akkor a késletetettet. A késletetettet módban akkor "
+"lesz a megrendelés összege a kártyán ténylegesen levonva, amikor a Fizetésre "
+"vár állapot után a Feldolgozás alatt vagy Teljesítve állapotra vált."
+
+#: includes/settings-paylike.php:39
+msgid ""
+"In test mode, you can create a successful transaction with the card number "
+"4100 0000 0000 0000 with any CVC and a valid expiration date."
+msgstr ""
+"A teszt üzemmódban a következő kártyaszámmal tudja a rendszert tesztelni: "
+"4100 0000 0000 0000, tetszőleges CVC és lejárati dátummal."
+
+#: includes/settings-paylike.php:98
+msgid "Instant"
+msgstr "Instant"
+
+#: includes/settings-paylike.php:42
+msgid "Live"
+msgstr "Élő"
+
+#: includes/settings-paylike.php:48
+msgid "Live mode App Key"
+msgstr "Elő módhoz App Key"
+
+#: includes/settings-paylike.php:55
+msgid "Live mode Public Key"
+msgstr "Élő módhoz Public Key"
+
+#: includes/class-wc-gateway-paylike-addons.php:140
+msgid "Merchant ID not found"
+msgstr "Merchant ID nem található"
+
+#: includes/class-wc-gateway-paylike-addons.php:84
+msgid "Neither Transaction ID nor Card ID was found"
+msgstr "Se tranzakció ID se kártya ID nem található"
+
+#: woocommerce-gateway-paylike.php:674
+msgid "Network issues! Check your connection and try again."
+msgstr "Hálózati hiba! Ellenőrizze a internetkapcsolatát és próbálja újra."
+
+#: includes/class-wc-gateway-paylike.php:1462
+msgid "No valid merchant id was found"
+msgstr "Érvényes Merchant ID nem található"
+
+#: templates/receipt.php:6
+msgid "Pay Now"
+msgstr "Fizetés"
+
+#: includes/class-wc-gateway-paylike.php:110
+msgid "Paylike"
+msgstr "Paylike"
+
+#: includes/class-wc-gateway-paylike.php:746
+msgid "Paylike authorization complete."
+msgstr "Paylike engedélyezés sikeres."
+
+#: woocommerce-gateway-paylike.php:462
+#: includes/class-wc-gateway-paylike.php:787
+msgid "Paylike capture complete."
+msgstr "Paylike elszámolás sikeres."
+
+#: includes/class-wc-gateway-paylike.php:111
+msgid ""
+"Paylike enables you to accept credit and debit cards on your WooCommerce "
+"platform. If you don't already have an account with Paylike, you can create "
+"it <a href=\"https://paylike.io/\">here</a>. Need help with the setup? Read "
+"our documentation <a href=\"https://paylike.io/plugins/woocommerce/\">"
+"here</a>."
+msgstr ""
+"A Paylike segítségével Ön bank és hitelkártyákat tud elfogadni WooCommerce "
+"webáruházában. Ha még nincs fiókja a Paylike-nál, akkor tud készíteni egyet "
+"<a href=\"https://paylike.io/\">itt</a>. Segítségre van szüksége a "
+"telepítéshez? A dokumentáció megtalálható <a href=\"https://paylike."
+"io/plugins/woocommerce/\">itt</a>."
+
+#: woocommerce-gateway-paylike.php:594
 msgid "Paylike refund complete."
-msgstr "Paylike visszatérítés sikeres."
+msgstr "Paylike visszafizetés sikeres."
 
-#: woocommerce-gateway-paylike.php:513
-#: includes/class-wc-gateway-paylike.php:665
-msgid "Refund amount: "
-msgstr "Visszafizetett összeg: "
-
-#: woocommerce-gateway-paylike.php:542 woocommerce-gateway-paylike.php:563
-msgid "Unable to void transaction!"
-msgstr "Tranzakció érvénytelenítés sikertelen!"
-
-#: woocommerce-gateway-paylike.php:548
-msgid "Paylike void complete."
-msgstr "Paylike érvénytelenítés sikeres."
-
-#: woocommerce-gateway-paylike.php:550
-msgid "Voided amount: "
-msgstr "Érvénytelenített összeg: "
-
+#. %1$s is replaced with the error message
 #: includes/class-wc-gateway-paylike-addons.php:57
 #, php-format
 msgid "Paylike Transaction Failed (%s)"
 msgstr "Paylike tranzakció sikertelen (%s)"
 
-#: includes/class-wc-gateway-paylike-addons.php:84
-msgid "Neither Transaction ID nor Card ID was found"
-msgstr "Sem a tranzakcióazonosító, sem a kártyaazonosító nem található"
-
-#: includes/class-wc-gateway-paylike-addons.php:143
-#: includes/class-wc-gateway-paylike.php:458
-#: includes/class-wc-gateway-paylike.php:675
-#: includes/class-wc-gateway-paylike.php:1028
-msgid "Error: "
-msgstr "Hiba: "
-
-#: includes/class-wc-gateway-paylike-addons.php:163
-#: includes/class-wc-gateway-paylike.php:167
-msgid "The private key doesn't seem to be valid"
-msgstr "A private key nem tűnik érvényesnek"
-
-#: includes/class-wc-gateway-paylike-addons.php:179
-msgid "No valid merchant id was found"
-msgstr "Nem található érvényes kereskedőazonosító"
-
-#: includes/class-wc-gateway-paylike-addons.php:221
-msgid "Merchant ID not found"
-msgstr "A kereskedőazonosító nem található"
-
-#: includes/class-wc-gateway-paylike-addons.php:275
-#, php-format
-msgid "Via %s card ending in %s (%s)"
-msgstr "%s kártya által, végződése: %s (%s)"
-
-#: includes/class-wc-gateway-paylike.php:88
-msgid "Paylike"
-msgstr "Paylike"
-
-#: includes/class-wc-gateway-paylike.php:89
-msgid ""
-"Paylike enables you to accept credit and debit cards on your WooCommerce "
-"platform. If you don't already have an account with Paylike, you can create "
-"it <a href=\"https://paylike.io/\">here</a>. Need help with the setup? Read "
-"our documentation <a href=\"https://paylike.io/plugins/woocommerce/\">here</"
-"a>."
-msgstr ""
-"A Paylike segítségével Ön bank és hitelkártyákat tud elfogadni WooCommerce "
-"webáruházában. Ha még nincs fiókja a Paylike-nál, akkor tud készíteni egyet "
-"<a href=\"https://paylike.io/\">itt</a>. Segítségre van szüksége a "
-"telepítéshez? A dokumentáció megtalálható <a href=\"https://paylike.io/"
-"plugins/woocommerce/\">itt</a>."
-
-#: includes/class-wc-gateway-paylike.php:120
-msgid "Continue to payment"
-msgstr "Tovább a fizetéshez"
-
-#: includes/class-wc-gateway-paylike.php:123
-#, php-format
-msgid ""
-"TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 "
-"0000 with any CVC and a valid expiration date. \"<a href=\"%s\">See "
-"Documentation</a>\"."
-msgstr ""
-"TESZT ÜZEMMÓD! Valódi pénzügyi terhelés nem történik. A következő "
-"kártyaszámmal tudja a rendszert tesztelni: 4100 0000 0000 0000, tetszőleges "
-"CVC és lejárati dátummal. <a href=\"%s\">Lásd a dokumentációban</a>."
-
-#: includes/class-wc-gateway-paylike.php:181
-msgid "The test private key is not valid or set to live mode."
-msgstr "A teszt private key nem tűnik érvényesnek vagy live módra van állítva."
-
-#: includes/class-wc-gateway-paylike.php:205
-msgid "The test public key doesn't seem to be valid"
-msgstr "A teszt public key nem tűnik érvényesnek"
-
-#: includes/class-wc-gateway-paylike.php:232
-msgid "The live private key doesn't seem to be valid"
-msgstr "A live private key nem tűnik érvényesnek"
-
-#: includes/class-wc-gateway-paylike.php:246
-msgid "The live private key is not valid or set to test mode."
-msgstr "A live private key nem tűnik érvényesnek vagy teszt módra van állítva."
-
-#: includes/class-wc-gateway-paylike.php:269
-msgid "The live public key doesn't seem to be valid"
-msgstr "A live public key nem tűnik érvényesnek"
-
-#: includes/class-wc-gateway-paylike.php:359
-msgid ""
-"The transaction id is missing, it seems that the authorization failed or the "
-"reference was not sent. Please try the payment again. The previous payment "
-"will not be captured."
-msgstr ""
-"A tranzakció azonosító hiányzik, úgy tűnik, hogy a fizetés sikertelen volt. "
-"Kérjük próbálja újra a fizetést. A korábbi fizetési kísérlet nem kerül "
-"levonásra."
-
-#: includes/class-wc-gateway-paylike.php:427
-msgid "Unable to verify transaction!"
-msgstr "Tranzakció ellenőrzés sikertelen!"
-
-#: includes/class-wc-gateway-paylike.php:532
-msgid "Paylike authorization complete."
-msgstr "Paylike engedélyezés sikeres."
-
-#: includes/class-wc-gateway-paylike.php:598
-msgid "Authorized amount: "
-msgstr "Engedélyezett összeg: "
-
-#: includes/class-wc-gateway-paylike.php:599
-msgid "Captured amount: "
-msgstr "Rögzített összeg: "
-
-#: includes/class-wc-gateway-paylike.php:600
-msgid "Charge authorized at: "
-msgstr "Fizetés engedélyezési idő: "
-
-#: includes/class-wc-gateway-paylike.php:663
+#: includes/class-wc-gateway-paylike.php:879
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:327
 msgid "Paylike transaction refunded."
-msgstr "Paylike tranzakció visszatérítve."
+msgstr "Paylike tranzakció visszafizetve."
 
-#: includes/class-wc-gateway-paylike.php:798
+#: woocommerce-gateway-paylike.php:622
+msgid "Paylike void complete."
+msgstr "Paylike érvénytelenítés sikeres."
+
+#. %1$s is replaced with settings link
+#: woocommerce-gateway-paylike.php:209
+#, php-format
+msgid ""
+"Paylike will not work until you <a href=\"%s\">configure your Paylike api "
+"keys</a>."
+msgstr ""
+"Paylike nem működik addig, míg nem <a href=\"%s\">állítja be a Paylike api "
+"kulcsokat</a>."
+
+#. %1$s is replaced with the admin url
+#: includes/class-wc-gateway-paylike.php:1058
 #, php-format
 msgid ""
 "Paylike: <a href=\"%s\">Force SSL</a> is disabled; your checkout page may "
@@ -250,186 +267,358 @@ msgstr ""
 "Paylike: <a href=\"%s\">Force SSL</a> ki van kapcsolva; a fizetési oldala "
 "lehetséges, hogy nem biztonságos. Csak teszt üzemmód használható."
 
-#: includes/class-wc-gateway-paylike.php:897
-msgid ""
-"Thank you for your order, please click below to pay and complete your order."
-msgstr ""
-"Köszönjük a megrendelést, kérjük, kattintson az alábbi gombra a fizetés "
-"elindításához."
+#: woocommerce-gateway-paylike.php:464
+#: includes/class-wc-gateway-paylike.php:748
+msgid "Payment Amount: "
+msgstr "Összeg: "
 
-#: includes/class-wc-gateway-paylike.php:899
-msgid "Pay Now"
-msgstr "Fizetés most"
+#: includes/settings-paylike.php:87
+msgid "Payment before order created"
+msgstr "A fizetés történjen meg a megrendelés létrehozása előtt"
 
-#: includes/settings-paylike.php:8
-msgid "Enable/Disable"
-msgstr "Bekapcsol/Kikapcsol"
-
-#: includes/settings-paylike.php:9
-msgid "Enable Paylike"
-msgstr "Paylike bekapcsolása"
-
-#: includes/settings-paylike.php:15
-msgid "Payment method title"
-msgstr "Fizetési mód címe"
-
-#: includes/settings-paylike.php:17
-msgid "This controls the title which the user sees during checkout."
-msgstr "Ez adja meg a címet, amit a felhasználó a fizetés során lát."
-
-#: includes/settings-paylike.php:18
-msgid "Credit card (Paylike)"
-msgstr "Bankkártya (Paylike)"
-
-#: includes/settings-paylike.php:22
+#: includes/settings-paylike.php:23
 msgid "Payment method description"
 msgstr "Fizetési mód leírása"
 
-#: includes/settings-paylike.php:24
-msgid "This controls the description which the user sees during checkout."
-msgstr "Ez adja meg a leírást, amit a felhasználó a fizetés során lát."
+#: includes/settings-paylike.php:16
+msgid "Payment method title"
+msgstr "Fizetési mód címe"
 
-#: includes/settings-paylike.php:25
+#: includes/settings-paylike.php:30
+msgid "Payment popup title"
+msgstr "Fizetés felugró ablak címe"
+
+#: includes/settings-paylike.php:88
+msgid "Redirect to payment page after order created"
+msgstr "Megrendelés rögzítése után menjen a fizetés oldalra"
+
+#: woocommerce-gateway-paylike.php:596
+#: includes/class-wc-gateway-paylike.php:881
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:327
+msgid "Refund amount: "
+msgstr "Visszafizetett összeg: "
+
+#: includes/class-wc-gateway-paylike.php:1019
+msgid "Save payment information to my account for future purchases."
+msgstr "Mentse el a fizetési információt a számlámhoz későbbi vásásrláshoz."
+
+#: includes/settings-paylike.php:26
 msgid ""
 "Secure payment with credit card via &copy; <a href=\"https://paylike.io\" "
 "target=\"_blank\">Paylike</a>"
 msgstr ""
-"Biztonságos bankkártyás fizetés &copy; <a href=\"https://paylike.io\" target="
-"\"_blank\">Paylike-kal</a>"
+"Biztonságos bankkártyás fizetés &copy; <a href=\"https://paylike.io\" "
+"target=\"_blank\">Paylike</a>"
 
-#: includes/settings-paylike.php:29
-msgid "Payment popup title"
-msgstr "Fizetés felugró ablak címe"
+#: includes/settings-paylike.php:118
+msgid "Select the card types to accept."
+msgstr "Válassza ki a kártya típust."
 
-#: includes/settings-paylike.php:31
+#: woocommerce-gateway-paylike.php:291
+msgid "Settings"
+msgstr "Beállítások"
+
+#: includes/settings-paylike.php:106
+msgid "Store Payment Method"
+msgstr "Fizetési mód mentése"
+
+#: includes/settings-paylike.php:41
+msgid "Test"
+msgstr "Teszt"
+
+#: includes/settings-paylike.php:62
+msgid "Test mode App Key"
+msgstr "Teszt módhoz App Key"
+
+#. %s is replaced with the documentation link
+#: includes/class-wc-gateway-paylike.php:153
+#, php-format
+msgid ""
+"TEST MODE ENABLED. In test mode, you can use the card number 4100 0000 0000 "
+"0000 with any CVC and a valid expiration date. \"<a href=\"%s\">See "
+"Documentation</a>\"."
+msgstr ""
+"TESZT ÜZEMMÓD! Valódi pénzügyi terhelés nem történik. A következő "
+"kártyaszámmal tudja a rendszert tesztelni: 4100 0000 0000 0000, tetszőleges "
+"CVC és lejárati dátummal. \"<a href=\"%s\">Lásd a dokumentációban</a>\"."
+
+#: includes/settings-paylike.php:69
+msgid "Test mode Public key"
+msgstr "Teszt módhoz Public Key"
+
+#: templates/receipt.php:2
+msgid ""
+"Thank you for your order, please click below to pay and complete your order."
+msgstr ""
+"Köszönjük a megrendelést, kérjük nyomja meg itt a gombot a fizetés "
+"elindításához."
+
+#: woocommerce-gateway-paylike.php:665
+msgid ""
+"The action is not allowed! You do not have the rights to perform the action. "
+"Reach out to hello@paylike.io to get help."
+msgstr ""
+"Ez a funkció nincs engedélyezve! Kérjük lépjen velünk kapcsolatba a "
+"hello@paylike.hu címen."
+
+#: includes/class-wc-gateway-paylike.php:220
+#: includes/class-wc-gateway-paylike.php:1437
+#: includes/class-wc-gateway-paylike.php:1445
+msgid "The app key doesn't seem to be valid"
+msgstr "Az app key nem tűnik érvényesnek"
+
+#: includes/class-wc-gateway-paylike-addons.php:123
+msgid "The card could not be fetched."
+msgstr "A kártya elfogadása sikertelen"
+
+#: includes/class-wc-gateway-paylike.php:291
+#| msgid "The private key doesn't seem to be valid"
+msgid "The live app key doesn't seem to be valid"
+msgstr "Az app key nem tűnik érvényesnek"
+
+#: includes/class-wc-gateway-paylike.php:310
+msgid "The live app key is not valid."
+msgstr "Érvénytelen app key"
+
+#: includes/class-wc-gateway-paylike.php:335
+msgid "The live public key doesn't seem to be valid"
+msgstr "Az élő privát kulcs nem tűnik érvényesnek"
+
+#: includes/class-wc-gateway-paylike.php:1409
+#: includes/class-wc-gateway-paylike.php:1482
+msgid "The merchant couldn't be found"
+msgstr "A kereskedő nem található"
+
+#: includes/class-wc-gateway-paylike.php:1418
+msgid "The merchant is not allowed to capture"
+msgstr "A kereskedő nem használhatja a terhelés funkciót"
+
+#: includes/class-wc-gateway-paylike.php:1491
+msgid "The merchant is not allowed to save cards"
+msgstr "A kereskedő nem mentheti el a kártyaadatokat"
+
+#: woocommerce-gateway-paylike.php:668
+msgid ""
+"The operation is not properly authorized! Check the credentials set in "
+"settings for Paylike."
+msgstr ""
+"A művelet nincs megfelelően hitelesítve! Ellenőrizze Paylike számlája "
+"adatait."
+
+#: woocommerce-gateway-paylike.php:671
+msgid ""
+"The operation leads to a conflict! The same transaction is being requested "
+"for modification at the same time. Try again later."
+msgstr ""
+"A művelet hibát eredményez! Ugyanannak a tranzakciónak a módosítása zajlik "
+"egy időben. Próbálja újra később. "
+
+#: includes/class-wc-gateway-paylike.php:194
+msgid ""
+"The Paylike account used is not allowed to capture. Instant mode is not "
+"available."
+msgstr ""
+"A Paylike számla nincs engedélyezve tranzakciók terheléséhez. Az instant mód "
+"nem elérhető."
+
+#: includes/class-wc-gateway-paylike.php:1518
+msgid ""
+"The Paylike account used is not allowed to save cards. Storing the payment "
+"method is not available."
+msgstr ""
+"A Paylike számla nincs engedélyezve kártyák mentésére. A fizetési mód "
+"tárolása nem lehetséges."
+
+#: woocommerce-gateway-paylike.php:662
+msgid ""
+"The request is not valid! Check if there is any validation bellow this "
+"message and adjust if possible, if not, and the problem persists, contact "
+"the developer."
+msgstr ""
+"Érvénytelen kérelem! Ellenőrizze, hogy van-e bármi hitelesítés az üzenet "
+"alatt és végezze el a szükséges változtatást. Ha a probléma továbbra is fenn "
+"áll, lépjen kapcsolatba a fejlesztővel."
+
+#: includes/class-wc-gateway-paylike.php:238
+msgid "The test app key is not valid."
+msgstr "Érvénytelen teszt app key."
+
+#: includes/class-wc-gateway-paylike.php:264
+msgid "The test public key doesn't seem to be valid"
+msgstr "A teszt publikus kulcs nem tűnik érvényesnek"
+
+#: includes/settings-paylike.php:32
 msgid ""
 "The text shown in the popup where the customer inserts the card details."
 msgstr ""
 "Ez a szöveg látszódik a felugró ablakban, amikor a felhasználó megadja a "
 "kártya adatait."
 
-#: includes/settings-paylike.php:36
-msgid "Transaction mode"
-msgstr "Tranzakció mód"
+#: includes/class-wc-gateway-paylike-addons.php:133
+msgid "The transaction could not be fetched."
+msgstr "A tranzakció sikertelen"
 
-#: includes/settings-paylike.php:38
+#: includes/class-wc-gateway-paylike.php:457
 msgid ""
-"In test mode, you can create a successful transaction with the card number "
-"4100 0000 0000 0000 with any CVC and a valid expiration date."
+"The transaction id is missing, it seems that the authorization failed or the "
+"reference was not sent. Please try the payment again. The previous payment "
+"will not be captured."
 msgstr ""
-"TESZT ÜZEMMÓD! Valódi pénzügyi terhelés nem történik. A következő "
-"kártyaszámmal tudja a rendszert tesztelni: 4100 0000 0000 0000, tetszőleges "
-"CVC és lejárati dátummal."
+"A tranzakció azonosító hiányzik, úgy tűnik, hogy a fizetés sikertelen volt. "
+"Kérjük próbálja újra a fizetést. A korábbi fizetési kísérlet nem kerül "
+"levonásra."
 
-#: includes/settings-paylike.php:40
-msgid "Test"
-msgstr "Teszt"
-
-#: includes/settings-paylike.php:41
-msgid "Live"
-msgstr "Live"
-
-#: includes/settings-paylike.php:47
-msgid "Live mode App Key"
-msgstr "Live mód App Key"
-
-#: includes/settings-paylike.php:49 includes/settings-paylike.php:56
-#: includes/settings-paylike.php:63 includes/settings-paylike.php:70
-msgid "Get it from your Paylike dashboard"
-msgstr "Szerezze be a Paylike vezérlőpultjáról"
-
-#: includes/settings-paylike.php:54
-msgid "Live mode Public Key"
-msgstr "Live mód Public Key"
-
-#: includes/settings-paylike.php:61
-msgid "Test mode App Key"
-msgstr "Teszt mód App Key"
-
-#: includes/settings-paylike.php:68
-msgid "Test mode Public key"
-msgstr "Teszt mód Public Key"
-
-#: includes/settings-paylike.php:75
-msgid "Compatibility Mode"
-msgstr "Kompatibilitási mód"
-
-#: includes/settings-paylike.php:76
-msgid "Don't capture from processing to completed"
+#: woocommerce-gateway-paylike.php:677
+msgid ""
+"There has been a server issue! If this problem persists contact the "
+"developer."
 msgstr ""
-"Ne vonja le az összeget automatikusan, amikor a Feldolgozás alatt állapotról "
-"a Teljesített állapotra vált"
+"Szerverprobléma! Ha a probléma továbbra is fenn áll, lépjen kapcsolatba a "
+"fejlesztővel."
 
-#: includes/settings-paylike.php:78
+#: includes/class-wc-gateway-paylike.php:1541
+msgid "There was a problem adding the payment method."
+msgstr "Probléma jelentkezett a fizetési mód hozzáadásakor."
+
+#: includes/class-wc-gateway-paylike.php:537
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:159
+msgid "There was a problem creating the transaction!."
+msgstr "Probléma jelentkezett a tranzakció létrehozásakor."
+
+#: includes/settings-paylike.php:25
+msgid "This controls the description which the user sees during checkout."
+msgstr "Ez kontrolálja a leírást, amit a felhasználó a pénztár során lát."
+
+#: includes/settings-paylike.php:18
+msgid "This controls the title which the user sees during checkout."
+msgstr "Ez kontrolálja a címet, amit a felhasználó a pénztár során lát."
+
+#: includes/class-wc-gateway-paylike.php:1509
+msgid "Tokenization is only compatible with the before order payment mode."
+msgstr ""
+"A tokenizálás kizárólag a rendelés előtti fizetési móddal kompatibilis."
+
+#: woocommerce-gateway-paylike.php:465 woocommerce-gateway-paylike.php:597
+#: woocommerce-gateway-paylike.php:625
+#: includes/class-wc-gateway-paylike.php:749
+#: includes/class-wc-gateway-paylike.php:882
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:327
+msgid "Transaction authorized at: "
+msgstr "Tranzakció engedélyezési idő: "
+
+#: woocommerce-gateway-paylike.php:463 woocommerce-gateway-paylike.php:595
+#: woocommerce-gateway-paylike.php:623
+#: includes/class-wc-gateway-paylike.php:747
+#: includes/class-wc-gateway-paylike.php:788
+#: includes/class-wc-gateway-paylike.php:880
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:327
+msgid "Transaction ID: "
+msgstr "Tranzakció ID: "
+
+#: includes/settings-paylike.php:37
+msgid "Transaction mode"
+msgstr "Tranzakció módja"
+
+#: woocommerce-gateway-paylike.php:659
+msgid ""
+"Transaction not found! Check the transaction key used for the operation."
+msgstr ""
+"A tranzakció nem található! Ellenőrizze a használt tranzakció azonosítóját."
+
+#: woocommerce-gateway-paylike.php:478
+#: includes/class-wc-gateway-paylike.php:632
+msgid "Unable to capture transaction!"
+msgstr "Tranzakció elszámolása sikertelen!"
+
+#: woocommerce-gateway-paylike.php:609
+#: includes/class-wc-gateway-paylike.php:890
+#: third-party/upstroke/gateways/class-wfocu-paylike-gateway-credit-cards.php:334
+msgid "Unable to refund transaction!"
+msgstr "Tranzakció visszafizetése sikertelen!"
+
+#: includes/class-wc-gateway-paylike.php:605
+msgid "Unable to verify transaction!"
+msgstr "Tranzakció ellenőrzés sikertelen!"
+
+#: woocommerce-gateway-paylike.php:637
+msgid "Unable to void transaction!"
+msgstr "Tranzakció érvénytelenítés sikertelen!"
+
+#: includes/settings-paylike.php:128
+msgid "Use Beta"
+msgstr "Béta mód használata"
+
+#: includes/settings-paylike.php:129
+msgid "Use the Beta SDK(only use if instructed)"
+msgstr "Béta SDK használata (csak ha javasolták)"
+
+#. %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id
+#: includes/class-wc-gateway-paylike-addons.php:194
+#, php-format
+msgid "Via %s card ending in %s (%s)"
+msgstr "%s kártya által, végződése: %s (%s)"
+
+#: woocommerce-gateway-paylike.php:624
+msgid "Voided amount: "
+msgstr "Érvénytelenített összeg: "
+
+#: includes/settings-paylike.php:131
+msgid "When this is checked the beta version of the sdk is being used"
+msgstr "Az opció engedélyezésével a béta SDK kerül bekapcsolásra"
+
+#: includes/settings-paylike.php:109
+msgid ""
+"When this is checked users are allowed to save their payment to be used as a "
+"source for future payments without the need to go trough the payment process "
+"again"
+msgstr ""
+"Az opció engedélyezésével a felhasználók elmenthetik a kártyáikat jövőbeli "
+"fizetések elvégzéséhez a kártyaadatok ismételt megadása nélkül"
+
+#: includes/settings-paylike.php:79
 msgid ""
 "When this is checked you can capture payment by moving an order to On Hold "
 "and then to complete or processing status, when its not checked you can also "
 "complete them from processing to complete as well as the other 2 options"
 msgstr ""
-"Amikor ez az opció be van pipálva, akkor a rendszer automatikusan levonja az "
-"összeget, amikor a Fizetésre vár állapotra vált és utána a Feldolgozás alatt "
-"vagy Teljesítve állapotra vált, ha nincs bepipálva, akkor Feldolgozás "
-"alattról Teljesített állapotra váltáskor és a másik két lehetőség esetén is"
+"Amikor ez az opció be van kapcsolva, akkor a rendszer automatikusan levonja "
+"az összeget, amikor a Fizetésre vár állapotra vált és utána a Feldolgozás "
+"alatt vagy Teljesítve állapotra vált"
 
-#: includes/settings-paylike.php:92
-msgid "Checkout mode"
-msgstr "Pénztár mód"
+#: woocommerce-gateway-paylike.php:277
+msgid "WooCommerce Paylike - cURL is not installed."
+msgstr "WooCommerce Paylike - cURL nincs telepítve."
 
-#: includes/settings-paylike.php:95
-msgid "Payment before order created"
-msgstr "A fizetés történjen meg a megrendelés létrehozása előtt"
-
-#: includes/settings-paylike.php:96
-msgid "Redirect to payment page after order created"
-msgstr "Megrendelés rögzítése után átirányítás a fizetés oldalra"
-
-#: includes/settings-paylike.php:103
-msgid "Capture mode"
-msgstr "Elfogadási mód"
-
-#: includes/settings-paylike.php:109
+#. %1$s is replaced with the php version %2$s is replaced with the current php version
+#: woocommerce-gateway-paylike.php:263
+#, php-format
 msgid ""
-"If you deliver your product instantly (e.g. a digital product), choose "
-"Instant mode. If not, use Delayed. In Delayed mode, you can capture the "
-"order when moving from on hold to complete or from on hold to processing."
+"WooCommerce Paylike - The minimum PHP version required for this plugin is "
+"%1$s. You are running %2$s."
 msgstr ""
-"Ha a terméket azonnal szállítja (pl. digitális termék), akkor válassza az "
-"azonnali módot. Ha nem, akkor a késletetettet. A késletetettet módban akkor "
-"lesz a megrendelés összege a kártyán ténylegesen levonva, amikor a Fizetésre "
-"vár állapot után a Feldolgozás alatt vagy Teljesített állapotra vált."
+"WooCommerce Paylike - A minimális PHP verzió mely a plugin múködéséhez kell "
+"%1$s. Jelenlegi verzió %2$s."
 
-#: includes/settings-paylike.php:128
-msgid "Logging"
-msgstr "Naplózás"
-
-#: includes/settings-paylike.php:129
-msgid "Log debug messages"
-msgstr "Hibakeresési üzenetek naplózása"
-
-#: includes/settings-paylike.php:131
-msgid "Save debug messages to the WooCommerce System Status log."
-msgstr "Hibakeresési üzenetek mentése a WooCommerce rendszerüzenet naplójába."
+#. %1$s is replaced with the woocommerce version %2$s is replaced with the current woocommerce version
+#: woocommerce-gateway-paylike.php:272
+#, php-format
+msgid ""
+"WooCommerce Paylike - The minimum WooCommerce version required for this "
+"plugin is %1$s. You are running %2$s."
+msgstr ""
+"WooCommerce Paylike - A  minimális WooCommerce verzió mely a plugin "
+"működéséhez kell %1$s. Jelenlegi verzió %2$s."
 
 #. Name of the plugin
 msgid "WooCommerce Paylike Gateway"
 msgstr "WooCommerce Paylike Gateway"
 
-#. Description of the plugin
+#: woocommerce-gateway-paylike.php:268
+msgid "WooCommerce Paylike requires WooCommerce to be activated to work."
+msgstr "WooCommerce Paylike működéséhez szükséges az aktivált WooCommerce."
+
+#: woocommerce-gateway-paylike.php:508
 msgid ""
-"Allow customers to pay with credit cards via the Paylike gateway in your "
-"WooCommerce store."
-msgstr ""
-"A vásárlók bankkártyával fizethetnek WooCommerce webáruházában a Paylike "
-"fizetési megoldás segítségével."
-
-#. URI of the plugin
-msgid "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
-msgstr "https://wordpress.org/plugins/woocommerce-gateway-paylike/"
-
-#. Author of the plugin
-msgid "Derikon Development"
-msgstr "Derikon Development"
-
-#. Author URI of the plugin
-msgid "https://derikon.com/"
-msgstr "https://derikon.com/"
+"You can either move the order to on hold and then to processing or go to "
+"settings and uncheck the `Compatibility Mode` checkbox."
+msgstr "A rendelést átteheti "

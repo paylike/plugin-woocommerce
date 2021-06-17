@@ -3,7 +3,7 @@ Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
 Tested up to: 5.7.2
-Stable tag: 2.4.2
+Stable tag: 3.0.0
 WC requires at least: 3.0
 WC tested up to: 5.3.0
 License: GPLv3
@@ -111,6 +111,10 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 3. Payment screen
 
 == Changelog ==
+
+= 3.0.0 =
+* Update sdk and add unplanned flag for subscriptions
+* Updated hungarian translation
 
 = 2.4.2 =
 * Fix subscription api update bug
