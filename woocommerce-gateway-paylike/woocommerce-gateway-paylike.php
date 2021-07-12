@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via Paylike in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 2.4.2
+ * Version: 3.0.0
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
@@ -32,11 +32,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '2.4.2' );
+define( 'WC_PAYLIKE_VERSION', '3.0.0' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
-define( 'WC_PAYLIKE_CURRENT_SDK', 6 );
-define( 'WC_PAYLIKE_BETA_SDK', 6 );
+define( 'WC_PAYLIKE_CURRENT_SDK', 10 );
+define( 'WC_PAYLIKE_BETA_SDK', 10 );
 define( 'WC_PAYLIKE_MAIN_FILE', __FILE__ );
 define( 'WC_PAYLIKE_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'WC_PAYLIKE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -65,24 +65,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			}
 
 			return self::$instance;
-		}
-
-		/**
-		 * Private clone method to prevent cloning of the instance of the
-		 * *Singleton* instance.
-		 *
-		 * @return void
-		 */
-		private function __clone() {
-		}
-
-		/**
-		 * Private unserialize method to prevent unserializing of the *Singleton*
-		 * instance.
-		 *
-		 * @return void
-		 */
-		private function __wakeup() {
 		}
 
 		/**
@@ -342,6 +324,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			include_once( plugin_basename( 'includes/helpers.php' ) );
 			include_once( plugin_basename( 'includes/legacy.php' ) );
 			include_once( plugin_basename( 'includes/currencies.php' ) );
+			include_once( plugin_basename( 'includes/class-subscription-plan.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-paylike-payment-tokens.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-paylike-payment-token.php' ) );
 			include_once( plugin_basename( 'includes/class-wc-gateway-paylike.php' ) );
@@ -364,7 +347,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			$current_sdk_version = get_option( 'paylike_sdk_version', 0 );
 			$beta_sdk_version = get_option( 'paylike_beta_version', 0 );
 
-			$options = get_option( 'woocommerce_paylike_settings' );
+			$options = get_option( 'woocommerce_paylike_settings',[] );
 			if ( 1 == $current_db_version ) {
 
 				if ( 'yes' === $options['capture'] ) {
@@ -439,7 +422,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$data = array(
-				'amount'   => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
+				'amount'   => convert_float_to_iso_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 				'currency' => dk_get_order_currency( $order ),
 			);
 			WC_Paylike::log( "Info: Starting to capture {$data['amount']} in {$data['currency']}" . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
@@ -511,26 +494,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		}
 
 		/**
-		 * @param      $total
-		 * @param null $currency
-		 *  Format the amount based on the currency
-		 *
-		 * @return string
-		 */
-		public function get_paylike_amount( $total, $currency = null ) {
-			if ( '' == $currency ) {
-				$currency = get_woocommerce_currency();
-			}
-			$multiplier = get_paylike_currency_multiplier( $currency );
-			$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
-			if ( function_exists( 'bcmul' ) ) {
-				$amount = ceil( bcmul( $total, $multiplier ) );
-			}
-
-			return $amount;
-		}
-
-		/**
 		 * Convert the cents amount into the full readable amount
 		 *
 		 * @param        $amount_in_cents
@@ -561,7 +524,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				return false;
 			}
 			$data = array(
-				'amount' => $this->get_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
+				'amount' => convert_float_to_iso_paylike_amount( $this->get_order_amount( $order ), dk_get_order_currency( $order ) ),
 			);
 			$currency = dk_get_order_currency( $order );
 			if ( 'yes' == $captured ) {

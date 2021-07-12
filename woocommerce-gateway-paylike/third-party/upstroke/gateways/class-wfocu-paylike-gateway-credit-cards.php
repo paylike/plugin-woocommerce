@@ -140,7 +140,7 @@ class WFOCU_Paylike_Gateway_Credit_Cards extends WFOCU_Gateway {
 		}
 		// create a new transaction by card or transaction.
 		$data = array(
-			'amount'        => $this->get_paylike_amount( $amount, dk_get_order_currency( $renewal_order ) ),
+			'amount'        => convert_float_to_iso_paylike_amount( $amount, dk_get_order_currency( $renewal_order ) ),
 			'currency'      => dk_get_order_currency( $renewal_order ),
 			'custom'        => array(
 				'email' => $renewal_order->get_billing_email(),
@@ -175,7 +175,7 @@ class WFOCU_Paylike_Gateway_Credit_Cards extends WFOCU_Gateway {
 		WFOCU_Core()->log->log( '------------- Start payment --------------' . PHP_EOL . "Info: Begin processing payment for order $order_id for the amount of " . $amount . PHP_EOL . ' -- ' . __FILE__ . ' - Line:' . __LINE__ );
 
 		$data = array(
-			'amount'   => $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ),
+			'amount'   => convert_float_to_iso_paylike_amount( $amount, dk_get_order_currency( $order ) ),
 			'currency' => dk_get_order_currency( $order ),
 
 		);
@@ -245,28 +245,9 @@ class WFOCU_Paylike_Gateway_Credit_Cards extends WFOCU_Gateway {
 		}
 
 		$match_currency = dk_get_order_currency( $order ) == $transaction['currency'];
-		$match_amount   = $this->get_paylike_amount( $amount, dk_get_order_currency( $order ) ) == $transaction['amount'];
+		$match_amount   = convert_float_to_iso_paylike_amount( $amount, dk_get_order_currency( $order ) ) == $transaction['amount'];
 
 		return ( 1 == $transaction['successful'] && $match_currency && $match_amount );
-	}
-
-	/**
-	 * @param $total
-	 * @param string $currency
-	 *
-	 * @return false|float
-	 */
-	public function get_paylike_amount( $total, $currency = '' ) {
-		if ( empty( $currency ) ) {
-			$currency = get_woocommerce_currency();
-		}
-		$multiplier = get_paylike_currency_multiplier( $currency );
-		$amount     = ceil( $total * $multiplier ); // round to make sure we are always minor units.
-		if ( function_exists( 'bcmul' ) ) {
-			$amount = ceil( bcmul( $total, $multiplier ) );
-		}
-
-		return $amount;
 	}
 
 	/**
@@ -285,7 +266,7 @@ class WFOCU_Paylike_Gateway_Credit_Cards extends WFOCU_Gateway {
 		$currency = dk_get_order_currency( $order );
 
 		if ( ! is_null( $amount ) ) {
-			$data['amount'] = $this->get_paylike_amount( $amount, $currency );
+			$data['amount'] = convert_float_to_iso_paylike_amount( $amount, $currency );
 		}
 
 		if ( 'yes' === $captured ) {

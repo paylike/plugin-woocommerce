@@ -26,6 +26,10 @@ jQuery( function( $ ) {
 				return $( '#add_payment_method' ).length === 1;
 			},
 
+			isCardSavedForFuturePurchases: function() {
+				return $( '#wc-paylike-new-payment-method' ).is( ':checked' );
+			},
+
 			isManualPaymentMethod: function() {
 				return $( 'body.woocommerce-order-pay' ).length === 1;
 			},
@@ -45,10 +49,10 @@ jQuery( function( $ ) {
 				// token is used
 				if ( savedToken ) {
 					if ( ! wc_paylike_form.form.find( 'input#wc-paylike-payment-token-new' ).is( ':checked' ) )
-						if($('.wc-saved-payment-methods').length > 0) {
-							if($('.wc-saved-payment-methods').data('count')>0) {
-								if ( wc_paylike_form.form.find( 'input[name="wc-paylike-payment-token"]:checked' ).length>0 )
-								return false;
+						if ( $( '.wc-saved-payment-methods' ).length > 0 ) {
+							if ( $( '.wc-saved-payment-methods' ).data( 'count' ) > 0 ) {
+								if ( wc_paylike_form.form.find( 'input[name="wc-paylike-payment-token"]:checked' ).length > 0 )
+									return false;
 							}
 						}
 				}
@@ -214,12 +218,16 @@ jQuery( function( $ ) {
 					var name = wc_paylike_form.getName( $paylike_payment );
 					var phoneNo = wc_paylike_form.getPhoneNo( $paylike_payment );
 					var address = wc_paylike_form.getAddress( $paylike_payment );
-					var paylike = Paylike( wc_paylike_params.key );
+					var paylike = Paylike( { key: wc_paylike_params.key } );
 					var $billing_email = $( "[name='billing_email']" );
 					var args = {
 						title: $paylike_payment.data( 'title' ),
-						currency: $paylike_payment.data( 'currency' ),
-						amount: $paylike_payment.data( 'amount' ),
+						test: !! $paylike_payment.data( 'test' ),
+						amount: {
+							currency: $paylike_payment.data( 'currency' ),
+							exponent: $paylike_payment.data( 'decimals' ),
+							value: $paylike_payment.data( 'amount' ),
+						},
 						locale: $paylike_payment.data( 'locale' ),
 						custom: {
 							email: $billing_email.val(),
@@ -245,19 +253,29 @@ jQuery( function( $ ) {
 						}
 					};
 
-					if ( wc_paylike_params.is_recurring ) {
-						args.recurring = true;
+					if ( wc_paylike_params.plan_arguments ) {
+						for ( var attrname in wc_paylike_params.plan_arguments ) {
+							args[ attrname ] = wc_paylike_params.plan_arguments[ attrname ];
+						}
 					}
-
 					// used for cases like trial,
 					// change payment method
 					// see @https://github.com/paylike/sdk#popup-to-save-tokenize-a-card-for-later-use
-					if ( args.amount === 0 ) {
+					if ( args.amount.value === 0 ) {
 						delete args.amount;
-						delete args.currency;
 					}
 
-					paylike.popup( args,
+
+					// if card is reused mark unplanned for customer but also for merchant since merchant will be able to reuse for subscriptions
+					if ( this.isCardSavedForFuturePurchases() || this.isAddPaymentMethod() ) {
+						args[ 'unplanned' ] = {
+							customer: true,
+							merchant: true
+						}
+					}
+					console.log(args);
+
+					paylike.pay( args,
 						function( err, res ) {
 							// log this for debugging purposes
 							wc_paylike_form.logTransactionResponsePopup( err, res );
