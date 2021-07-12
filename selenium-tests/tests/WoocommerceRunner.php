@@ -258,7 +258,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$expectedAmount = $this->getText( '.order-total span.amount' );
 			$expectedAmount = preg_replace( "/[^0-9.]/", "", $expectedAmount );
 			$expectedAmount = trim( $expectedAmount, '.' );
-			$expectedAmount = ceil( round( $expectedAmount, 3 ) * get_paylike_currency_multiplier( $this->currency ) );
+			$expectedAmount = ceil( $expectedAmount * pow(10,2) ); // all of the currencies now are sent with the default 2 units
 			$this->main_test->assertEquals( $expectedAmount, $amount, "Checking minor amount for " . $this->currency );
 		}
 

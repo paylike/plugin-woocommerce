@@ -40,6 +40,7 @@ class CustomCapabilitiesResolver implements CustomCapabilitiesResolverInterface 
 		if ( $this->config->browserName === WebDriverBrowserType::IE ) {
 			$capabilities->setCapability( 'ms:someEdgeCapability', 'true' );
 		}
+
 		// When on CI, run Chrome in headless mode
 		if ( ( ( new CiDetector() )->isCiDetected() || getenv( 'HEADLESS' ) ) && $this->config->browserName === WebDriverBrowserType::CHROME ) {
 			$chromeOptions = new ChromeOptions();

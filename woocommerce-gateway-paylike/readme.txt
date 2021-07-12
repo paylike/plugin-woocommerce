@@ -115,6 +115,7 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 = 3.0.0 =
 * Update sdk and add unplanned flag for subscriptions
 * Updated hungarian translation
+* Minor fix for php8
 
 = 2.4.2 =
 * Fix subscription api update bug
