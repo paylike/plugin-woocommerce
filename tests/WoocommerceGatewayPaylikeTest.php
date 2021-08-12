@@ -34,6 +34,8 @@ class WoocommerceGatewayPaylikeTest extends WP_UnitTestCase {
 
 	/** @test */
 	public function test_force_unplanned() {
+		WC()->cart->empty_cart();
+		PaylikeSubscriptionHelper::reset();
 		$product = $this->create_subscription_product( true, [
 			'type'                => 'subscription',
 			'subscription_period' => 'week',

@@ -30,7 +30,7 @@ class PaylikeSubscriptionHelper {
 		return self::$instance->append_plan_from_cart();
 	}
 
-	private function __construct( $args,$force_unplanned, $order ) {
+	private function __construct( $args, $force_unplanned, $order ) {
 		$this->order = $order;
 		$this->args = $args;
 		$this->force_unplanned = $force_unplanned;
@@ -41,7 +41,7 @@ class PaylikeSubscriptionHelper {
 	}
 
 	private function append_plan_from_order() {
-		if(!$this->order_has_any_subscription()){
+		if ( ! $this->order_has_any_subscription() ) {
 			return false;
 		}
 
@@ -57,7 +57,7 @@ class PaylikeSubscriptionHelper {
 	}
 
 	private function append_plan_from_cart() {
-		if(!$this->cart_has_any_subscription()){
+		if ( ! $this->cart_has_any_subscription() ) {
 			return false;
 		}
 
@@ -74,21 +74,21 @@ class PaylikeSubscriptionHelper {
 
 	private function set_plan_from_cart() {
 		$subscription = $this->get_first_subscription_from_cart();
-		if ( !$subscription ) {
+		if ( ! $subscription ) {
 			return false;
 		}
 
-		$this->set_plan_from_product($subscription);
+		$this->set_plan_from_product( $subscription );
 
 	}
 
 	private function set_plan_from_order() {
 		$subscription = $this->get_first_subscription_from_order();
-		if ( !$subscription ) {
+		if ( ! $subscription ) {
 			return false;
 		}
 
-		$this->set_plan_from_product($subscription);
+		$this->set_plan_from_product( $subscription );
 
 	}
 
@@ -116,7 +116,7 @@ class PaylikeSubscriptionHelper {
 		$this->set_plan_key();
 		$this->args['plan']['amount'] = array(
 			'currency' => get_woocommerce_currency(),
-			'amount' => convert_wocoomerce_float_to_paylike_amount( WC_Subscriptions_Product::get_price( $product ) ),
+			'amount'   => convert_wocoomerce_float_to_paylike_amount( WC_Subscriptions_Product::get_price( $product ) ),
 			'exponent' => wc_get_price_decimals()
 		);
 	}
@@ -153,7 +153,7 @@ class PaylikeSubscriptionHelper {
 
 	private function set_unplanned_merchant() {
 		$this->set_unplanned_key();
-		$this->args['unplanned']['merchant'] = true ;
+		$this->args['unplanned']['merchant'] = true;
 	}
 
 	private function cart_subscription_count() {
@@ -189,11 +189,11 @@ class PaylikeSubscriptionHelper {
 	}
 
 	private function order_has_one_subscription() {
-		return ($this->order_subscription_count() === 1);
+		return ( $this->order_subscription_count() === 1 );
 	}
 
 	private function order_has_any_subscription() {
-		return ($this->order_subscription_count() > 0);
+		return ( $this->order_subscription_count() > 0 );
 	}
 
 	private function get_first_subscription_from_order() {
@@ -214,5 +214,11 @@ class PaylikeSubscriptionHelper {
 		return $subscriptionProduct;
 	}
 
+
+	public static function reset() {
+		if ( self::$instance ) {
+			self::$instance = null;
+		}
+	}
 
 }
