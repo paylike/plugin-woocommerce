@@ -293,6 +293,7 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 		$this->goToPage( 'wp-admin/edit.php?post_type=shop_order' );
 		$this->click( '.page-title-action' );
 		$this->click( '#select2-customer_user-container' );
+		$this->click( $this->wd->findElement( WebDriverBy::cssSelector( 'input[aria-owns="select2-customer_user-results"]') ));
 		$this->wd->getKeyboard()->sendKeys( "s" );
 		$this->waitForElement( '.select2-results__option--highlighted' );
 		$this->pressEnter();
@@ -313,6 +314,8 @@ class WoocommerceRunner extends WoocommerceTestHelper {
 			$this->click( ".add-order-item" );
 		}
 		$this->click( '.wc-backbone-modal .select2-selection' );
+		$this->click( $this->wd->findElement( WebDriverBy::cssSelector( '.select2-search--dropdown .select2-search__field') ));
+
 		$this->wd->getKeyboard()->sendKeys( "Hoo" );
 		$this->waitForElement( ".select2-results__option--highlighted" );
 		$this->pressEnter();

@@ -1301,7 +1301,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 				$transaction_id = $_POST['paylike_token'];
 				if ( $signature === $_REQUEST['signature'] ) {
 
-					if ( $order->get_total() > 0 ) {
+					if ( $order->get_total() > 0 && $_REQUEST['amount']!=0 ) {
 						$this->handle_payment( $transaction_id, $order );
 					} else {
 						// used for trials, and changing payment method.

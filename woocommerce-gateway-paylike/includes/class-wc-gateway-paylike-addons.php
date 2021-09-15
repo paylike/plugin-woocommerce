@@ -40,6 +40,11 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 				$this,
 				'validate_subscription_payment_meta',
 			), 10, 2 );
+
+			add_filter( 'woocommerce_subscriptions_update_payment_via_pay_shortcode', array(
+				$this,
+				'maybe_dont_update_payment_method',
+			), 10, 3 );
 		}
 	}
 
@@ -77,8 +82,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		}
 		// get last transaction id used.
 		$last_transaction_id = $this->get_transaction_id( $order );
-		$last_card_id        = $this->get_card_id( $order );
-		$new_transaction     = null;
+		$last_card_id = $this->get_card_id( $order );
+		$new_transaction = null;
 		if ( ! $last_transaction_id && ! $last_card_id ) {
 			if ( ! $last_transaction_id ) {
 				return new WP_Error( 'paylike_error', __( 'Neither Transaction ID nor Card ID was found', 'woocommerce-gateway-paylike' ) );
@@ -99,8 +104,6 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 
 		return $this->handle_payment( $new_transaction, $order, $amount );
 	}
-
-
 
 
 	/**
@@ -154,8 +157,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	 * @return void
 	 */
 	public function update_failing_payment_method( $subscription, $renewal_order ) {
-		update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', get_post_meta( $renewal_order->get_id(), '_paylike_transaction_id', true ));
-		update_post_meta( get_woo_id( $subscription ), '_paylike_card_id', get_post_meta( $renewal_order->get_id(), '_paylike_card_id', true ));
+		update_post_meta( get_woo_id( $subscription ), '_paylike_transaction_id', get_post_meta( $renewal_order->get_id(), '_paylike_transaction_id', true ) );
+		update_post_meta( get_woo_id( $subscription ), '_paylike_card_id', get_post_meta( $renewal_order->get_id(), '_paylike_card_id', true ) );
 	}
 
 	/**
@@ -185,14 +188,15 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		// add more details, if we can get the card.
 		try {
 			$transaction = $this->paylike_client->transactions()->fetch( $transaction_id );
+			if ( 1 == $transaction['successful'] && $transaction['card'] ) {
+				$card = $transaction['card'];
+				/* translators: %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id */
+				$payment_method_to_display = sprintf( __( 'Via %s card ending in %s (%s)', 'woocommerce-gateway-paylike' ), ucfirst( $card['scheme'] ), $card['last4'], ucfirst( $this->id ) );
+			}
 		} catch ( \Paylike\Exception\ApiException $exception ) {
 			WC_Paylike::handle_exceptions( null, $exception, 'Fetching transaction entity failed' );
 		}
-		if ( 1 == $transaction['successful'] && $transaction['card'] ) {
-			$card = $transaction['card'];
-			/* translators: %1$s is replaced with card type, %2$s is replaced with last4 digits and %3$s is replaced with the card id */
-			$payment_method_to_display = sprintf( __( 'Via %s card ending in %s (%s)', 'woocommerce-gateway-paylike' ), ucfirst( $card['scheme'] ), $card['last4'], ucfirst( $this->id ) );
-		}
+
 
 		return $payment_method_to_display;
 	}
@@ -223,6 +227,26 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 		return $payment_meta;
 	}
 
+
+	/**
+	 *
+	 * In delayed mode update after the redirect page
+	 *
+	 * @param $update
+	 * @param $new_payment_method
+	 * @param $subscription
+	 *
+	 * @return false|mixed
+	 */
+	public function maybe_dont_update_payment_method( $update, $new_payment_method, $subscription ) {
+
+		if ( $this->id == $new_payment_method && $this->checkout_mode != 'before_order' ) {
+			$update = false;
+		}
+
+		return $update;
+	}
+
 	/**
 	 * Validate the payment meta data required to process automatic recurring payments so that store managers can
 	 * manually set up automatic recurring payments for a customer via the Edit Subscriptions screen in 2.0+.
@@ -235,7 +259,7 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 	public function validate_subscription_payment_meta( $payment_method_id, $payment_meta ) {
 		if ( $this->id === $payment_method_id ) {
 			if ( ! isset( $payment_meta['post_meta']['_paylike_transaction_id']['value'] ) || empty( $payment_meta['post_meta']['_paylike_transaction_id']['value'] ) ) {
-				if ( (! isset( $payment_meta['post_meta']['_paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['_paylike_card_id']['value'] )) &&  (!isset( $payment_meta['post_meta']['paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['paylike_card_id']['value'] )) ) {
+				if ( ( ! isset( $payment_meta['post_meta']['_paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['_paylike_card_id']['value'] ) ) && ( ! isset( $payment_meta['post_meta']['paylike_card_id']['value'] ) || empty( $payment_meta['post_meta']['paylike_card_id']['value'] ) ) ) {
 					throw new Exception( 'A "_paylike_transaction_id" value is required.' );
 				}
 			}
@@ -255,6 +279,8 @@ class WC_Gateway_Paylike_Addons extends WC_Gateway_Paylike {
 			$subscriptions = wcs_get_subscriptions_for_order( get_woo_id( $order ) );
 		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( get_woo_id( $order ) ) ) {
 			$subscriptions = wcs_get_subscriptions_for_renewal_order( get_woo_id( $order ) );
+		} elseif ( function_exists( 'wcs_get_subscription' ) && wcs_get_subscription( get_woo_id( $order ) ) ) {
+			$subscriptions = [ wcs_get_subscription( get_woo_id( $order ) ) ];
 		} else {
 			$subscriptions = array();
 		}
