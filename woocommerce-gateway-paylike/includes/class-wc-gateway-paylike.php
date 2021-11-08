@@ -976,7 +976,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			data-totalShipping="' . esc_attr( convert_wocoomerce_float_to_paylike_amount( $amount_shipping ) ) . '"
 			data-customerIP="' . esc_attr( $this->get_client_ip() ) . '"
 			data-title="' . esc_attr( $this->popup_title ) . '"
-			data-currency="' . esc_attr( get_woocommerce_currency() ) . '"
+			data-currency="' . esc_attr( $currency ) . '"
 			">';
 			echo $token; // WPCS: XSS ok.
 			echo '</div>';
@@ -1147,7 +1147,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	public function receipt_page( $order_id ) {
 		global $wp_version;
 		$order = wc_get_order( $order_id );
-		$currency = get_woocommerce_currency();
+		$currency = dk_get_order_currency($order);
 		$decimals = wc_get_price_decimals();
 		$amount = convert_wocoomerce_float_to_paylike_amount( $order->get_total() );
 		$products = array();
