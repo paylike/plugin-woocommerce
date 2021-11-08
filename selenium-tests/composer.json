@@ -21,8 +21,8 @@
       "Config\\": "config/"
     },
     "files": [
-      "../woocommerce-gateway-paylike/includes/currencies.php",
-      "../include/beforeLoad.php"
+      "../includes/currencies.php",
+      "./beforeLoad.php"
     ]
   },
   "config": {

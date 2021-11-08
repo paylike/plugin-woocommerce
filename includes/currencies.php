@@ -1,88 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: calaraionut
- * Date: 12/5/18
- * Time: 3:57 PM
- */
 
-namespace Paylike\Data;
-
-
-class Currencies {
-
-
-	/**
-	 * Currencies constructor.
-	 */
-	public function __construct() {
-
-	}
-
-
-	/**
-	 * @param $iso_code
-	 *
-	 * @return null
-	 */
-	public function getCurrency( $iso_code ) {
-
-		$currencies = $this->all();
-		if ( isset( $currencies[ $iso_code ] ) ) {
-			return $currencies[ $iso_code ];
-		}
-
-		return null;
-	}
-
-	/**
-	 * Return the number that should be used to compute cents from the total amount
-	 *
-	 * @param $currency_iso_code
-	 *
-	 * @return int|number
-	 */
-	public function getPaylikeMultiplier( $currency_iso_code ) {
-		$currency = $this->getCurrency( $currency_iso_code );
-		if ( isset( $currency['exponent'] ) ) {
-			return pow( 10, $currency['exponent'] );
-		} else {
-			return pow( 10, 2 );
-		}
-	}
-
-	/**
-	 * Return the number that should be used to compute the total amount from cents
-	 *
-	 * @param $currency_iso_code
-	 *
-	 * @return int|number
-	 */
-	private function getPaylikeDivider( $currency_iso_code ) {
-		return $this->getPaylikeMultiplier( $currency_iso_code );
-	}
-
-	/**
-	 *
-	 * @param  $amount
-	 * @param  $currencyCode
-	 *
-	 * @return int
-	 */
-	public function ceil( $amount, $currencyCode ) {
-		// in some cases float numbers cannot represented directly so they still have so decimals even
-		// those are not shown. That causes ceil to increment the minor amount so we are using round with 3 digits
-		// to clear that issue.
-		// see http://php.net/manual/ro/function.ceil.php#117341
-		return ceil( round( $amount, 3 ) * $this->getPaylikeMultiplier( $currencyCode ) );
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function all() {
-		return array(
+if ( ! function_exists( 'get_paylike_currency' ) ) {
+	function get_paylike_currency( $currency_iso_code ) {
+		$currencies = array(
 			'AED' =>
 				array(
 					'code'     => 'AED',
@@ -1165,6 +1085,73 @@ class Currencies {
 					'exponent' => 2,
 				),
 		);
+		if ( isset( $currencies[ $currency_iso_code ] ) ) {
+			return $currencies[ $currency_iso_code ];
+		} else {
+			return null;
+		}
 	}
+}
 
+if ( ! function_exists( 'get_paylike_currency_multiplier' ) ) {
+	/**
+	 * Return the number that should be used to compute cents from the total amount
+	 *
+	 * @param $currency_iso_code
+	 *
+	 * @return int|number
+	 */
+	function get_paylike_currency_multiplier( $currency_iso_code ) {
+		$currency = get_paylike_currency( $currency_iso_code );
+		if ( isset( $currency['exponent'] ) ) {
+			return pow( 10, $currency['exponent'] );
+		} else {
+			return pow( 10, 2 );
+		}
+	}
+}
+
+if ( ! function_exists( 'convert_wocoomerce_float_to_paylike_amount' ) ) {
+	/**
+	 * Return the number that should be used to compute cents from the total amount
+	 *
+	 * @param $currency_iso_code
+	 *
+	 * @return int|number
+	 */
+	function convert_wocoomerce_float_to_paylike_amount( $total ) {
+
+		$multiplier = pow( 10, wc_get_price_decimals() );
+		$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+		if ( function_exists( 'bcmul' ) ) {
+			$amount = ceil( bcmul( $total, $multiplier ) );
+		}
+
+		return $amount;
+	}
+}
+if ( ! function_exists( 'convert_float_to_iso_paylike_amount' ) ) {
+	/**
+	 * @param        $total
+	 * @param string $currency
+	 *
+	 * @return false|float
+	 */
+	function convert_float_to_iso_paylike_amount( $total, $currency = '' ) {
+		if ( empty( $currency ) ) {
+			$currency = get_woocommerce_currency();
+		}
+		$multiplier = get_paylike_currency_multiplier( $currency );
+
+		if ( $multiplier === 1 ) {
+			return ceil( $total );
+		}
+
+		$amount = ceil( $total * $multiplier ); // round to make sure we are always minor units.
+		if ( function_exists( 'bcmul' ) ) {
+			$amount = ceil( bcmul( $total, $multiplier ) );
+		}
+
+		return $amount;
+	}
 }
