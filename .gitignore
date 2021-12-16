@@ -92,3 +92,5 @@ vendor
 .env.production
 tmp
 bin/install-wp-tests.sh
+release/
+woocommerce-gateway-paylike.zip
