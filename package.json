@@ -1,0 +1,18 @@
+{
+  "name": "woocommerce-gateway-paylike",
+  "title": "WooCommerce Gateway Paylike",
+  "version": "1.8.7",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paylike/plugin-woocommerce"
+  },
+  "scripts": {
+    "build": "npm run build:release",
+    "build:release": "./bin/before-release.sh && node tasks/release.js && mv release/woocommerce-gateway-paylike.zip ."
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.9.0"
+  }
+}
