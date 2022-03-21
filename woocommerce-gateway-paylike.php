@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via Paylike in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 3.2.0
+ * Version: 3.2.1
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '3.2.0' );
+define( 'WC_PAYLIKE_VERSION', '3.2.1' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_CURRENT_SDK', 10 );
@@ -124,7 +124,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			if ( self::get_environment_warning() ) {
 				return;
 			}
-			include_once( plugin_basename( 'vendor/autoload.php' ) );
+			require WC_PAYLIKE_PLUGIN_DIR . 'vendor/autoload.php';
 			// Init the gateway itself.
 			$this->init_gateways();
 			$this->db_update();
@@ -182,7 +182,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			// Check if secret key present. Otherwise prompt, via notice, to go to
 			// setting.
 			if ( ! class_exists( 'Paylike\Paylike' ) ) {
-				include_once( plugin_basename( 'vendor/autoload.php' ) );
+				require WC_PAYLIKE_PLUGIN_DIR . 'vendor/autoload.php';
 			}
 			$secret = $this->get_secret_key();
 			if ( empty( $secret ) && ! ( isset( $_GET['page'], $_GET['section'] ) && 'wc-settings' === $_GET['page'] && 'paylike' === $_GET['section'] ) ) {
