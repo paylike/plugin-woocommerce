@@ -5,7 +5,7 @@
  * Description: Allow customers to pay with credit cards via Paylike in your WooCommerce store.
  * Author: Derikon Development
  * Author URI: https://derikon.com/
- * Version: 3.2.1
+ * Version: 3.3.0
  * Text Domain: woocommerce-gateway-paylike
  * Domain Path: /languages
  * WC requires at least: 3.0
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Required minimums and constants
  */
-define( 'WC_PAYLIKE_VERSION', '3.2.1' );
+define( 'WC_PAYLIKE_VERSION', '3.3.0' );
 define( 'WC_PAYLIKE_MIN_PHP_VER', '5.3.0' );
 define( 'WC_PAYLIKE_MIN_WC_VER', '2.5.0' );
 define( 'WC_PAYLIKE_CURRENT_SDK', 10 );
@@ -81,12 +81,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 		private $secret_key = '';
 
 		/**
-		 * Compatibility mode, capture only from on hold to processing or completed, and not also from processing to completed if this is checked.
-		 * @var string
-		 */
-		private $compatibility_mode = 'yes';
-
-		/**
 		 * Capture mode, is this instant or delayed
 		 * @var string
 		 */
@@ -133,16 +127,7 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			add_action( 'wp_ajax_paylike_log_transaction_data', array( $this, 'log_transaction_data' ) );
 			add_action( 'wp_ajax_nopriv_paylike_log_transaction_data', array( $this, 'log_transaction_data' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
-			add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
-			add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
-			if ( ! $this->get_compatibility_mode() ) {
-				add_action( 'woocommerce_order_status_processing_to_completed', array( $this, 'capture_payment' ) );
-			} else {
-				add_action( 'woocommerce_order_status_processing_to_completed', array(
-					$this,
-					'maybe_capture_warning'
-				) );
-			}
+			add_action( 'woocommerce_order_status_completed', array( $this, 'capture_payment' ) );
 			add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
 			add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
 		}
@@ -205,20 +190,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 			}
 
 			return $this->secret_key;
-		}
-
-		/**
-		 * Check if we are in incompatibility mode or not
-		 */
-		public function get_compatibility_mode() {
-			$options = get_option( 'woocommerce_paylike_settings' );
-			if ( isset( $options['compatibility_mode'] ) ) {
-				$this->compatibility_mode = ( 'yes' === $options['compatibility_mode'] ? $options['compatibility_mode'] : 0 );
-			} else {
-				$this->compatibility_mode = 0;
-			}
-
-			return $this->compatibility_mode;
 		}
 
 		/**
@@ -463,34 +434,6 @@ if ( ! class_exists( 'WC_Paylike' ) ) {
 				);
 			}
 
-		}
-
-		/**
-		 * Handler for moving from processing to completed
-		 * while the compatibility mode is enabled
-		 *
-		 * @param $order_id int
-		 */
-		public function maybe_capture_warning( $order_id ) {
-			$order = wc_get_order( $order_id );
-			if ( 'paylike' != $order->get_payment_method() ) {
-				return false;
-			}
-			$transaction_id = get_post_meta( $order_id, '_paylike_transaction_id', true );
-			$captured = get_post_meta( $order_id, '_paylike_transaction_captured', true );
-			if ( ! ( $transaction_id && 'no' === $captured ) ) {
-				return false;
-			}
-
-			// at this point the user has moved an order that is not captured
-			// which was paid via paylike and we will add a warning stating that no capture has taken place
-
-			$order->add_order_note(
-				__( '<b>Warning:</b> Order has not been captured!', 'woocommerce-gateway-paylike' ) . PHP_EOL .
-				__( 'Compatibility mode is enabled. This means that moving the order from processing to completed does not actually capture the order.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
-				__( 'You can either move the order to on hold and then to processing or go to settings and uncheck the `Compatibility Mode` checkbox.', 'woocommerce-gateway-paylike' ) . PHP_EOL .
-				__( 'If you choose the latter, then you can come back to the order move it back to processing, then move it again to completed.', 'woocommerce-gateway-paylike' )
-			);
 		}
 
 		/**

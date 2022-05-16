@@ -2,10 +2,10 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 5.9
-Stable tag: 3.2.1
+Tested up to: 5.9.3
+Stable tag: 3.3.0
 WC requires at least: 3.0
-WC tested up to: 5.8.0
+WC tested up to: 6.5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -107,6 +107,16 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 3. Payment screen
 
 == Changelog ==
+
+= 3.3.0 =
+* Remove compatibility mode - capture always on order complete
+* Removed forced unplanned, now amount is being sent when one subscription is in the cart
+
+= 3.2.1 =
+* Fix composer include
+
+= 3.1.1 =
+* Add order currency on payment after page
 
 = 3.1.0 =
 * Fix card update on 0 amount

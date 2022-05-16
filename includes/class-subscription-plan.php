@@ -108,7 +108,12 @@ class PaylikeSubscriptionHelper {
 		}
 
 		$this->args['plan']['repeat']['interval']['unit'] = strtolower( WC_Subscriptions_Product::get_period( $product ) );
-		$this->args['plan']['repeat']['interval']['value'] = strtolower( WC_Subscriptions_Product::get_interval( $product ) );
+		$this->args['plan']['repeat']['interval']['value'] = (integer) WC_Subscriptions_Product::get_interval( $product );
+
+		$trial_length = WC_Subscriptions_Product::get_trial_length( $product );
+		if($trial_length>0){
+			$this->args['plan']['repeat']['first'] = WC_Subscriptions_Product::get_first_renewal_payment_date( $product );
+		}
 
 	}
 
@@ -116,7 +121,7 @@ class PaylikeSubscriptionHelper {
 		$this->set_plan_key();
 		$this->args['plan']['amount'] = array(
 			'currency' => get_woocommerce_currency(),
-			'amount'   => convert_wocoomerce_float_to_paylike_amount( WC_Subscriptions_Product::get_price( $product ) ),
+			'value'   => convert_wocoomerce_float_to_paylike_amount( WC_Subscriptions_Product::get_price( $product ) ),
 			'exponent' => wc_get_price_decimals()
 		);
 	}
