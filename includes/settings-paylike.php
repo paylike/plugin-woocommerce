@@ -72,14 +72,6 @@ $settings =
 			'default'     => '',
 			'desc_tip'    => true,
 		),
-		'compatibility_mode'   => array(
-			'title'       => __( 'Compatibility Mode', 'woocommerce-gateway-paylike' ),
-			'label'       => __( 'Don\'t capture from processing to completed', 'woocommerce-gateway-paylike' ),
-			'type'        => 'checkbox',
-			'description' => __( 'When this is checked you can capture payment by moving an order to On Hold and then to complete or processing status, when its not checked you can also complete them from processing to complete as well as the other 2 options', 'woocommerce-gateway-paylike' ),
-			'default'     => 'yes',
-			'desc_tip'    => true,
-		),
 		'checkout_mode'        => array(
 			'title'    => __( 'Checkout mode', 'woocommerce-gateway-paylike' ),
 			'type'     => 'select',

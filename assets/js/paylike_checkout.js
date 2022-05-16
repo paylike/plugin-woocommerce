@@ -257,6 +257,12 @@ jQuery( function( $ ) {
 						for ( var attrname in wc_paylike_params.plan_arguments ) {
 							args[ attrname ] = wc_paylike_params.plan_arguments[ attrname ];
 						}
+						if(args.plan && args.plan.repeat && args.plan.repeat.first){
+							args.plan.repeat.first = new Date(args.plan.repeat.first);
+						}
+						if(args.plan) {
+							args.plan = [ args.plan ];
+						}
 					}
 					// used for cases like trial,
 					// change payment method

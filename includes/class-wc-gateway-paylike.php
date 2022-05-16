@@ -60,13 +60,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 	public $card_types;
 
 	/**
-	 * Compatibility mode, capture only from on hold to processing or completed, and not also from processing to completed if this is checked.
-	 *
-	 * @var bool
-	 */
-	public $compatibility_mode;
-
-	/**
 	 * Used to validate the public key.
 	 *
 	 * @var array
@@ -136,7 +129,6 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 		$this->testmode = 'yes' === $this->get_option( 'testmode' );
 		$this->capture = 'instant' === $this->get_option( 'capture', 'instant' );
 		$this->checkout_mode = 'before_order' === $this->get_option( 'checkout_mode', 'before_order' );
-		$this->compatibility_mode = 'yes' === $this->get_option( 'compatibility_mode', 'yes' );
 		$this->store_payment_method = 'yes' === $this->get_option( 'store_payment_method' );
 		$this->use_beta_sdk = 'yes' === $this->get_option( 'use_beta_sdk' );
 
@@ -1109,7 +1101,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			'products'          => $products,
 			'platform_version'  => $wp_version,
 			'ecommerce_version' => WC()->version,
-			'plan_arguments'    => PaylikeSubscriptionHelper::append_plan_argument( [], true, $order ),
+			'plan_arguments'    => PaylikeSubscriptionHelper::append_plan_argument( [], false, $order ),
 			'version'           => WC_PAYLIKE_VERSION,
 			'ajax_url'          => admin_url( 'admin-ajax.php' ),
 		);
@@ -1183,7 +1175,7 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 			$version = $beta_sdk_version;
 		}
 
-		$plan_arguments = PaylikeSubscriptionHelper::append_plan_argument( [], true, $order )
+		$plan_arguments = PaylikeSubscriptionHelper::append_plan_argument( [], false, $order )
 
 		?>
 		<script data-no-optimize="1" src="https://sdk.paylike.io/<?php echo $version; ?>.js"></script>
@@ -1227,13 +1219,20 @@ class WC_Gateway_Paylike extends WC_Payment_Gateway {
 
 		<?php
 		if ( $plan_arguments ) {
-		echo 'var plan_arguments=[' . json_encode( $plan_arguments ) . '];' . PHP_EOL;
+		echo 'var plan_arguments=' . json_encode( $plan_arguments ) . ';' . PHP_EOL;
 		?>
 		if ( plan_arguments ) {
-			for ( var attrname in plan_arguments[ 0 ] ) {
-				args[ attrname ] = plan_arguments[ 0 ][ attrname ];
+			for ( var attrname in plan_arguments ) {
+				args[ attrname ] = plan_arguments[ attrname ];
+			}
+			if(args.plan && args.plan.repeat && args.plan.repeat.first){
+				args.plan.repeat.first = new Date(args.plan.repeat.first);
+			}
+			if(args.plan) {
+				args.plan = [ args.plan ];
 			}
 		}
+		console.log(args);
 		<?php
 		}
 		?>
