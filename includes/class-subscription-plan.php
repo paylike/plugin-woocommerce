@@ -112,7 +112,8 @@ class PaylikeSubscriptionHelper {
 
 		$trial_length = WC_Subscriptions_Product::get_trial_length( $product );
 		if($trial_length>0){
-			$this->args['plan']['repeat']['first'] = WC_Subscriptions_Product::get_first_renewal_payment_date( $product );
+			// search and replace to fix safari bug
+			$this->args['plan']['repeat']['first'] = str_replace(" ","T",WC_Subscriptions_Product::get_first_renewal_payment_date( $product ));
 		}
 
 	}
