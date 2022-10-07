@@ -2,8 +2,8 @@
 Contributors: ionut.calara
 Tags: credit card, gateway, paylike, woocommerce, multisite
 Requires at least: 4.4
-Tested up to: 6.0.1
-Stable tag: 3.3.2
+Tested up to: 6.0.2
+Stable tag: 3.3.3
 WC requires at least: 3.0
 WC tested up to: 6.8.2
 License: GPLv3
@@ -107,6 +107,9 @@ Yes, we currently support integration with [WooCommerce One Click Upsell plugin]
 3. Payment screen
 
 == Changelog ==
+
+= 3.3.3 =
+* Disable logging by default
 
 = 3.3.2 =
 * Updated wordpress support
