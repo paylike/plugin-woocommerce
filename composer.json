@@ -16,7 +16,7 @@
     "paylike/php-api": "^1.0.7"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.4.4"
+    "phpunit/phpunit": "^8.5.52"
   },
   "autoload-dev": {
     "psr-4": {
